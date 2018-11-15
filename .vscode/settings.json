@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "input_best_effort_stream_internal.h": "c",
-        "udp_transport_datagram_internal.h": "c"
-    }
-}
