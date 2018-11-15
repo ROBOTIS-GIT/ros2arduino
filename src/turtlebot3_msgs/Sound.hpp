@@ -23,7 +23,6 @@
 #define _TURTLEBOT3_MSGS_SOUND_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -42,27 +41,28 @@ public:
   { 
   }
 
-  bool serialize(struct MicroBuffer* writer, const Sound* topic)
+  bool serialize(ucdrBuffer* writer, const Sound* topic)
   {
-    (void) serialize_uint8_t(writer, topic->value);
+    (void) ucdr_serialize_uint8_t(writer, topic->value);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Sound* topic)
+  bool deserialize(ucdrBuffer* reader, Sound* topic)
   {
-    (void) deserialize_uint8_t(reader, &topic->value);
+    (void) ucdr_deserialize_uint8_t(reader, &topic->value);
     
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Sound* topic, uint32_t size)
   {
     (void)(topic);
 
-    size += 1 + get_alignment(size, 1);
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 1) + 1;
 
-    return size;
+    return size - previousSize;
   }
 
 };

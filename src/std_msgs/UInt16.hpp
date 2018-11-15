@@ -16,7 +16,6 @@
 #define _STD_MSGS_UINT16_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -35,27 +34,28 @@ public:
   { 
   }
 
-  bool serialize(struct MicroBuffer* writer, const UInt16* topic)
+  bool serialize(ucdrBuffer* writer, const UInt16* topic)
   {
-    (void) serialize_uint16_t(writer, topic->data);
+    (void) ucdr_serialize_uint16_t(writer, topic->data);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, UInt16* topic)
+  bool deserialize(ucdrBuffer* reader, UInt16* topic)
   {
-    (void) deserialize_uint16_t(reader, &topic->data);
+    (void) ucdr_deserialize_uint16_t(reader, &topic->data);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const UInt16* topic, uint32_t size)
   {
     (void)(topic);
 
-    size += 2 + get_alignment(size, 2);
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 2) + 2;
 
-    return size;
+    return size - previousSize;
   }
 
 };

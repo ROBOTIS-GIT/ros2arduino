@@ -1,4 +1,4 @@
-#include <ros2.hpp>
+#include <ros2arduino.h>
 
 #include "std_msgs/Empty.hpp"
 
@@ -21,9 +21,9 @@ public:
   {
     DEBUG_SERIAL.println();
     publisher_ = this->createPublisher<std_msgs::Empty>("Empty");
-    this->createWallFreq(EMPTY_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishEmpty, publisher_);
+    this->createWallFreq(EMPTY_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishEmpty, NULL, publisher_);
     DEBUG_SERIAL.print(" [Publisher Create]   /Empty : "); DEBUG_SERIAL.println((publisher_!=NULL?"Success":"Fail"));
-    subscriber_ = this->createSubscriber<std_msgs::Empty>("Empty", (ros2::CallbackFunc)subscribeEmpty);
+    subscriber_ = this->createSubscriber<std_msgs::Empty>("Empty", (ros2::CallbackFunc)subscribeEmpty, NULL);
     DEBUG_SERIAL.print(" [Subscriber Create]  /Empty : "); DEBUG_SERIAL.println((subscriber_!=NULL?"Success":"Fail"));
   }
 

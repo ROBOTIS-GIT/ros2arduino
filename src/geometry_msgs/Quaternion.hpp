@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_QUATERNION_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -45,36 +44,37 @@ public:
   }
 
 
-  bool serialize(struct MicroBuffer* writer, const Quaternion* topic)
+  bool serialize(ucdrBuffer* writer, const Quaternion* topic)
   {
-    (void) serialize_double(writer, topic->x);
-    (void) serialize_double(writer, topic->y);
-    (void) serialize_double(writer, topic->z);
-    (void) serialize_double(writer, topic->w);
+    (void) ucdr_serialize_double(writer, topic->x);
+    (void) ucdr_serialize_double(writer, topic->y);
+    (void) ucdr_serialize_double(writer, topic->z);
+    (void) ucdr_serialize_double(writer, topic->w);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Quaternion* topic)
+  bool deserialize(ucdrBuffer* reader, Quaternion* topic)
   {
-    (void) deserialize_double(reader, &topic->x);
-    (void) deserialize_double(reader, &topic->y);
-    (void) deserialize_double(reader, &topic->z);
-    (void) deserialize_double(reader, &topic->w);
+    (void) ucdr_deserialize_double(reader, &topic->x);
+    (void) ucdr_deserialize_double(reader, &topic->y);
+    (void) ucdr_deserialize_double(reader, &topic->z);
+    (void) ucdr_deserialize_double(reader, &topic->w);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Quaternion* topic, uint32_t size)
   {
     (void)(topic);
 
-    size += 8 + get_alignment(size, 8);
-    size += 8 + get_alignment(size, 8);
-    size += 8 + get_alignment(size, 8);
-    size += 8 + get_alignment(size, 8);
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 8) + 8;
+    size += ucdr_alignment(size, 8) + 8;
+    size += ucdr_alignment(size, 8) + 8;
+    size += ucdr_alignment(size, 8) + 8;
 
-    return size;
+    return size - previousSize;
   }
 
 

@@ -9,8 +9,8 @@
 #define ROS2_NODE_HANDLE_HPP_
 
 #include <stdio.h>
-#include "micrortps.hpp"
-#include "hw.h"
+#include "rtps/rtps.hpp"
+#include <Arduino.h>
 
 
 namespace ros2 {

@@ -23,7 +23,6 @@
 #define _DIAGNOSTIC_MSGS_KEY_VALUE_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -39,33 +38,33 @@ public:
   KeyValue():
     Topic("diagnostic_msgs::msg::dds_::KeyValue_", DIAGNOSTIC_MSGS_KEY_VALUE_TOPIC)
   { 
+    memset(key, 0, sizeof(key));
+    memset(value, 0, sizeof(value));
   }
 
-  bool serialize(struct MicroBuffer* writer, const KeyValue* topic)
+  bool serialize(ucdrBuffer* writer, const KeyValue* topic)
   {
-    (void) serialize_sequence_char(writer, topic->key, (uint32_t)(strlen(topic->key) + 1));
-    (void) serialize_sequence_char(writer, topic->value, (uint32_t)(strlen(topic->value) + 1));
+    (void) ucdr_serialize_string(writer, topic->key);
+    (void) ucdr_serialize_string(writer, topic->value);
    
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, KeyValue* topic)
+  bool deserialize(ucdrBuffer* reader, KeyValue* topic)
   {
-    uint32_t size_key = 0;
-    uint32_t size_value = 0;
-
-    (void) deserialize_sequence_char(reader, topic->key, &size_key);
-    (void) deserialize_sequence_char(reader, topic->value, &size_value);
+    (void) ucdr_deserialize_string(reader, topic->key, sizeof(topic->key));
+    (void) ucdr_deserialize_string(reader, topic->value, sizeof(topic->value));
     
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const KeyValue* topic, uint32_t size)
   {
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->key) + 1);
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->value) + 1);
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->key) + 1);
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->value) + 1);
 
-    return size;
+    return size - previousSize;
   }
 
 };

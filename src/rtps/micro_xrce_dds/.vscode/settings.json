@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "xrce_protocol_internal.h": "c",
+        "create_entities_ref.h": "c",
+        "xrce_header_internal.h": "c",
+        "common_create_entities.h": "c"
+    }
+}

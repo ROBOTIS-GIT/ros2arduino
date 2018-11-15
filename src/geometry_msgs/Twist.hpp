@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_TWIST_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -46,28 +45,29 @@ public:
   }
 
 
-  bool serialize(struct MicroBuffer* writer, const Twist* topic)
+  bool serialize(ucdrBuffer* writer, const Twist* topic)
   {
     (void) linear.serialize(writer, &topic->linear);
     (void) angular.serialize(writer, &topic->angular);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Twist* topic)
+  bool deserialize(ucdrBuffer* reader, Twist* topic)
   {
     (void) linear.deserialize(reader, &topic->linear);
     (void) angular.deserialize(reader, &topic->angular);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Twist* topic, uint32_t size)
   {
-    size = linear.size_of_topic(&topic->linear, size);
-    size = angular.size_of_topic(&topic->angular, size);
+    uint32_t previousSize = size;
+    size += linear.size_of_topic(&topic->linear, size);
+    size += angular.size_of_topic(&topic->angular, size);
     
-    return size;
+    return size - previousSize;
   }
 
 

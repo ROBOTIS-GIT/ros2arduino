@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_POSE_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -47,31 +46,30 @@ public:
   }
 
 
-  bool serialize(struct MicroBuffer* writer, const Pose* topic)
+  bool serialize(ucdrBuffer* writer, const Pose* topic)
   {
     (void) position.serialize(writer, &topic->position);
     (void) orientation.serialize(writer, &topic->orientation);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Pose* topic)
+  bool deserialize(ucdrBuffer* reader, Pose* topic)
   {
     (void) position.deserialize(reader, &topic->position);
     (void) orientation.deserialize(reader, &topic->orientation);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Pose* topic, uint32_t size)
   {
-    size = position.size_of_topic(&topic->position, size);
-    size = orientation.size_of_topic(&topic->orientation, size);
+    uint32_t previousSize = size;
+    size += position.size_of_topic(&topic->position, size);
+    size += orientation.size_of_topic(&topic->orientation, size);
     
-    return size;
+    return size - previousSize;
   }
-
-
 
 };
 

@@ -23,7 +23,6 @@
 #define _STD_MSGS_STRING_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -42,23 +41,24 @@ public:
   }
 
 
-  bool serialize(struct MicroBuffer* writer, const String* topic)
+  bool serialize(ucdrBuffer* writer, const String* topic)
   {
-    (void) serialize_sequence_char(writer, topic->data, (uint32_t)(strlen(topic->data) + 1));
-    return writer->error == BUFFER_OK;
+    (void) ucdr_serialize_string(writer, topic->data);
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, String* topic)
+  bool deserialize(ucdrBuffer* reader, String* topic)
   {
-    uint32_t size_data = 0;
-    (void) deserialize_sequence_char(reader, topic->data, &size_data);
-    return reader->error == BUFFER_OK;
+    (void) ucdr_deserialize_string(reader, topic->data, sizeof(topic->data));
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const String* topic, uint32_t size)
   {
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->data) + 1);
-    return size;
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->data) + 1);
+
+    return size - previousSize;
   }
 
 

@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_TWIST_WITH_CONVARIANCE_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -39,34 +38,35 @@ public:
   double covariance[36];
 
   TwistWithCovariance():
-    Topic("geometry_msgs::msg::dds_::TwistWithCovariance_", GEOMETRY_MSGS_TWIST_WITH_CONVARIANCE_TOPIC),
+    Topic("geometry_msgs::msg::dds_::TwistWithCovariance_", GEOMETRY_MSGS_TWIST_WITH_COVARIANCE_TOPIC),
     twist()
   { 
     memset(covariance, 0, sizeof(covariance));
   }
 
-  bool serialize(struct MicroBuffer* writer, const TwistWithCovariance* topic)
+  bool serialize(ucdrBuffer* writer, const TwistWithCovariance* topic)
   {
     (void) twist.serialize(writer, &topic->twist);
-    (void) serialize_array_double(writer, topic->covariance, 36);
+    (void) ucdr_serialize_array_double(writer, topic->covariance, 36);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, TwistWithCovariance* topic)
+  bool deserialize(ucdrBuffer* reader, TwistWithCovariance* topic)
   {
     (void) twist.deserialize(reader, &topic->twist);
-    (void) deserialize_array_double(reader, topic->covariance, 36);
+    (void) ucdr_deserialize_array_double(reader, topic->covariance, 36);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const TwistWithCovariance* topic, uint32_t size)
   {
-    size  = twist.size_of_topic(&topic->twist, size);
-    size += ((36) * 8) + get_alignment(size, 8);
+    uint32_t previousSize = size;
+    size += twist.size_of_topic(&topic->twist, size);
+    size += ucdr_alignment(size, 8) + ((36) * 8);
     
-    return size;
+    return size - previousSize;
   }
 
 

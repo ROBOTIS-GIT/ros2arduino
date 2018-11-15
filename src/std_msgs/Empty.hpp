@@ -15,52 +15,48 @@
 #ifndef _STD_MSGS_EMPTY_HPP_
 #define _STD_MSGS_EMPTY_HPP_
 
-
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
-
-namespace std_msgs {
-
-
-class Empty : public ros2::Topic<Empty>
+namespace std_msgs
 {
-public:
-  bool _dummy;
 
-  Empty():
-    Topic("std_msgs::msg::dds_::Empty_", STD_MSGS_EMPTY_TOPIC),
-    _dummy(0)
-  { 
-  }
+class Empty: public ros2::Topic<Empty>
+{
+  public:
+    bool _dummy;
 
-  bool serialize(struct MicroBuffer* writer, const Empty* topic)
-  {
-      serialize_bool(writer, topic->_dummy);
+    Empty()
+        : Topic("std_msgs::msg::dds_::Empty_", STD_MSGS_EMPTY_TOPIC), _dummy(0)
+    {
+    }
 
-      return writer->error == BUFFER_OK;
-  }
+    bool serialize(ucdrBuffer* writer, const Empty* topic)
+    {
+      ucdr_serialize_bool(writer, topic->_dummy);
 
-  bool deserialize(struct MicroBuffer* reader, Empty* topic)
-  {
-      deserialize_bool(reader, &topic->_dummy);
+      return !writer->error;
+    }
 
-      return reader->error == BUFFER_OK;
-  }
+    bool deserialize(ucdrBuffer* reader, Empty* topic)
+    {
+      ucdr_deserialize_bool(reader, &topic->_dummy);
 
-  uint32_t size_of_topic(const Empty* topic, uint32_t size)
-  {
-      (void)(topic);
+      return !reader->error;
+    }
 
-      size += 1 + get_alignment(size, 1);
+    uint32_t size_of_topic(const Empty* topic, uint32_t size)
+    {
+      (void) (topic);
 
-      return size;
-  }
+      uint32_t previousSize = size;
+      size += ucdr_alignment(size, 1) + 1;
+
+      return size - previousSize;
+    }
 
 };
 
 } // namespace std_msgs
-
 
 #endif // _STD_MSGS_EMPTY_HPP_

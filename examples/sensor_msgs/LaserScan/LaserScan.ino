@@ -1,4 +1,4 @@
-#include <ros2.hpp>
+#include <ros2arduino.h>
 
 #include "sensor_msgs/LaserScan.hpp"
 
@@ -22,9 +22,9 @@ public:
   {
     DEBUG_SERIAL.println();
     publisher_ = this->createPublisher<sensor_msgs::LaserScan>("LaserScan");
-    this->createWallFreq(LASER_SCAN_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishLaserScan, publisher_);
+    this->createWallFreq(LASER_SCAN_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishLaserScan, NULL, publisher_);
     DEBUG_SERIAL.print(" [Publisher Create]   /LaserScan : "); DEBUG_SERIAL.println((publisher_!=NULL?"Success":"Fail"));
-    subscriber_ = this->createSubscriber<sensor_msgs::LaserScan>("LaserScan", (ros2::CallbackFunc)subscribeLaserScan);
+    subscriber_ = this->createSubscriber<sensor_msgs::LaserScan>("LaserScan", (ros2::CallbackFunc)subscribeLaserScan, NULL);
     DEBUG_SERIAL.print(" [Subscriber Create]  /LaserScan : "); DEBUG_SERIAL.println((subscriber_!=NULL?"Success":"Fail"));
   }
 

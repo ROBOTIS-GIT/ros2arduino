@@ -23,7 +23,6 @@
 #define _TURTLEBOT3_MSGS_SENSOR_STATE_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -56,55 +55,56 @@ public:
   { 
   }
 
-  bool serialize(struct MicroBuffer* writer, const SensorState* topic)
+  bool serialize(ucdrBuffer* writer, const SensorState* topic)
   {
     (void) header.serialize(writer, &topic->header);
-    (void) serialize_uint8_t(writer, topic->bumper);
-    (void) serialize_float(writer, topic->cliff);
-    (void) serialize_float(writer, topic->sonar);
-    (void) serialize_float(writer, topic->illumination);
-    (void) serialize_uint8_t(writer, topic->led);
-    (void) serialize_uint8_t(writer, topic->button);
-    (void) serialize_bool(writer, topic->torque);
-    (void) serialize_int32_t(writer, topic->left_encoder);
-    (void) serialize_int32_t(writer, topic->right_encoder);
-    (void) serialize_float(writer, topic->battery);
+    (void) ucdr_serialize_uint8_t(writer, topic->bumper);
+    (void) ucdr_serialize_float(writer, topic->cliff);
+    (void) ucdr_serialize_float(writer, topic->sonar);
+    (void) ucdr_serialize_float(writer, topic->illumination);
+    (void) ucdr_serialize_uint8_t(writer, topic->led);
+    (void) ucdr_serialize_uint8_t(writer, topic->button);
+    (void) ucdr_serialize_bool(writer, topic->torque);
+    (void) ucdr_serialize_int32_t(writer, topic->left_encoder);
+    (void) ucdr_serialize_int32_t(writer, topic->right_encoder);
+    (void) ucdr_serialize_float(writer, topic->battery);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, SensorState* topic)
+  bool deserialize(ucdrBuffer* reader, SensorState* topic)
   {
     (void) header.deserialize(reader, &topic->header);
-    (void) deserialize_uint8_t(reader, &topic->bumper);
-    (void) deserialize_float(reader, &topic->cliff);
-    (void) deserialize_float(reader, &topic->sonar);
-    (void) deserialize_float(reader, &topic->illumination);
-    (void) deserialize_uint8_t(reader, &topic->led);
-    (void) deserialize_uint8_t(reader, &topic->button);
-    (void) deserialize_bool(reader, &topic->torque);
-    (void) deserialize_int32_t(reader, &topic->left_encoder);
-    (void) deserialize_int32_t(reader, &topic->right_encoder);
-    (void) deserialize_float(reader, &topic->battery);
+    (void) ucdr_deserialize_uint8_t(reader, &topic->bumper);
+    (void) ucdr_deserialize_float(reader, &topic->cliff);
+    (void) ucdr_deserialize_float(reader, &topic->sonar);
+    (void) ucdr_deserialize_float(reader, &topic->illumination);
+    (void) ucdr_deserialize_uint8_t(reader, &topic->led);
+    (void) ucdr_deserialize_uint8_t(reader, &topic->button);
+    (void) ucdr_deserialize_bool(reader, &topic->torque);
+    (void) ucdr_deserialize_int32_t(reader, &topic->left_encoder);
+    (void) ucdr_deserialize_int32_t(reader, &topic->right_encoder);
+    (void) ucdr_deserialize_float(reader, &topic->battery);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   virtual uint32_t size_of_topic(const SensorState* topic, uint32_t size)
   {
-    size  = header.size_of_topic(&topic->header, size);
-    size += 1 + get_alignment(size, 1);
-    size += 4 + get_alignment(size, 4);
-    size += 4 + get_alignment(size, 4);
-    size += 4 + get_alignment(size, 4);
-    size += 1 + get_alignment(size, 1);
-    size += 1 + get_alignment(size, 1);
-    size += 1 + get_alignment(size, 1);
-    size += 4 + get_alignment(size, 4);
-    size += 4 + get_alignment(size, 4);
-    size += 4 + get_alignment(size, 4);
+    uint32_t previousSize = size;
+    size += header.size_of_topic(&topic->header, size);
+    size += ucdr_alignment(size, 1) + 1;
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 1) + 1;
+    size += ucdr_alignment(size, 1) + 1;
+    size += ucdr_alignment(size, 1) + 1;
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 4) + 4;
     
-    return size;
+    return size - previousSize;
   }
 
 };

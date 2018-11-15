@@ -23,7 +23,6 @@
 #define _SENSOR_MSGS_IMU_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -55,43 +54,45 @@ public:
     memset(linear_acceleration_covariance, 0, sizeof(linear_acceleration_covariance));
   }
 
-  bool serialize(struct MicroBuffer* writer, const Imu* topic)
+  bool serialize(ucdrBuffer* writer, const Imu* topic)
   {
-    (void)  header.serialize(writer, &topic->header);
+    (void) header.serialize(writer, &topic->header);
     (void) orientation.serialize(writer, &topic->orientation);
-    (void) serialize_array_double(writer, topic->orientation_covariance, 9);
+    (void) ucdr_serialize_array_double(writer, topic->orientation_covariance, 9);
     (void) angular_velocity.serialize(writer, &topic->angular_velocity);
-    (void) serialize_array_double(writer, topic->angular_velocity_covariance, 9);
+    (void) ucdr_serialize_array_double(writer, topic->angular_velocity_covariance, 9);
     (void) linear_acceleration.serialize(writer, &topic->linear_acceleration);
-    (void) serialize_array_double(writer, topic->linear_acceleration_covariance, 9);
+    (void) ucdr_serialize_array_double(writer, topic->linear_acceleration_covariance, 9);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Imu* topic)
+  bool deserialize(ucdrBuffer* reader, Imu* topic)
   {
     (void) header.deserialize(reader, &topic->header);
     (void) orientation.deserialize(reader, &topic->orientation);
-    (void) deserialize_array_double(reader, topic->orientation_covariance, 9);
+    (void) ucdr_deserialize_array_double(reader, topic->orientation_covariance, 9);
     (void) angular_velocity.deserialize(reader, &topic->angular_velocity);
-    (void) deserialize_array_double(reader, topic->angular_velocity_covariance, 9);
+    (void) ucdr_deserialize_array_double(reader, topic->angular_velocity_covariance, 9);
     (void) linear_acceleration.deserialize(reader, &topic->linear_acceleration);
-    (void) deserialize_array_double(reader, topic->linear_acceleration_covariance, 9);
+    (void) ucdr_deserialize_array_double(reader, topic->linear_acceleration_covariance, 9);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Imu* topic, uint32_t size)
   {
-    size  = header.size_of_topic(&topic->header, size);
-    size  = orientation.size_of_topic(&topic->orientation, size);
-    size += ((9) * 8) + get_alignment(size, 8);
-    size  = angular_velocity.size_of_topic(&topic->angular_velocity, size);
-    size += ((9) * 8) + get_alignment(size, 8);
-    size  = linear_acceleration.size_of_topic(&topic->linear_acceleration, size);
-    size += ((9) * 8) + get_alignment(size, 8);
+    uint32_t previousSize = size;
 
-    return size;
+    size += header.size_of_topic(&topic->header, size);
+    size += orientation.size_of_topic(&topic->orientation, size);
+    size += ucdr_alignment(size, 8) + ((9) * 8);
+    size += angular_velocity.size_of_topic(&topic->angular_velocity, size);
+    size += ucdr_alignment(size, 8) + ((9) * 8);
+    size += linear_acceleration.size_of_topic(&topic->linear_acceleration, size);
+    size += ucdr_alignment(size, 8) + ((9) * 8);
+
+    return size - previousSize;
   }
 
 };

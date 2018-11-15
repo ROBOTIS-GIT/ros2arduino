@@ -23,7 +23,6 @@
 #define _SENSOR_MSGS_MAGNETIC_FIELD_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -48,31 +47,32 @@ public:
     memset(magnetic_field_covariance, 0, sizeof(magnetic_field_covariance));
   }
 
-  bool serialize(struct MicroBuffer* writer, const MagneticField* topic)
+  bool serialize(ucdrBuffer* writer, const MagneticField* topic)
   {
     (void) header.serialize(writer, &topic->header);
     (void) magnetic_field.serialize(writer, &topic->magnetic_field);
-    (void) serialize_array_double(writer, topic->magnetic_field_covariance, 9);
+    (void) ucdr_serialize_array_double(writer, topic->magnetic_field_covariance, 9);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, MagneticField* topic)
+  bool deserialize(ucdrBuffer* reader, MagneticField* topic)
   {
     (void) header.deserialize(reader, &topic->header);
     (void) magnetic_field.deserialize(reader, &topic->magnetic_field);
-    (void) deserialize_array_double(reader, topic->magnetic_field_covariance, 9);
+    (void) ucdr_deserialize_array_double(reader, topic->magnetic_field_covariance, 9);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   virtual uint32_t size_of_topic(const MagneticField* topic, uint32_t size)
   {
-    size  = header.size_of_topic(&topic->header, size);
-    size  = magnetic_field.size_of_topic(&topic->magnetic_field, size);
-    size += ((9) * 8) + get_alignment(size, 8);
+    uint32_t previousSize = size;
+    size += header.size_of_topic(&topic->header, size);
+    size += magnetic_field.size_of_topic(&topic->magnetic_field, size);
+    size += ucdr_alignment(size, 8) + ((9) * 8);
 
-    return size;
+    return size - previousSize;
   }
 
 };

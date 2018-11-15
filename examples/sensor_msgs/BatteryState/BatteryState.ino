@@ -1,4 +1,4 @@
-#include <ros2.hpp>
+#include <ros2arduino.h>
 
 #include "sensor_msgs/BatteryState.hpp"
 
@@ -21,9 +21,9 @@ public:
   {
     DEBUG_SERIAL.println();
     publisher_ = this->createPublisher<sensor_msgs::BatteryState>("BatteryState");
-    this->createWallFreq(BATTERY_STATE_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishBatteryState, publisher_);
+    this->createWallFreq(BATTERY_STATE_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishBatteryState, NULL, publisher_);
     DEBUG_SERIAL.print(" [Publisher Create]   /BatteryState : "); DEBUG_SERIAL.println((publisher_!=NULL?"Success":"Fail"));
-    subscriber_ = this->createSubscriber<sensor_msgs::BatteryState>("BatteryState", (ros2::CallbackFunc)subscribeBatteryState);
+    subscriber_ = this->createSubscriber<sensor_msgs::BatteryState>("BatteryState", (ros2::CallbackFunc)subscribeBatteryState, NULL);
     DEBUG_SERIAL.print(" [Subscriber Create]  /BatteryState : "); DEBUG_SERIAL.println((subscriber_!=NULL?"Success":"Fail"));
   }
 

@@ -1,4 +1,4 @@
-#include <ros2.hpp>
+#include <ros2arduino.h>
 
 #include "std_msgs/Header.hpp"
 
@@ -20,9 +20,9 @@ public:
   {
     DEBUG_SERIAL.println();
     publisher_ = this->createPublisher<std_msgs::Header>("Header");
-    this->createWallFreq(HEADER_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishHeader, publisher_);
+    this->createWallFreq(HEADER_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishHeader, NULL, publisher_);
     DEBUG_SERIAL.print(" [Publisher Create]   /Header : "); DEBUG_SERIAL.println((publisher_!=NULL?"Success":"Fail"));
-    subscriber_ = this->createSubscriber<std_msgs::Header>("Header", (ros2::CallbackFunc)subscribeHeader);
+    subscriber_ = this->createSubscriber<std_msgs::Header>("Header", (ros2::CallbackFunc)subscribeHeader, NULL);
     DEBUG_SERIAL.print(" [Subscriber Create]  /Header : "); DEBUG_SERIAL.println((subscriber_!=NULL?"Success":"Fail"));  
   }
 

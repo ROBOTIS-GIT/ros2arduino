@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_TRANSFORM_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -47,28 +46,29 @@ public:
   }
 
 
-  bool serialize(struct MicroBuffer* writer, const Transform* topic)
+  bool serialize(ucdrBuffer* writer, const Transform* topic)
   {
     (void) translation.serialize(writer, &topic->translation);
     (void) rotation.serialize(writer, &topic->rotation);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Transform* topic)
+  bool deserialize(ucdrBuffer* reader, Transform* topic)
   {
     (void) translation.deserialize(reader, &topic->translation);
     (void) rotation.deserialize(reader, &topic->rotation);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Transform* topic, uint32_t size)
   {
-    size = translation.size_of_topic(&topic->translation, size);
-    size = rotation.size_of_topic(&topic->rotation, size);
+    uint32_t previousSize = size;
+    size += translation.size_of_topic(&topic->translation, size);
+    size += rotation.size_of_topic(&topic->rotation, size);
     
-    return size;
+    return size - previousSize;
   }
 
 

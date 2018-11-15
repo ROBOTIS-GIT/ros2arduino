@@ -23,7 +23,6 @@
 #define _TURTLEBOT3_MSGS_VERSION_INFO_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -34,42 +33,44 @@ namespace turtlebot3_msgs {
 class VersionInfo : public ros2::Topic<VersionInfo>
 {
 public: 
-    char* hardware;
-    char* firmware;
-    char* software;
+    char hardware[255];
+    char firmware[255];
+    char software[255];
 
   VersionInfo():
-    Topic("turtlebot3_msgs::msg::dds_::VersionInfo_", TURTLEBOT3_MSGS_VERSION_INFO_TOPIC),
-    hardware(NULL), firmware(NULL), software(NULL)
+    Topic("turtlebot3_msgs::msg::dds_::VersionInfo_", TURTLEBOT3_MSGS_VERSION_INFO_TOPIC)
   { 
+    memset(hardware, 0, sizeof(hardware));
+    memset(firmware, 0, sizeof(firmware));
+    memset(software, 0, sizeof(software));
   }
 
-  bool serialize(struct MicroBuffer* writer, const VersionInfo* topic)
+  bool serialize(ucdrBuffer* writer, const VersionInfo* topic)
   {
-    (void) serialize_sequence_char(writer, topic->hardware, (uint32_t)(strlen(topic->hardware) + 1));
-    (void) serialize_sequence_char(writer, topic->firmware, (uint32_t)(strlen(topic->firmware) + 1));
-    (void) serialize_sequence_char(writer, topic->software, (uint32_t)(strlen(topic->software) + 1));
-    return writer->error == BUFFER_OK;
+    (void) ucdr_serialize_string(writer, topic->hardware);
+    (void) ucdr_serialize_string(writer, topic->firmware);
+    (void) ucdr_serialize_string(writer, topic->software);
+
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, VersionInfo* topic)
+  bool deserialize(ucdrBuffer* reader, VersionInfo* topic)
   {
-    uint32_t size_hardware = 0;
-    uint32_t size_firmware = 0;
-    uint32_t size_software = 0;
-    (void) deserialize_sequence_char(reader, topic->hardware, &size_hardware);
-    (void) deserialize_sequence_char(reader, topic->firmware, &size_firmware);
-    (void) deserialize_sequence_char(reader, topic->software, &size_software);
-    return reader->error == BUFFER_OK;
+    (void) ucdr_deserialize_string(reader, topic->hardware, sizeof(topic->hardware));
+    (void) ucdr_deserialize_string(reader, topic->firmware, sizeof(topic->firmware));
+    (void) ucdr_deserialize_string(reader, topic->software, sizeof(topic->software));
+
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const VersionInfo* topic, uint32_t size)
   {
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->hardware) + 1);
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->firmware) + 1);
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->software) + 1);
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->hardware) + 1);
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->firmware) + 1);
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->software) + 1);
 
-    return size;
+    return size - previousSize;
   }
 
 };

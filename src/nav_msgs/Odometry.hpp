@@ -23,7 +23,6 @@
 #define _NAV_MSGS_ODOMETRY_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -46,39 +45,39 @@ public:
   Odometry():
     Topic("nav_msgs::msg::dds_::Odometry_", NAV_MSGS_ODOMETRY_TOPIC),
     header(), pose(), twist()
-  { 
+  {
+    memset(child_frame_id, 0, sizeof(child_frame_id));
   }
 
-  bool serialize(struct MicroBuffer* writer, const Odometry* topic)
+  bool serialize(ucdrBuffer* writer, const Odometry* topic)
   {
     (void) header.serialize(writer, &topic->header);
-    (void) serialize_sequence_char(writer, topic->child_frame_id, (uint32_t)(strlen(topic->child_frame_id) + 1));
+    (void) ucdr_serialize_string(writer, topic->child_frame_id);
     (void) pose.serialize(writer, &topic->pose);
     (void) twist.serialize(writer, &topic->twist);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Odometry* topic)
+  bool deserialize(ucdrBuffer* reader, Odometry* topic)
   {
-    uint32_t size_child_frame_id = 0;
-
     (void) header.deserialize(reader, &topic->header);
-    (void) deserialize_sequence_char(reader, topic->child_frame_id, &size_child_frame_id);
+    (void) ucdr_deserialize_string(reader, topic->child_frame_id, sizeof(topic->child_frame_id));
     (void) pose.deserialize(reader, &topic->pose);
     (void) twist.deserialize(reader, &topic->twist);
     
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Odometry* topic, uint32_t size)
   {
-    size  = header.size_of_topic(&topic->header, size);
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->child_frame_id) + 1);
-    size  = pose.size_of_topic(&topic->pose, size);
-    size  = twist.size_of_topic(&topic->twist, size);
+    uint32_t previousSize = size;
+    size += header.size_of_topic(&topic->header, size);
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->child_frame_id) + 1);
+    size += pose.size_of_topic(&topic->pose, size);
+    size += twist.size_of_topic(&topic->twist, size);
 
-    return size;
+    return size - previousSize;
   }
 
 };

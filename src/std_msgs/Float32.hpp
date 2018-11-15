@@ -16,7 +16,6 @@
 #define _STD_MSGS_FLOAT32_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -35,27 +34,28 @@ public:
   { 
   }
 
-  bool serialize(struct MicroBuffer* writer, const Float32* topic)
+  bool serialize(ucdrBuffer* writer, const Float32* topic)
   {
-    (void) serialize_float(writer, topic->data);
+    (void) ucdr_serialize_float(writer, topic->data);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Float32* topic)
+  bool deserialize(ucdrBuffer* reader, Float32* topic)
   {
-    (void) deserialize_float(reader, &topic->data);
+    (void) ucdr_deserialize_float(reader, &topic->data);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Float32* topic, uint32_t size)
   {
     (void)(topic);
 
-    size += 4 + get_alignment(size, 4);
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 4) + 4;
 
-    return size;
+    return size - previousSize;
   }
 
 };

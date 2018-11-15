@@ -23,7 +23,6 @@
 #define _SENSOR_MSGS_JOINT_STATE_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -36,79 +35,84 @@ class JointState : public ros2::Topic<JointState>
 {
 public: 
     std_msgs::Header header;
-    char** name;
+    char name[255][10];
     uint32_t name_size;
-    double* position;
+    double position[255];
     uint32_t position_size;
-    double* velocity;
+    double velocity[255];
     uint32_t velocity_size;
-    double* effort;
+    double effort[255];
     uint32_t effort_size;
 
   JointState():
     Topic("sensor_msgs::msg::dds_::JointState_", SENSOR_MSGS_JOINT_STATE_TOPIC),
     header(),
-    name_size(0), position_size(0), velocity_size(0), effort_size(0)
+    name_size(1), position_size(1), velocity_size(1), effort_size(1)
   { 
-    name = NULL, position = NULL, velocity = NULL, effort = NULL;
+    memset(name, 0, sizeof(name));
+    memset(position, 0, sizeof(position));
+    memset(velocity, 0, sizeof(velocity));
+    memset(effort, 0, sizeof(effort));
   }
 
-  bool serialize(struct MicroBuffer* writer, const JointState* topic)
+  bool serialize(ucdrBuffer* writer, const JointState* topic)
   {
     (void) header.serialize(writer, &topic->header);
     
-    (void) serialize_uint32_t(writer, topic->name_size);
+    (void) ucdr_serialize_uint32_t(writer, topic->name_size);
     for(uint32_t i = 0; i < topic->name_size; i++)
     {
-      (void) serialize_sequence_char(writer, topic->name[i], (uint32_t)(strlen(topic->name[i])+1));
+      (void) ucdr_serialize_string(writer, topic->name[i]);
     } 
 
-    (void) serialize_sequence_double(writer, topic->position, topic->position_size);
-    (void) serialize_sequence_double(writer, topic->velocity, topic->velocity_size);
-    (void) serialize_sequence_double(writer, topic->effort, topic->effort_size);
+    (void) ucdr_serialize_sequence_double(writer, topic->position, topic->position_size);
+    (void) ucdr_serialize_sequence_double(writer, topic->velocity, topic->velocity_size);
+    (void) ucdr_serialize_sequence_double(writer, topic->effort, topic->effort_size);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, JointState* topic)
+  bool deserialize(ucdrBuffer* reader, JointState* topic)
   {
+    uint32_t size_string;
+
     (void) header.deserialize(reader, &topic->header);
     
-    // uint32_t size_string = 0, size_data;
-    // (void) deserialize_uint32_t(reader, &size_string);
-    // for(uint32_t i = 0; i < size_string; i++)
-    // {
-    //   (void) deserialize_sequence_char(reader, topic->name[i], &size_data);
-    // }
+    (void) ucdr_deserialize_uint32_t(reader, &size_string);
+    for(uint32_t i = 0; i < size_string; i++)
+    {
+      (void) ucdr_deserialize_string(reader, topic->name[i], sizeof(topic->name[i]));
+    }
 
-    (void) deserialize_sequence_double(reader, topic->position, &topic->position_size);
-    (void) deserialize_sequence_double(reader, topic->velocity, &topic->velocity_size);
-    (void) deserialize_sequence_double(reader, topic->effort, &topic->effort_size);
+    (void) ucdr_deserialize_sequence_double(reader, topic->position, sizeof(topic->position)/sizeof(double), &topic->position_size);
+    (void) ucdr_deserialize_sequence_double(reader, topic->velocity, sizeof(topic->velocity)/sizeof(double), &topic->velocity_size);
+    (void) ucdr_deserialize_sequence_double(reader, topic->effort, sizeof(topic->effort)/sizeof(double), &topic->effort_size);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   virtual uint32_t size_of_topic(const JointState* topic, uint32_t size)
   {
-    size  = header.size_of_topic(&topic->header, size);
+    uint32_t previousSize = size;
 
-    size += 4 + get_alignment(size, 4);
+    size += header.size_of_topic(&topic->header, size);
+
+    size += ucdr_alignment(size, 4) + 4;
     for(uint32_t i = 0; i < name_size; i++)
     {
-      size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(name[i]) + 1);
+      size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(name[i]) + 1);
     }
 
-    size += 4 + get_alignment(size, 4);
-    size += (topic->position_size * 8) + get_alignment(size, 8);
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 8) + (topic->position_size * 8);
 
-    size += 4 + get_alignment(size, 4);
-    size += (topic->velocity_size * 8) + get_alignment(size, 8);
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 8) + (topic->velocity_size * 8);
 
-    size += 4 + get_alignment(size, 4);
-    size += (topic->effort_size * 8) + get_alignment(size, 8);
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 8) + (topic->effort_size * 8);
 
-
-    return size;
+    return size - previousSize;
   }
 
 };

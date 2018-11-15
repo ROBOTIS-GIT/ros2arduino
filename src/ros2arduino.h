@@ -1,5 +1,5 @@
 /*
- * ros2.hpp
+ * ros2arduino.h
  *
  *  Created on: May 16, 2018
  *      Author: Kei
@@ -20,8 +20,7 @@
 
 namespace ros2 {
 
-
-void onTopicCallback(mrSession* session, mrObjectId object_id, uint16_t request_id, mrStreamId stream_id, struct MicroBuffer* mb, void* args);
+void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args);
 
 extern char* client_communication_method;
 extern char* server_ip;
@@ -48,14 +47,26 @@ class Node
       participant_.is_init = false;
       if(strcmp(client_communication_method, "Serial") == 0)
       {
-        micrortps::setup(onTopicCallback, (void*) this);
+        transport_.type = 0;
       }
       else
       {
-        micrortps::setup(server_ip, server_port, onTopicCallback, (void*) this);
+        transport_.type = 1;
+        transport_.server_ip = (const char*)server_ip;
+        transport_.server_port = server_port;
       }
 
-      node_register_state_ = micrortps::createParticipant(&this->participant_);
+      rtps::initTransportAndSession(&transport_, onTopicCallback, (void*)this);
+
+//      const char* participant_xml = "<dds>"
+//                                        "<participant>"
+//                                            "<rtps>"
+//                                                "<name>default_xrce_participant</name>"
+//                                            "</rtps>"
+//                                        "</participant>"
+//                                    "</dds>";
+
+      node_register_state_ = rtps::createParticipant(&this->participant_, "default_xrce_participant_profile");
 
       uint8_t i;
       for(i = 0; i < ROS2_PUBLISHER_MAX; i++)
@@ -184,7 +195,8 @@ class Node
       {
         if(pub_list_[i] != NULL && pub_list_[i]->writer_id_ == writer_id)
         {
-          //TODO: Delete DDS resources
+          uxrObjectId obj_id = {pub_list_[i]->writer_id_, UXR_DATAWRITER_ID};
+          uxr_buffer_delete_entity(participant_.session, participant_.output_stream_id, obj_id);
           delete(pub_list_[i]);
           pub_list_[i] = NULL;
           pub_cnt_--;
@@ -199,7 +211,8 @@ class Node
       {
         if(sub_list_[i] != NULL && sub_list_[i]->reader_id_ == reader_id)
         {
-          //TODO: Delete DDS resources
+          uxrObjectId obj_id = {sub_list_[i]->reader_id_, UXR_DATAREADER_ID};
+          uxr_buffer_delete_entity(participant_.session, participant_.output_stream_id, obj_id);
           delete(sub_list_[i]);
           sub_list_[i] = NULL;
           sub_cnt_--;
@@ -267,7 +280,8 @@ class Node
 
   private:
     bool node_register_state_;
-    micrortps::Participant_t participant_;
+    rtps::Participant_t participant_;
+    rtps::Transport_t transport_;
     uint8_t pub_cnt_;
     uint8_t sub_cnt_;
 
@@ -285,7 +299,7 @@ class Node
 
       char topic_profile[256] = {0, };
       sprintf(topic_profile, DEFAULT_TOPIC_XML, getPrefixString(prefix), name, topic.type_);
-      ret = micrortps::registerTopic(&this->participant_, topic_profile, topic.id_);
+      ret = rtps::registerTopic(&this->participant_, topic_profile, topic.id_);
 
       return ret;
     }

@@ -10,10 +10,20 @@
 
 
 #include "std_msgs/Bool.hpp"
+#include "std_msgs/Char.hpp"
 #include "std_msgs/Empty.hpp"
 #include "std_msgs/Header.hpp"
+#include "std_msgs/Char.hpp"
+#include "std_msgs/Int8.hpp"
+#include "std_msgs/Int16.hpp"
 #include "std_msgs/Int32.hpp"
 #include "std_msgs/Int64.hpp"
+#include "std_msgs/UInt8.hpp"
+#include "std_msgs/UInt16.hpp"
+#include "std_msgs/UInt32.hpp"
+#include "std_msgs/UInt64.hpp"
+#include "std_msgs/Float32.hpp"
+#include "std_msgs/Float64.hpp"
 #include "std_msgs/MultiArrayDimension.hpp"
 #include "std_msgs/String.hpp"
 
@@ -22,6 +32,7 @@
 #include "sensor_msgs/LaserScan.hpp"
 #include "sensor_msgs/MagneticField.hpp"
 #include "sensor_msgs/JointState.hpp"
+#include "sensor_msgs/Joy.hpp"
 
 #include "nav_msgs/Odometry.hpp"
 

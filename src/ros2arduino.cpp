@@ -6,7 +6,7 @@
  */
 
 
-#include "ros2.hpp"
+#include "ros2arduino.h"
 
 namespace ros2 {
   char* client_communication_method;
@@ -37,7 +37,7 @@ void ros2::spin(ros2::Node *node)
 {
   node->runPubCallback();
 
-  if(micrortps::runCommunication(1) == false)
+  if(rtps::runCommunication(1) == false)
   {
     //node->recreate();
   }
@@ -99,7 +99,7 @@ const char* ros2::getPrefixString(MessagePrefix prefix)
   return "";
 }
 
-void ros2::onTopicCallback(mrSession* session, mrObjectId object_id, uint16_t request_id, mrStreamId stream_id, struct MicroBuffer* mb, void* args)
+void ros2::onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args)
 {
   (void)(session); (void)(request_id); (void)(stream_id);
   ros2::Node* node = (ros2::Node*) args;

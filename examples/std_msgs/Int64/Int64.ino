@@ -1,4 +1,4 @@
-#include <ros2.hpp>
+#include <ros2arduino.h>
 
 #include "std_msgs/Int64.hpp"
 
@@ -21,9 +21,9 @@ public:
   {
     DEBUG_SERIAL.println();
     publisher_ = this->createPublisher<std_msgs::Int64>("Int64");
-    this->createWallFreq(INT64_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishInt64, publisher_);
+    this->createWallFreq(INT64_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishInt64, NULL, publisher_);
     DEBUG_SERIAL.print(" [Publisher Create]   /Int64 : "); DEBUG_SERIAL.println((publisher_!=NULL?"Success":"Fail"));
-    subscriber_ = this->createSubscriber<std_msgs::Int64>("Int64", (ros2::CallbackFunc)subscribeInt64);
+    subscriber_ = this->createSubscriber<std_msgs::Int64>("Int64", (ros2::CallbackFunc)subscribeInt64, NULL);
     DEBUG_SERIAL.print(" [Subscriber Create]  /Int64 : "); DEBUG_SERIAL.println((subscriber_!=NULL?"Success":"Fail"));
   }
 

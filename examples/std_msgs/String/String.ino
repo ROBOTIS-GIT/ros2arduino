@@ -1,4 +1,4 @@
-#include <ros2.hpp>
+#include <ros2arduino.h>
 
 #include "std_msgs/String.hpp"
 
@@ -20,9 +20,9 @@ public:
   {
     DEBUG_SERIAL.println();
     publisher_ = this->createPublisher<std_msgs::String>("String");
-    this->createWallFreq(STRING_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishString, publisher_);
+    this->createWallFreq(STRING_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishString, NULL, publisher_);
     DEBUG_SERIAL.print(" [Publisher Create]   /String : "); DEBUG_SERIAL.println((publisher_!=NULL?"Success":"Fail"));
-    subscriber_ = this->createSubscriber<std_msgs::String>("String", (ros2::CallbackFunc)subscribeString);
+    subscriber_ = this->createSubscriber<std_msgs::String>("String", (ros2::CallbackFunc)subscribeString, NULL);
     DEBUG_SERIAL.print(" [Subscriber Create]  /String : "); DEBUG_SERIAL.println((subscriber_!=NULL?"Success":"Fail"));
   }
 

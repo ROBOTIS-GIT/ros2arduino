@@ -23,7 +23,6 @@
 #define _STD_MSGS_MULTI_ARRAY_DIMENSION_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -33,43 +32,46 @@ namespace std_msgs {
 class MultiArrayDimension : public ros2::Topic<MultiArrayDimension>
 {
 public:
-  char* label;
+  char label[255];
   uint32_t size;
   uint32_t stride;
 
   MultiArrayDimension():
     Topic("std_msgs::msg::dds_::MultiArrayDimension_", STD_MSGS_MULTI_ARRAY_DIMENSION_TOPIC),
-    label(NULL), size(0), stride(0)
+    size(0), stride(0)
   { 
+    memset(label, 0, sizeof(label));
   }
 
 
-  bool serialize(struct MicroBuffer* writer, const MultiArrayDimension* topic)
+  bool serialize(ucdrBuffer* writer, const MultiArrayDimension* topic)
   {
-    (void) serialize_sequence_char(writer, topic->label, (uint32_t)(strlen(topic->label) + 1));
-    (void) serialize_uint32_t(writer, topic->size);
-    (void) serialize_uint32_t(writer, topic->stride);
+    (void) ucdr_serialize_string(writer, topic->label);
+    (void) ucdr_serialize_uint32_t(writer, topic->size);
+    (void) ucdr_serialize_uint32_t(writer, topic->stride);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, MultiArrayDimension* topic)
+  bool deserialize(ucdrBuffer* reader, MultiArrayDimension* topic)
   {
-    uint32_t size_label = 0;
-    (void) deserialize_sequence_char(reader, topic->label, &size_label);
-    (void) deserialize_uint32_t(reader, &topic->size);
-    (void) deserialize_uint32_t(reader, &topic->stride);
+    (void) ucdr_deserialize_string(reader, topic->label, sizeof(topic->label));
+    (void) ucdr_deserialize_uint32_t(reader, &topic->size);
+    (void) ucdr_deserialize_uint32_t(reader, &topic->stride);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const MultiArrayDimension* topic, uint32_t size)
   {
-    size += 4 + get_alignment(size, 4) + (uint32_t)(strlen(topic->label) + 1);
-    size += 4 + get_alignment(size, 4);
-    size += 4 + get_alignment(size, 4);
+    (void)(topic);
 
-    return size;
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 4) + 4 + (uint32_t)(strlen(topic->label) + 1);
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 4) + 4;
+
+    return size - previousSize;
   }
 
 

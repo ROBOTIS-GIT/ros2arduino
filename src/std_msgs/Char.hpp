@@ -15,52 +15,48 @@
 #ifndef _STD_MSGS_CHAR_HPP_
 #define _STD_MSGS_CHAR_HPP_
 
-
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
-
-namespace std_msgs {
-
-
-class Char : public ros2::Topic<Char>
+namespace std_msgs
 {
-public:
-  char data;
 
-  Char():
-    Topic("std_msgs::msg::dds_::Char_", STD_MSGS_CHAR_TOPIC),
-    data(0)
-  { 
-  }
+class Char: public ros2::Topic<Char>
+{
+  public:
+    char data;
 
-  bool serialize(struct MicroBuffer* writer, const Char* topic)
-  {
-      (void) serialize_char(writer, topic->data);
+    Char()
+        : Topic("std_msgs::msg::dds_::Char_", STD_MSGS_CHAR_TOPIC), data(0)
+    {
+    }
 
-      return writer->error == BUFFER_OK;
-  }
+    bool serialize(ucdrBuffer* writer, const Char* topic)
+    {
+      (void) ucdr_serialize_char(writer, topic->data);
 
-  bool deserialize(struct MicroBuffer* reader, Char* topic)
-  {
-      (void) deserialize_char(reader, &topic->data);
+      return !writer->error;
+    }
 
-      return reader->error == BUFFER_OK;
-  }
+    bool deserialize(ucdrBuffer* reader, Char* topic)
+    {
+      (void) ucdr_deserialize_char(reader, &topic->data);
 
-  uint32_t size_of_topic(const Char* topic, uint32_t size)
-  {
-      (void)(topic);
+      return !reader->error;
+    }
 
-      size += 1 + get_alignment(size, 1);
+    uint32_t size_of_topic(const Char* topic, uint32_t size)
+    {
+      (void) (topic);
 
-      return size;
-  }
+      uint32_t previousSize = size;
+      size += ucdr_alignment(size, 1) + 1;
+
+      return size - previousSize;
+    }
 
 };
 
 } // namespace std_msgs
-
 
 #endif // _STD_MSGS_CHAR_HPP_

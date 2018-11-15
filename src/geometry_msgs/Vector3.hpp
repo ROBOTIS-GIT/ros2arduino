@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_VECTOR3_HPP_
 
 
-#include "micrortps.hpp"
 #include <topic_config.h>
 #include <topic.hpp>
 
@@ -44,33 +43,34 @@ public:
   }
 
 
-  bool serialize(struct MicroBuffer* writer, const Vector3* topic)
+  bool serialize(ucdrBuffer* writer, const Vector3* topic)
   {
-    (void) serialize_double(writer, topic->x);
-    (void) serialize_double(writer, topic->y);
-    (void) serialize_double(writer, topic->z);
+    (void) ucdr_serialize_double(writer, topic->x);
+    (void) ucdr_serialize_double(writer, topic->y);
+    (void) ucdr_serialize_double(writer, topic->z);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Vector3* topic)
+  bool deserialize(ucdrBuffer* reader, Vector3* topic)
   {
-    (void) deserialize_double(reader, &topic->x);
-    (void) deserialize_double(reader, &topic->y);
-    (void) deserialize_double(reader, &topic->z);
+    (void) ucdr_deserialize_double(reader, &topic->x);
+    (void) ucdr_deserialize_double(reader, &topic->y);
+    (void) ucdr_deserialize_double(reader, &topic->z);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Vector3* topic, uint32_t size)
   {
     (void)(topic);
 
-    size += 8 + get_alignment(size, 8);
-    size += 8 + get_alignment(size, 8);
-    size += 8 + get_alignment(size, 8);
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 8) + 8;
+    size += ucdr_alignment(size, 8) + 8;
+    size += ucdr_alignment(size, 8) + 8;
 
-    return size;
+    return size - previousSize;
   }
 
 

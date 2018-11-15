@@ -1,4 +1,4 @@
-#include <ros2.hpp>
+#include <ros2arduino.h>
 
 #include "std_msgs/Bool.hpp"
 
@@ -21,9 +21,9 @@ public:
   {
     DEBUG_SERIAL.println();
     publisher_ = this->createPublisher<std_msgs::Bool>("Bool");
-    this->createWallFreq(BOOL_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishBool, publisher_);
+    this->createWallFreq(BOOL_PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishBool, NULL, publisher_);
     DEBUG_SERIAL.print(" [Publisher Create]   /Bool : "); DEBUG_SERIAL.println((publisher_!=NULL?"Success":"Fail"));
-    subscriber_ = this->createSubscriber<std_msgs::Bool>("Bool", (ros2::CallbackFunc)subscribeBool);
+    subscriber_ = this->createSubscriber<std_msgs::Bool>("Bool", (ros2::CallbackFunc)subscribeBool, NULL);
     DEBUG_SERIAL.print(" [Subscriber Create]  /Bool : "); DEBUG_SERIAL.println((subscriber_!=NULL?"Success":"Fail"));
   }
 
