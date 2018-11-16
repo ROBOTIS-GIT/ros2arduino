@@ -5,10 +5,10 @@
 #define RTPS_SERIAL  Serial   //OpenCR USB
 #define PUBLISH_FREQUENCY 2 //hz
 
-void publishString(std_msgs::String* msg, void* arg))
+void publishString(std_msgs::String* msg, void* arg)
 {
   (void)(arg);
-  
+
   static int cnt = 0;
   sprintf(msg->data, "Hello ros2arduino %d", cnt++);
 }
