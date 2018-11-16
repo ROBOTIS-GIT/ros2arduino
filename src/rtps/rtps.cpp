@@ -14,7 +14,14 @@
 //-- Internal Variables
 //
 #define STREAM_HISTORY  8
+
+#if defined(UXR_CONFIG_SERIAL_TRANSPORT_MTU)
+#define BUFFER_SIZE     UXR_CONFIG_SERIAL_TRANSPORT_MTU * STREAM_HISTORY
+#elif defined(UXR_CONFIG_UDP_TRANSPORT_MTU)
 #define BUFFER_SIZE     UXR_CONFIG_UDP_TRANSPORT_MTU * STREAM_HISTORY
+#elif defined(UXR_CONFIG_TCP_TRANSPORT_MTU)
+#define BUFFER_SIZE     UXR_CONFIG_TCP_TRANSPORT_MTU * STREAM_HISTORY
+#endif
 
 bool             g_is_rtps_init_done = false;
 uint32_t         g_session_key = 0xAABBCCDD;

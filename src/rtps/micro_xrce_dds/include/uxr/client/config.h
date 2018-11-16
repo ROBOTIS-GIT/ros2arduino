@@ -52,7 +52,7 @@
 #endif
 
 #ifdef PROFILE_SERIAL_TRANSPORT
-#define UXR_CONFIG_SERIAL_TRANSPORT_MTU               2048
+#define UXR_CONFIG_SERIAL_TRANSPORT_MTU               1024
 #endif
 
 #if !defined(UXR_CONFIG_SERIAL_TRANSPORT_MTU)
