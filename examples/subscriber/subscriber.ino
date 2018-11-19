@@ -17,16 +17,14 @@ public:
   LedSub()
   : Node()
   {
-    subscriber_ = this->createSubscriber<std_msgs::Bool>("Led", (ros2::CallbackFunc)subscribeLed, NULL);
+    this->createSubscriber<std_msgs::Bool>("arduino_led", (ros2::CallbackFunc)subscribeLed, NULL);
   }
-
-private:  
-  ros2::Subscriber<std_msgs::Bool>* subscriber_;
 };
 
 void setup() 
 {
   pinMode(LED_BUILTIN, OUTPUT);
+  RTPS_SERIAL.begin(1000000);
   ros2::init((Stream*)&RTPS_SERIAL);
 
   while (!RTPS_SERIAL); 

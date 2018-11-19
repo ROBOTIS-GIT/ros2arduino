@@ -138,7 +138,7 @@ bool rtps::createParticipant(rtps::Participant_t* participant, const char* parti
 
   participant->id = uxr_object_id(object_id++, UXR_PARTICIPANT_ID);
   //uint16_t participant_req = uxr_buffer_create_participant_xml(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
-  uint16_t participant_req = uxr_buffer_create_participant_ref(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REUSE);
+  uint16_t participant_req = uxr_buffer_create_participant_ref(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
 
   uint8_t status;
   participant->is_init = uxr_run_session_until_all_status(participant->session, 1000, &participant_req, &status, 1);
@@ -185,7 +185,7 @@ bool rtps::createPublisher(rtps::Participant_t* participant, rtps::Publisher_t* 
 
   uint8_t status;
 
-  uint16_t publisher_req = uxr_buffer_create_publisher_xml(participant->session, participant->output_stream_id, publisher->id, participant->id, publisher_profile, UXR_REUSE);
+  uint16_t publisher_req = uxr_buffer_create_publisher_xml(participant->session, participant->output_stream_id, publisher->id, participant->id, publisher_profile, UXR_REPLACE);
   ret = uxr_run_session_until_all_status(participant->session, 1000, &publisher_req, &status, 1);
 
   if (ret == true)
@@ -193,7 +193,7 @@ bool rtps::createPublisher(rtps::Participant_t* participant, rtps::Publisher_t* 
     // Create Writer
     static uint8_t writer_id = 0x01;
     publisher->writer_id = uxr_object_id(writer_id++, UXR_DATAWRITER_ID);
-    uint16_t datawriter_req = uxr_buffer_create_datawriter_xml(participant->session, participant->output_stream_id, publisher->writer_id, publisher->id, writer_profile, UXR_REUSE);
+    uint16_t datawriter_req = uxr_buffer_create_datawriter_xml(participant->session, participant->output_stream_id, publisher->writer_id, publisher->id, writer_profile, UXR_REPLACE);
 
     publisher->is_init = uxr_run_session_until_all_status(participant->session, 1000, &datawriter_req, &status, 1);
   }
@@ -216,7 +216,7 @@ bool rtps::createSubscriber(rtps::Participant_t* participant, rtps::Subscriber_t
   subscriber->participant   = participant;
 
   uint8_t status;
-  uint16_t subscriber_req = uxr_buffer_create_subscriber_xml(participant->session, participant->output_stream_id, subscriber->id, participant->id, subscriber_profile, UXR_REUSE);
+  uint16_t subscriber_req = uxr_buffer_create_subscriber_xml(participant->session, participant->output_stream_id, subscriber->id, participant->id, subscriber_profile, UXR_REPLACE);
   ret = uxr_run_session_until_all_status(participant->session, 1000, &subscriber_req, &status, 1);
 
   if (ret == true)
@@ -224,7 +224,7 @@ bool rtps::createSubscriber(rtps::Participant_t* participant, rtps::Subscriber_t
     // Create Reader
     static uint8_t reader_id = 0x01;
     subscriber->reader_id = uxr_object_id(reader_id++, UXR_DATAREADER_ID);
-    uint16_t datareader_req = uxr_buffer_create_datareader_xml(participant->session, participant->output_stream_id, subscriber->reader_id, subscriber->id, reader_profile, UXR_REUSE);
+    uint16_t datareader_req = uxr_buffer_create_datareader_xml(participant->session, participant->output_stream_id, subscriber->reader_id, subscriber->id, reader_profile, UXR_REPLACE);
 
     subscriber->is_init = uxr_run_session_until_all_status(participant->session, 1000, &datareader_req, &status, 1);
   }
