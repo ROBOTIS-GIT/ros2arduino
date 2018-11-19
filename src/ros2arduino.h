@@ -13,6 +13,7 @@
 #include "subscriber.hpp"
 #include "topic.hpp"
 #include "msg_list.hpp"
+#include <Arduino.h>
 
 #define ROS2_PUBLISHER_MAX  20
 #define ROS2_SUBSCRIBER_MAX 20
@@ -25,6 +26,7 @@ void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t reques
 extern char* client_communication_method;
 extern char* server_ip;
 extern uint16_t server_port;
+extern Stream* serial_device;
 
 class Node
 {
@@ -48,6 +50,7 @@ class Node
       if(strcmp(client_communication_method, "Serial") == 0)
       {
         transport_.type = 0;
+        transport_.serial_device = (void*) serial_device;
       }
       else
       {
@@ -306,7 +309,7 @@ class Node
 };
 
 
-bool init(void);
+bool init(Stream* serial_dev);
 bool init(const char* p_server_ip, uint16_t server_port);
 void spin(Node *node);
 void syncTimeFromRemote(builtin_interfaces::Time* time);

@@ -17,7 +17,7 @@ extern "C"
 {
 #endif
 
-bool uxr_initSerialArduino(uint32_t baudrate);
+bool uxr_initSerialArduino(void *serial_device);
 bool uxr_closeSerialArduino();
 size_t uxr_writeSerialDataArduino(uint8_t* buf, size_t len);
 size_t uxr_readSerialDataArduino(uint8_t* buf, size_t len, int timeout);

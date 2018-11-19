@@ -41,6 +41,7 @@ typedef struct Transport{
   uint8_t type;
   const char* server_ip;
   uint16_t server_port;
+  void *serial_device;
 } Transport_t;
 
 //class rtps

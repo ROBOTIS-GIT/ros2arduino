@@ -12,14 +12,16 @@ namespace ros2 {
   char* client_communication_method;
   char* server_ip;
   uint16_t server_port;
+  Stream* serial_device;
 
   static builtin_interfaces::Time synced_time_from_remote;
   static uint32_t millis_when_synced_time;
 }
 
-bool ros2::init()
+bool ros2::init(Stream* serial_dev)
 {
   ros2::client_communication_method = (char*)"Serial";
+  ros2::serial_device = serial_dev;
 
   return true;
 }
