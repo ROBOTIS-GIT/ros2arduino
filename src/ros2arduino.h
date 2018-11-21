@@ -61,15 +61,16 @@ class Node
 
       rtps::initTransportAndSession(&transport_, onTopicCallback, (void*)this);
 
-//      const char* participant_xml = "<dds>"
-//                                        "<participant>"
-//                                            "<rtps>"
-//                                                "<name>default_xrce_participant</name>"
-//                                            "</rtps>"
-//                                        "</participant>"
-//                                    "</dds>";
+      const char* participant_xml = "<dds>"
+                                        "<participant>"
+                                            "<rtps>"
+                                                "<name>default_xrce_participant</name>"
+                                            "</rtps>"
+                                        "</participant>"
+                                    "</dds>";
+      //const char* participant_xml = "default_xrce_participant_profile";
 
-      node_register_state_ = rtps::createParticipant(&this->participant_, "default_xrce_participant_profile");
+      node_register_state_ = rtps::createParticipant(&this->participant_, participant_xml);
 
       uint8_t i;
       for(i = 0; i < ROS2_PUBLISHER_MAX; i++)

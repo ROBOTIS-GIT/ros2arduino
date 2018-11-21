@@ -13,8 +13,10 @@
 #include "node_handle.hpp"
 #include "topic.hpp"
 
-#define DEFAULT_READER_XML ("<profiles><subscriber profile_name=\"default_xrce_subscriber_profile\"><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType><historyQos><kind>KEEP_LAST</kind><depth>1</depth></historyQos><durability><kind>TRANSIENT_LOCAL</kind></durability></topic></subscriber></profiles>")
-//#define DEFAULT_READER_XML ("<dds><data_reader><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType></topic></data_reader></dds>")
+#ifdef PROFILE_CREATE_ENTITIES_XML
+//#define DEFAULT_READER_XML ("<profiles><subscriber profile_name=\"default_xrce_subscriber_profile\"><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType><historyQos><kind>KEEP_LAST</kind><depth>1</depth></historyQos><durability><kind>TRANSIENT_LOCAL</kind></durability></topic></subscriber></profiles>")
+#define DEFAULT_READER_XML ("<dds><data_reader><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType></topic></data_reader></dds>")
+#endif
 
 
 namespace ros2

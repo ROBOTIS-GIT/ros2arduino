@@ -14,8 +14,10 @@
 #include "topic.hpp"
 #include <Arduino.h>
 
-#define DEFAULT_WRITER_XML ("<profiles><publisher profile_name=\"default_xrce_publisher_profile\"><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType><historyQos><kind>KEEP_LAST</kind><depth>1</depth></historyQos><durability><kind>TRANSIENT_LOCAL</kind></durability></topic></publisher></profiles>")
-//#define DEFAULT_WRITER_XML ("<dds><data_writer><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType></topic></data_writer></dds>")
+#ifdef PROFILE_CREATE_ENTITIES_XML
+//#define DEFAULT_WRITER_XML ("<profiles><publisher profile_name=\"default_xrce_publisher_profile\"><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType><historyQos><kind>KEEP_LAST</kind><depth>1</depth></historyQos><durability><kind>TRANSIENT_LOCAL</kind></durability></topic></publisher></profiles>")
+#define DEFAULT_WRITER_XML ("<dds><data_writer><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType></topic></data_writer></dds>")
+#endif
 
 extern uint32_t micros(void);
 

@@ -1,10 +1,10 @@
-#include "../../../../../include/uxr/client/config.h"
-#include <string.h>
-
-#include "seq_num_internal.h"
 #include "output_reliable_stream_internal.h"
+#include "seq_num_internal.h"
 #include "../submessage_internal.h"
 #include "../../serialization/xrce_protocol_internal.h"
+
+#include "../../../../../include/uxr/client/config.h"
+#include <string.h>
 
 // Remove when Microcdr supports size_of functions
 #define HEARTBEAT_PAYLOAD_SIZE 4
@@ -81,10 +81,10 @@ bool uxr_prepare_reliable_buffer_to_write(uxrOutputReliableStream* stream, size_
     if(available_to_write)
     {
         size_t current_length = uxr_get_output_buffer_length(internal_buffer);
-        size_t current_padding = (current_length % 4 != 0) ? 4 - (current_length % 4) : 0;
+        size_t current_padding = uxr_submessage_padding(current_length);
         size_t future_length = current_length + current_padding + size;
         uxr_set_output_buffer_length(internal_buffer, future_length);
-        ucdr_init_buffer_offset(mb, internal_buffer, (uint32_t)future_length, (uint32_t)current_length);
+        ucdr_init_buffer_offset(mb, internal_buffer, (uint32_t)future_length, (uint32_t)(current_length + current_padding));
     }
 
     return available_to_write;

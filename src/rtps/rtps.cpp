@@ -13,7 +13,7 @@
 
 //-- Internal Variables
 //
-#define STREAM_HISTORY  8
+#define STREAM_HISTORY  2
 
 #if defined(UXR_CONFIG_SERIAL_TRANSPORT_MTU)
 #define BUFFER_SIZE     UXR_CONFIG_SERIAL_TRANSPORT_MTU * STREAM_HISTORY
@@ -137,8 +137,8 @@ bool rtps::createParticipant(rtps::Participant_t* participant, const char* parti
   participant->session = &g_rtps_session;
 
   participant->id = uxr_object_id(object_id++, UXR_PARTICIPANT_ID);
-  //uint16_t participant_req = uxr_buffer_create_participant_xml(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
-  uint16_t participant_req = uxr_buffer_create_participant_ref(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
+  uint16_t participant_req = uxr_buffer_create_participant_xml(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
+  //uint16_t participant_req = uxr_buffer_create_participant_ref(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
 
   uint8_t status;
   participant->is_init = uxr_run_session_until_all_status(participant->session, 1000, &participant_req, &status, 1);
