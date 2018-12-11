@@ -16,14 +16,14 @@ const char* participant_xml = "<dds>"
 
 const char* string_topic_xml =  "<dds>"
                                   "<topic>"
-                                    "<name>rt/string</name>"
+                                    "<name>string</name>"
                                     "<dataType>std_msgs::msg::dds_::String_</dataType>"
                                   "</topic>"
                                 "</dds>";
 
 const char* bool_topic_xml =  "<dds>"
                                 "<topic>"
-                                  "<name>rt/bool</name>"
+                                  "<name>bool</name>"
                                   "<dataType>std_msgs::msg::dds_::Bool_</dataType>"
                                 "</topic>"
                               "</dds>";                                
