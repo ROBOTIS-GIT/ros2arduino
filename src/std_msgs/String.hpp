@@ -32,7 +32,7 @@ namespace std_msgs {
 class String : public ros2::Topic<String>
 {
 public:
-  char data[255];
+  char data[64];
 
   String():
     Topic("std_msgs::msg::dds_::String_", STD_MSGS_STRING_TOPIC)

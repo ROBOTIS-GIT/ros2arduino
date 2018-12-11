@@ -36,7 +36,7 @@ class Header : public ros2::Topic<Header>
 public:
 
   builtin_interfaces::Time stamp;
-  char frame_id[255];
+  char frame_id[64];
 
   Header():
     Topic("std_msgs::msg::dds_::Header_", STD_MSGS_HEADER_TOPIC),
