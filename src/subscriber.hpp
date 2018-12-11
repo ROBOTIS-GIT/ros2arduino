@@ -71,7 +71,7 @@ class Subscriber:public SubscriberHandle
       // sprintf(subscriber_profile, "<subscriber name=\"%s\"", name_);
       const char* subscriber_profile = "";
 
-      char reader_profile[512] = {0, };
+      char reader_profile[256] = {0, };
       sprintf(reader_profile, DEFAULT_READER_XML, getPrefixString(TOPICS_SUBSCRIBE), name_, topic.type_);
       is_registered_ = rtps::createSubscriber(node_, &subscriber_, (char*)subscriber_profile, reader_profile);
       this->reader_id_ = subscriber_.reader_id.id;

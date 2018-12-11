@@ -54,7 +54,7 @@ public:
 
   bool is_registered_;
   uint32_t pub_msg_cnt_;
-  uint8_t writer_id_;
+  uint16_t writer_id_;
 
 private:
   uint32_t last_call_time_ms_;
@@ -85,7 +85,7 @@ public:
   bool is_registered_;
   uint32_t sub_msg_cnt_;
   uint16_t request_id_;
-  uint8_t reader_id_;
+  uint16_t reader_id_;
 };
 
 } // namespace ros2

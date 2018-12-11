@@ -2,9 +2,6 @@
 
 #define RTPS_SERIAL  Serial
 
-const uint8_t string_topic_id = 1;
-const uint8_t bool_topic_id = 2;
-
 /* XML */
 const char* participant_xml = "<dds>"
                                   "<participant>"
@@ -96,8 +93,8 @@ void setup()
   rtps::createParticipant(&participant, participant_xml);
   
   /* Register topics */
-  rtps::registerTopic(&participant, (char*)string_topic_xml, string_topic_id);
-  rtps::registerTopic(&participant, (char*)bool_topic_xml, bool_topic_id);
+  rtps::registerTopic(&participant, (char*)string_topic_xml, 1);
+  rtps::registerTopic(&participant, (char*)bool_topic_xml, 2);
   
   /* Create pub & sub */
   rtps::createPublisher(&participant, &publisher, (char*)"", (char*)datawriter_xml);
@@ -133,7 +130,7 @@ void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t reques
 {
   (void) session; (void) object_id; (void) request_id; (void) stream_id; (void) args;
 
-  if(object_id.id == bool_topic_id)
+  if(object_id.id == subscriber.reader_id.id)
   {
     Bool topic;
     Bool_deserialize_topic(mb, &topic);

@@ -258,7 +258,10 @@ void rtps::publish(rtps::Publisher_t* publisher, void* buffer, uint32_t topic_si
 
 bool rtps::runCommunication(uint32_t timeout_ms)
 {
-  bool is_connected = uxr_run_session_until_confirm_delivery(&g_rtps_session, timeout_ms);
+  uint16_t request_list[8];
+  uint8_t status_list[8];
+  //bool is_connected = uxr_run_session_until_confirm_delivery(&g_rtps_session, timeout_ms);
+  bool is_connected = uxr_run_session_until_all_status(&g_rtps_session, timeout_ms, request_list, status_list, 8);
 
   return is_connected;
 }

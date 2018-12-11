@@ -59,7 +59,7 @@ public:
     //sprintf(publisher_profile, "<publisher name=\"%s\"", name_);
     const char* publisher_profile = "";
 
-    char writer_profile[512] = {0, };
+    char writer_profile[256] = {0, };
     sprintf(writer_profile, DEFAULT_WRITER_XML, getPrefixString(TOPICS_PUBLISH), name_, topic_.type_);
     is_registered_ = rtps::createPublisher(node_, &publisher_, (char*)publisher_profile, writer_profile);
   }

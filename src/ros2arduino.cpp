@@ -105,7 +105,7 @@ void ros2::onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t 
 {
   (void)(session); (void)(request_id); (void)(stream_id);
   ros2::Node* node = (ros2::Node*) args;
-  uint8_t reader_id = object_id.id;
+  uint16_t reader_id = object_id.id;
 
   node->runSubCallback(reader_id, (void*)mb);
 }

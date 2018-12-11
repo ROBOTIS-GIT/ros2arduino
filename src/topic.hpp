@@ -13,7 +13,7 @@
 #include "topic_config.h"
 #include "rtps/micro_xrce_dds/thirdparty/microcdr/include/ucdr/microcdr.h"
 
-#define DEFAULT_TOPIC_XML ("<dds><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType></topic></dds>")
+#define DEFAULT_TOPIC_XML ("<dds><topic><name>%s</name><dataType>%s</dataType></topic></dds>")
 
 namespace ros2 {
 

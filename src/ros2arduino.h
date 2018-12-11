@@ -109,7 +109,7 @@ class Node
       }
 
       // Register Topic
-      ret = this->registerTopic<MsgT>(name, TOPICS_PUBLISH);
+      ret = this->registerTopic<MsgT>(name);
 
       if (ret == false)
       {
@@ -160,7 +160,7 @@ class Node
       }
 
       // Register Topic
-      ret = this->registerTopic<MsgT>(name, TOPICS_SUBSCRIBE);
+      ret = this->registerTopic<MsgT>(name);
 
       if (ret == false)
       {
@@ -263,7 +263,7 @@ class Node
       }
     }
 
-    void runSubCallback(uint8_t reader_id, void* serialized_msg)
+    void runSubCallback(uint16_t reader_id, void* serialized_msg)
     {
       uint8_t i;
       ros2::SubscriberHandle *p_sub;
@@ -291,7 +291,7 @@ class Node
 
     template <
       typename MsgT>
-    bool registerTopic(const char* name, MessagePrefix prefix)
+    bool registerTopic(const char* name)
     {
       bool ret;
       MsgT topic;
@@ -302,7 +302,7 @@ class Node
       }
 
       char topic_profile[256] = {0, };
-      sprintf(topic_profile, DEFAULT_TOPIC_XML, getPrefixString(prefix), name, topic.type_);
+      sprintf(topic_profile, DEFAULT_TOPIC_XML, name, topic.type_);
       ret = rtps::registerTopic(&this->participant_, topic_profile, topic.id_);
 
       return ret;
