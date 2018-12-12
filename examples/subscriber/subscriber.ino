@@ -2,7 +2,7 @@
 
 #include "std_msgs/Bool.hpp"
 
-#define RTPS_SERIAL  Serial 
+#define XRCEDDS_PORT  Serial 
 
 void subscribeLed(std_msgs::Bool* msg, void* arg)
 {
@@ -24,10 +24,10 @@ public:
 void setup() 
 {
   pinMode(LED_BUILTIN, OUTPUT);
-  RTPS_SERIAL.begin(1000000);
-  ros2::init((Stream*)&RTPS_SERIAL);
+  XRCEDDS_PORT.begin(1000000);
+  ros2::init(&XRCEDDS_PORT);
 
-  while (!RTPS_SERIAL); 
+  while (!XRCEDDS_PORT); 
 }
 
 void loop() 

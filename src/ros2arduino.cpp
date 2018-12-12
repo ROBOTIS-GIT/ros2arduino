@@ -39,7 +39,7 @@ void ros2::spin(ros2::Node *node)
 {
   node->runPubCallback();
 
-  if(rtps::runCommunication(1) == false)
+  if(xrcedds::runCommunication(1) == false)
   {
     //node->recreate();
   }

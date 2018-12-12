@@ -59,18 +59,18 @@ class Node
         transport_.server_port = server_port;
       }
 
-      rtps::initTransportAndSession(&transport_, onTopicCallback, (void*)this);
+      xrcedds::initTransportAndSession(&transport_, onTopicCallback, (void*)this);
 
       const char* participant_xml = "<dds>"
                                         "<participant>"
-                                            "<rtps>"
+                                            "<xrcedds>"
                                                 "<name>default_xrce_participant</name>"
-                                            "</rtps>"
+                                            "</xrcedds>"
                                         "</participant>"
                                     "</dds>";
       //const char* participant_xml = "default_xrce_participant_profile";
 
-      node_register_state_ = rtps::createParticipant(&this->participant_, participant_xml);
+      node_register_state_ = xrcedds::createParticipant(&this->participant_, participant_xml);
 
       uint8_t i;
       for(i = 0; i < ROS2_PUBLISHER_MAX; i++)
@@ -284,8 +284,8 @@ class Node
 
   private:
     bool node_register_state_;
-    rtps::Participant_t participant_;
-    rtps::Transport_t transport_;
+    xrcedds::Participant_t participant_;
+    xrcedds::Transport_t transport_;
     uint8_t pub_cnt_;
     uint8_t sub_cnt_;
 
@@ -303,7 +303,7 @@ class Node
 
       char topic_profile[256] = {0, };
       sprintf(topic_profile, DEFAULT_TOPIC_XML, name, topic.type_);
-      ret = rtps::registerTopic(&this->participant_, topic_profile, topic.id_);
+      ret = xrcedds::registerTopic(&this->participant_, topic_profile, topic.id_);
 
       return ret;
     }

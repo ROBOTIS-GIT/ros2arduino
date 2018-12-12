@@ -2,7 +2,7 @@
 
 #include "std_msgs/String.hpp"
 
-#define RTPS_SERIAL  Serial   //OpenCR USB
+#define XRCEDDS_PORT  Serial   //OpenCR USB
 #define PUBLISH_FREQUENCY 2 //hz
 
 void publishString(std_msgs::String* msg, void* arg)
@@ -26,10 +26,10 @@ public:
 
 void setup() 
 {
-  RTPS_SERIAL.begin(1000000);
-  ros2::init((Stream*)&RTPS_SERIAL);
+  XRCEDDS_PORT.begin(1000000);
+  ros2::init(&XRCEDDS_PORT);
 
-  while (!RTPS_SERIAL); 
+  while (!XRCEDDS_PORT); 
 }
 
 void loop() 

@@ -1,5 +1,5 @@
 /*
- *  rtps.cpp
+ *  xrcedds.cpp
  *
  *  Created on: Nov 14, 2018
  *      Author: Kei
@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rtps.hpp"
+#include "xrcedds.hpp"
 
 
 //-- Internal Variables
@@ -23,10 +23,10 @@
 #define BUFFER_SIZE     UXR_CONFIG_TCP_TRANSPORT_MTU * STREAM_HISTORY
 #endif
 
-bool             g_is_rtps_init_done = false;
+bool             g_is_xrcedds_init_done = false;
 uint32_t         g_session_key = 0xAABBCCDD;
-uxrSession       g_rtps_session;
-uxrCommunication *p_rtps_comm = NULL;
+uxrSession       g_xrcedds_session;
+uxrCommunication *p_xrcedds_comm = NULL;
 
 uint8_t      output_reliable_stream_buffer[BUFFER_SIZE];
 uint8_t      input_reliable_stream_buffer[BUFFER_SIZE];
@@ -49,14 +49,14 @@ static uxrTCPPlatform platform;
 //
 
 
-void rtps::init(uint8_t rtps_product)
+void xrcedds::init(uint8_t xrcedds_product)
 {
-  (void)(rtps_product);
+  (void)(xrcedds_product);
 }
 
-bool rtps::initTransportAndSession(Transport_t* transport_info, uxrOnTopicFunc callback_func, void* callback_args)
+bool xrcedds::initTransportAndSession(Transport_t* transport_info, uxrOnTopicFunc callback_func, void* callback_args)
 {
-  g_is_rtps_init_done = false;
+  g_is_xrcedds_init_done = false;
 
   switch(transport_info->type)
   {
@@ -64,7 +64,7 @@ bool rtps::initTransportAndSession(Transport_t* transport_info, uxrOnTopicFunc c
     case 0:
       if(uxr_init_serial_transport(&transport, &platform, 0, 0, 0) == true)
       {
-        p_rtps_comm = &transport.comm;
+        p_xrcedds_comm = &transport.comm;
       }
       break;
 #endif
@@ -74,7 +74,7 @@ bool rtps::initTransportAndSession(Transport_t* transport_info, uxrOnTopicFunc c
       if(uxr_init_udp_transport(&transport, &platform,
           transport_info->server_ip, transport_info->server_port) == true)
       {
-        p_rtps_comm = &transport.comm;
+        p_xrcedds_comm = &transport.comm;
       }
       break;
 #endif
@@ -84,7 +84,7 @@ bool rtps::initTransportAndSession(Transport_t* transport_info, uxrOnTopicFunc c
       if(uxr_init_tcp_transport(&transport, &platform,
           transport_info->server_ip, transport_info->server_port) == true)
       {
-        p_rtps_comm = &transport.comm;
+        p_xrcedds_comm = &transport.comm;
       }
       break;
 #endif
@@ -93,20 +93,20 @@ bool rtps::initTransportAndSession(Transport_t* transport_info, uxrOnTopicFunc c
       break;
   }
 
-  if(p_rtps_comm != NULL)
+  if(p_xrcedds_comm != NULL)
   {
-    uxr_init_session(&g_rtps_session, p_rtps_comm, g_session_key);
-    uxr_set_topic_callback(&g_rtps_session, callback_func, callback_args);
+    uxr_init_session(&g_xrcedds_session, p_xrcedds_comm, g_session_key);
+    uxr_set_topic_callback(&g_xrcedds_session, callback_func, callback_args);
 
-    g_is_rtps_init_done = uxr_create_session(&g_rtps_session);
+    g_is_xrcedds_init_done = uxr_create_session(&g_xrcedds_session);
   }
 
-  return g_is_rtps_init_done;
+  return g_is_xrcedds_init_done;
 }
 
-void rtps::deleteTransportAndSession(void)
+void xrcedds::deleteTransportAndSession(void)
 {
-  uxr_delete_session(&g_rtps_session);
+  uxr_delete_session(&g_xrcedds_session);
 
 #if defined(PROFILE_SERIAL_TRANSPORT)
   uxr_close_serial_transport(&transport);
@@ -121,24 +121,24 @@ void rtps::deleteTransportAndSession(void)
 #endif
 }
 
-bool rtps::createParticipant(rtps::Participant_t* participant, const char* participant_profile)
+bool xrcedds::createParticipant(xrcedds::Participant_t* participant, const char* participant_profile)
 {
-  if(g_is_rtps_init_done == false)
+  if(g_is_xrcedds_init_done == false)
   {
     return false;
   }
 
   static uint8_t object_id = 0x01;
 
-  participant->output_stream_id = uxr_create_output_reliable_stream(&g_rtps_session, output_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
-  participant->input_stream_id  = uxr_create_input_reliable_stream(&g_rtps_session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
-  //participant->output_stream_id = uxr_create_output_best_effort_stream(&g_rtps_session, output_reliable_stream_buffer, BUFFER_SIZE);
-  //participant->input_stream_id  = uxr_create_input_best_effort_stream(&g_rtps_session);
-  participant->session = &g_rtps_session;
+  participant->output_stream_id = uxr_create_output_reliable_stream(&g_xrcedds_session, output_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
+  participant->input_stream_id  = uxr_create_input_reliable_stream(&g_xrcedds_session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
+  //participant->output_stream_id = uxr_create_output_best_effort_stream(&g_xrcedds_session, output_reliable_stream_buffer, BUFFER_SIZE);
+  //participant->input_stream_id  = uxr_create_input_best_effort_stream(&g_xrcedds_session);
+  participant->session = &g_xrcedds_session;
 
   participant->id = uxr_object_id(object_id++, UXR_PARTICIPANT_ID);
-  uint16_t participant_req = uxr_buffer_create_participant_xml(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
-  //uint16_t participant_req = uxr_buffer_create_participant_ref(&g_rtps_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
+  uint16_t participant_req = uxr_buffer_create_participant_xml(&g_xrcedds_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
+  //uint16_t participant_req = uxr_buffer_create_participant_ref(&g_xrcedds_session, participant->output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
 
   uint8_t status;
   participant->is_init = uxr_run_session_until_all_status(participant->session, 1000, &participant_req, &status, 1);
@@ -147,7 +147,7 @@ bool rtps::createParticipant(rtps::Participant_t* participant, const char* parti
 }
 
 
-bool rtps::registerTopic(rtps::Participant_t* participant, char* topic_profile, uint8_t topic_id)
+bool xrcedds::registerTopic(xrcedds::Participant_t* participant, char* topic_profile, uint8_t topic_id)
 {
   if(participant->is_init == false)
   {
@@ -170,7 +170,7 @@ bool rtps::registerTopic(rtps::Participant_t* participant, char* topic_profile, 
 }
 
 
-bool rtps::createPublisher(rtps::Participant_t* participant, rtps::Publisher_t* publisher, char* publisher_profile, char* writer_profile)
+bool xrcedds::createPublisher(xrcedds::Participant_t* participant, xrcedds::Publisher_t* publisher, char* publisher_profile, char* writer_profile)
 {
   if(participant->is_init == false)
   {
@@ -202,7 +202,7 @@ bool rtps::createPublisher(rtps::Participant_t* participant, rtps::Publisher_t* 
 }
 
 
-bool rtps::createSubscriber(rtps::Participant_t* participant, rtps::Subscriber_t* subscriber, char* subscriber_profile, char* reader_profile)
+bool xrcedds::createSubscriber(xrcedds::Participant_t* participant, xrcedds::Subscriber_t* subscriber, char* subscriber_profile, char* reader_profile)
 {
   if(participant->is_init == false)
   {
@@ -233,7 +233,7 @@ bool rtps::createSubscriber(rtps::Participant_t* participant, rtps::Subscriber_t
 }
 
 
-void rtps::subscribe(rtps::Subscriber_t* subscriber)
+void xrcedds::subscribe(xrcedds::Subscriber_t* subscriber)
 {
   if(subscriber->is_init == false)
   {
@@ -248,20 +248,20 @@ void rtps::subscribe(rtps::Subscriber_t* subscriber)
   subscriber->read_req = uxr_buffer_request_data(subscriber->participant->session, subscriber->participant->output_stream_id, subscriber->reader_id, subscriber->participant->input_stream_id, &subscriber->delivery_control);
 }
 
-void rtps::publish(rtps::Publisher_t* publisher, void* buffer, uint32_t topic_size)
+void xrcedds::publish(xrcedds::Publisher_t* publisher, void* buffer, uint32_t topic_size)
 {
   ucdrBuffer *mb = (ucdrBuffer*) buffer;
 
-  uxr_prepare_output_stream(&g_rtps_session, publisher->participant->output_stream_id,
+  uxr_prepare_output_stream(&g_xrcedds_session, publisher->participant->output_stream_id,
       publisher->writer_id, mb, topic_size);
 }
 
-bool rtps::runCommunication(uint32_t timeout_ms)
+bool xrcedds::runCommunication(uint32_t timeout_ms)
 {
   uint16_t request_list[20];
   uint8_t status_list[20];
-  //bool is_connected = uxr_run_session_until_confirm_delivery(&g_rtps_session, timeout_ms);
-  bool is_connected = uxr_run_session_until_all_status(&g_rtps_session, timeout_ms, request_list, status_list, 20);
+  //bool is_connected = uxr_run_session_until_confirm_delivery(&g_xrcedds_session, timeout_ms);
+  bool is_connected = uxr_run_session_until_all_status(&g_xrcedds_session, timeout_ms, request_list, status_list, 20);
 
   return is_connected;
 }

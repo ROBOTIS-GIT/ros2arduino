@@ -9,7 +9,7 @@
 #define ROS2_PUBLISHER_HPP_
 
 #include <stdio.h>
-#include "rtps/rtps.hpp"
+#include "xrcedds/xrcedds.hpp"
 #include "node_handle.hpp"
 #include "topic.hpp"
 #include <Arduino.h>
@@ -28,7 +28,7 @@ class Publisher:public PublisherHandle
 {
  
 public:
-  Publisher(rtps::Participant_t* node, const char* name)
+  Publisher(xrcedds::Participant_t* node, const char* name)
     : PublisherHandle()
   {
     node_ = node;
@@ -49,7 +49,7 @@ public:
     }
 
     ucdrBuffer mb;
-    rtps::publish(&publisher_, (void*)&mb, topic_.size_of_topic(&topic_, 0));
+    xrcedds::publish(&publisher_, (void*)&mb, topic_.size_of_topic(&topic_, 0));
     topic_.serialize(&mb, &topic_);
   }
 
@@ -61,14 +61,14 @@ public:
 
     char writer_profile[256] = {0, };
     sprintf(writer_profile, DEFAULT_WRITER_XML, getPrefixString(TOPICS_PUBLISH), name_, topic_.type_);
-    is_registered_ = rtps::createPublisher(node_, &publisher_, (char*)publisher_profile, writer_profile);
+    is_registered_ = xrcedds::createPublisher(node_, &publisher_, (char*)publisher_profile, writer_profile);
   }
 
 private:
   MsgT topic_;
   const char* name_;
-  rtps::Participant_t* node_;
-  rtps::Publisher_t publisher_;
+  xrcedds::Participant_t* node_;
+  xrcedds::Publisher_t publisher_;
 };
 
 

@@ -9,9 +9,9 @@
 #define ROS2_TOPIC_HPP_
 
 #include <stdlib.h>
-#include "rtps/rtps.hpp"
+#include "xrcedds/xrcedds.hpp"
 #include "topic_config.h"
-#include "rtps/micro_xrce_dds/thirdparty/microcdr/include/ucdr/microcdr.h"
+#include "xrcedds/micro_xrce_dds/thirdparty/microcdr/include/ucdr/microcdr.h"
 
 #define DEFAULT_TOPIC_XML ("<dds><topic><name>%s</name><dataType>%s</dataType></topic></dds>")
 

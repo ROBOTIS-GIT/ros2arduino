@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include "micro_xrce_dds/include/uxr/client/client.h"
 
-namespace rtps {
+namespace xrcedds {
 
 typedef struct Participant{
   bool is_init;
@@ -44,15 +44,39 @@ typedef struct Transport{
   void *serial_device;
 } Transport_t;
 
-//class rtps
-//{
-//  public:
-//
-//
-//
-//  private:
-//
-//};
+
+/*
+  Client (1)-(*) Participant (1)-(*) topic
+                             (1)-(*) publisher  (1)-(*) data_writer
+                             (1)-(*) subscriber (1)-(*) data_reader 
+*/
+
+// template<int MAX_PUBLISHER, 
+//          int MAX_SUBSCRIBER,
+//          int INPUT_SIZE = 512,
+//          int OUTPUT_SIZE = 512>
+// class XRCEDDS
+// {
+//   public:
+//     virtual bool setupTransport() = 0;
+//     virtual bool createClient() = 0;
+//     virtual bool createEntity() = 0;
+//     virtual bool deleteEntity() = 0;
+
+//     virtual bool writeTopic() = 0;
+//     virtual bool readTopic() = 0;
+
+//   private:
+//     virtual bool createParticipant() = 0;
+//     virtual bool registerTopic() = 0;
+//     virtual bool createPublisher() = 0;
+//     virtual bool createSubscriber() = 0;
+//     virtual bool createWriter() = 0;
+//     virtual bool createReader() = 0;
+
+//     Publisher_t publisher_[MAX_PUBLISHER];
+//     Subscriber_t subscriber_[MAX_SUBSCRIBER];
+// };
 
 
 void init(uint8_t rtps_product);

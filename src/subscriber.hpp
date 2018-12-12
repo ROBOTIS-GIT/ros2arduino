@@ -9,7 +9,7 @@
 #define ROS2_SUBSCRIBER_HPP_
 
 #include <stdio.h>
-#include "rtps/rtps.hpp"
+#include "xrcedds/xrcedds.hpp"
 #include "node_handle.hpp"
 #include "topic.hpp"
 
@@ -29,7 +29,7 @@ class Subscriber:public SubscriberHandle
 {
 
   public:
-    Subscriber(rtps::Participant_t* node, const char* name, CallbackFunc callback, void* callback_arg)
+    Subscriber(xrcedds::Participant_t* node, const char* name, CallbackFunc callback, void* callback_arg)
       : SubscriberHandle()
     {
       MsgT topic;
@@ -48,7 +48,7 @@ class Subscriber:public SubscriberHandle
         return;
       }
 
-      rtps::subscribe(&subscriber_);
+      xrcedds::subscribe(&subscriber_);
       request_id_ = subscriber_.read_req;
     }
 
@@ -73,14 +73,14 @@ class Subscriber:public SubscriberHandle
 
       char reader_profile[256] = {0, };
       sprintf(reader_profile, DEFAULT_READER_XML, getPrefixString(TOPICS_SUBSCRIBE), name_, topic.type_);
-      is_registered_ = rtps::createSubscriber(node_, &subscriber_, (char*)subscriber_profile, reader_profile);
+      is_registered_ = xrcedds::createSubscriber(node_, &subscriber_, (char*)subscriber_profile, reader_profile);
       this->reader_id_ = subscriber_.reader_id.id;
     };  
 
   private:
     const char* name_;
-    rtps::Participant_t* node_;
-    rtps::Subscriber_t subscriber_;
+    xrcedds::Participant_t* node_;
+    xrcedds::Subscriber_t subscriber_;
 };
 
 } // namespace ros2
