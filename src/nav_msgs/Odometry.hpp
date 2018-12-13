@@ -48,8 +48,9 @@ public:
     memset(child_frame_id, 0, sizeof(child_frame_id));
   }
 
-  bool serialize(ucdrBuffer* writer, const Odometry* topic)
+  bool serialize(void* msg_buf, const Odometry* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     (void) ucdr_serialize_string(writer, topic->child_frame_id);
     (void) pose.serialize(writer, &topic->pose);
@@ -58,8 +59,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Odometry* topic)
+  bool deserialize(void* msg_buf, Odometry* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     (void) ucdr_deserialize_string(reader, topic->child_frame_id, sizeof(topic->child_frame_id));
     (void) pose.deserialize(reader, &topic->pose);

@@ -45,16 +45,18 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const Pose* topic)
+  bool serialize(void* msg_buf, const Pose* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) position.serialize(writer, &topic->position);
     (void) orientation.serialize(writer, &topic->orientation);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Pose* topic)
+  bool deserialize(void* msg_buf, Pose* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) position.deserialize(reader, &topic->position);
     (void) orientation.deserialize(reader, &topic->orientation);
 

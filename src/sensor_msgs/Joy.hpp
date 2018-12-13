@@ -48,8 +48,9 @@ public:
     memset(buttons, 0, sizeof(buttons));
   }
 
-  bool serialize(ucdrBuffer* writer, const Joy* topic)
+  bool serialize(void* msg_buf, const Joy* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     
     (void) ucdr_serialize_sequence_float(writer, topic->axes, topic->axes_size);
@@ -58,8 +59,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Joy* topic)
+  bool deserialize(void* msg_buf, Joy* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     
     (void) ucdr_deserialize_sequence_float(reader, topic->axes, sizeof(topic->axes)/sizeof(float), &topic->axes_size);

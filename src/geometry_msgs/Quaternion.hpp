@@ -43,8 +43,9 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const Quaternion* topic)
+  bool serialize(void* msg_buf, const Quaternion* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_double(writer, topic->x);
     (void) ucdr_serialize_double(writer, topic->y);
     (void) ucdr_serialize_double(writer, topic->z);
@@ -53,8 +54,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Quaternion* topic)
+  bool deserialize(void* msg_buf, Quaternion* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_double(reader, &topic->x);
     (void) ucdr_deserialize_double(reader, &topic->y);
     (void) ucdr_deserialize_double(reader, &topic->z);

@@ -42,8 +42,9 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const Vector3* topic)
+  bool serialize(void* msg_buf, const Vector3* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_double(writer, topic->x);
     (void) ucdr_serialize_double(writer, topic->y);
     (void) ucdr_serialize_double(writer, topic->z);
@@ -51,8 +52,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Vector3* topic)
+  bool deserialize(void* msg_buf, Vector3* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_double(reader, &topic->x);
     (void) ucdr_deserialize_double(reader, &topic->y);
     (void) ucdr_deserialize_double(reader, &topic->z);

@@ -43,16 +43,18 @@ public:
     memset(covariance, 0, sizeof(covariance));
   }
 
-  bool serialize(ucdrBuffer* writer, const TwistWithCovariance* topic)
+  bool serialize(void* msg_buf, const TwistWithCovariance* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) twist.serialize(writer, &topic->twist);
     (void) ucdr_serialize_array_double(writer, topic->covariance, 36);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, TwistWithCovariance* topic)
+  bool deserialize(void* msg_buf, TwistWithCovariance* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) twist.deserialize(reader, &topic->twist);
     (void) ucdr_deserialize_array_double(reader, topic->covariance, 36);
 

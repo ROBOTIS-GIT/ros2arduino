@@ -44,16 +44,18 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const Twist* topic)
+  bool serialize(void* msg_buf, const Twist* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) linear.serialize(writer, &topic->linear);
     (void) angular.serialize(writer, &topic->angular);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Twist* topic)
+  bool deserialize(void* msg_buf, Twist* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) linear.deserialize(reader, &topic->linear);
     (void) angular.deserialize(reader, &topic->angular);
 

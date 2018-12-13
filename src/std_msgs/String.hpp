@@ -40,14 +40,16 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const String* topic)
+  bool serialize(void* msg_buf, const String* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_string(writer, topic->data);
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, String* topic)
+  bool deserialize(void* msg_buf, String* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_string(reader, topic->data, sizeof(topic->data));
     return !reader->error;
   }

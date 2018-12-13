@@ -30,15 +30,17 @@ class Bool: public ros2::Topic<Bool>
     {
     }
 
-    bool serialize(ucdrBuffer* writer, const Bool* topic)
+    bool serialize(void* msg_buf, const Bool* topic)
     {
+      ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
       (void) ucdr_serialize_bool(writer, topic->data);
 
       return !writer->error;
     }
 
-    bool deserialize(ucdrBuffer* reader, Bool* topic)
+    bool deserialize(void* msg_buf, Bool* topic)
     {
+      ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
       (void) ucdr_deserialize_bool(reader, &topic->data);
 
       return !reader->error;

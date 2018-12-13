@@ -41,16 +41,18 @@ public:
   {
   }
 
-  bool serialize(ucdrBuffer* writer, const Time* topic)
+  bool serialize(void* msg_buf, const Time* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_int32_t(writer, topic->sec);
     (void) ucdr_serialize_uint32_t(writer, topic->nanosec);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Time* topic)
+  bool deserialize(void* msg_buf, Time* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_int32_t(reader, &topic->sec);
     (void) ucdr_deserialize_uint32_t(reader, &topic->nanosec);
 

@@ -44,8 +44,9 @@ public:
     memset(software, 0, sizeof(software));
   }
 
-  bool serialize(ucdrBuffer* writer, const VersionInfo* topic)
+  bool serialize(void* msg_buf, const VersionInfo* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_string(writer, topic->hardware);
     (void) ucdr_serialize_string(writer, topic->firmware);
     (void) ucdr_serialize_string(writer, topic->software);
@@ -53,8 +54,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, VersionInfo* topic)
+  bool deserialize(void* msg_buf, VersionInfo* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_string(reader, topic->hardware, sizeof(topic->hardware));
     (void) ucdr_deserialize_string(reader, topic->firmware, sizeof(topic->firmware));
     (void) ucdr_deserialize_string(reader, topic->software, sizeof(topic->software));

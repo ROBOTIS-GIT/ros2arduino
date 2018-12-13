@@ -45,16 +45,18 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const Transform* topic)
+  bool serialize(void* msg_buf, const Transform* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) translation.serialize(writer, &topic->translation);
     (void) rotation.serialize(writer, &topic->rotation);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Transform* topic)
+  bool deserialize(void* msg_buf, Transform* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) translation.deserialize(reader, &topic->translation);
     (void) rotation.deserialize(reader, &topic->rotation);
 

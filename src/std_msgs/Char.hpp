@@ -30,15 +30,17 @@ class Char: public ros2::Topic<Char>
     {
     }
 
-    bool serialize(ucdrBuffer* writer, const Char* topic)
+    bool serialize(void* msg_buf, const Char* topic)
     {
+      ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
       (void) ucdr_serialize_char(writer, topic->data);
 
       return !writer->error;
     }
 
-    bool deserialize(ucdrBuffer* reader, Char* topic)
+    bool deserialize(void* msg_buf, Char* topic)
     {
+      ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
       (void) ucdr_deserialize_char(reader, &topic->data);
 
       return !reader->error;

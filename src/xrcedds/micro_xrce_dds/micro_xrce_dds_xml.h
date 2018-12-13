@@ -1,7 +1,7 @@
 /*
- * micro_xrce_dds_xml.hpp
+ * micro_xrce_dds_xml.h
  *
- *  Created on: dec 14, 2018
+ *  Created on: Dec 14, 2018
  *      Author: Kei
  */
 

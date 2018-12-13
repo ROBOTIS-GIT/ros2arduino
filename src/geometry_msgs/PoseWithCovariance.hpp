@@ -43,16 +43,18 @@ public:
     memset(covariance, 0, sizeof(covariance));
   }
 
-  bool serialize(ucdrBuffer* writer, const PoseWithCovariance* topic)
+  bool serialize(void* msg_buf, const PoseWithCovariance* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) pose.serialize(writer, &topic->pose);
     (void) ucdr_serialize_array_double(writer, topic->covariance, 36);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, PoseWithCovariance* topic)
+  bool deserialize(void* msg_buf, PoseWithCovariance* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) pose.deserialize(reader, &topic->pose);
     (void) ucdr_deserialize_array_double(reader, topic->covariance, 36);
 

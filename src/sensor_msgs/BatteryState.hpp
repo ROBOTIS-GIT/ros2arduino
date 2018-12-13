@@ -95,8 +95,9 @@ public:
     memset(serial_number, 0, sizeof(serial_number));
   }
 
-  bool serialize(ucdrBuffer* writer, const BatteryState* topic)
+  bool serialize(void* msg_buf, const BatteryState* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     (void) ucdr_serialize_float(writer, topic->voltage);
     (void) ucdr_serialize_float(writer, topic->current);
@@ -115,8 +116,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, BatteryState* topic)
+  bool deserialize(void* msg_buf, BatteryState* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     (void) ucdr_deserialize_float(reader, &topic->voltage);
     (void) ucdr_deserialize_float(reader, &topic->current);

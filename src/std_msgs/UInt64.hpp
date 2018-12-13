@@ -33,15 +33,17 @@ public:
   { 
   }
 
-  bool serialize(ucdrBuffer* writer, const UInt64* topic)
+  bool serialize(void* msg_buf, const UInt64* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_uint64_t(writer, topic->data);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, UInt64* topic)
+  bool deserialize(void* msg_buf, UInt64* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_uint64_t(reader, &topic->data);
 
     return !reader->error;

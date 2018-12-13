@@ -25,7 +25,6 @@
 
 #include <topic.hpp>
 
-
 #include "std_msgs/Header.hpp"
 
 namespace sensor_msgs {
@@ -54,8 +53,9 @@ public:
     memset(effort, 0, sizeof(effort));
   }
 
-  bool serialize(ucdrBuffer* writer, const JointState* topic)
+  bool serialize(void* msg_buf, const JointState* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     
     (void) ucdr_serialize_uint32_t(writer, topic->name_size);
@@ -71,8 +71,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, JointState* topic)
+  bool deserialize(void* msg_buf, JointState* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     uint32_t size_string;
 
     (void) header.deserialize(reader, &topic->header);

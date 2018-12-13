@@ -102,11 +102,12 @@ const char* ros2::getPrefixString(MessagePrefix prefix)
 }
 
 
-void ros2::onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args)
+void ros2::runNodeSubUserCallback(uint16_t id, void* msgs, void* args)
 {
-  (void)(session); (void)(request_id); (void)(stream_id);
-  ros2::Node* node = (ros2::Node*) args;
-  uint16_t reader_id = object_id.id;
+  ros2::Node* p_node = (ros2::Node*) args;
 
-  node->runSubCallback(reader_id, (void*)mb);
+  if(p_node != NULL)
+  {
+    p_node->runSubCallback(id, msgs);
+  }
 }

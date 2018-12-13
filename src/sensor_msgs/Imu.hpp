@@ -53,8 +53,9 @@ public:
     memset(linear_acceleration_covariance, 0, sizeof(linear_acceleration_covariance));
   }
 
-  bool serialize(ucdrBuffer* writer, const Imu* topic)
+  bool serialize(void* msg_buf, const Imu* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     (void) orientation.serialize(writer, &topic->orientation);
     (void) ucdr_serialize_array_double(writer, topic->orientation_covariance, 9);
@@ -66,8 +67,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Imu* topic)
+  bool deserialize(void* msg_buf, Imu* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     (void) orientation.deserialize(reader, &topic->orientation);
     (void) ucdr_deserialize_array_double(reader, topic->orientation_covariance, 9);

@@ -44,16 +44,18 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const Header* topic)
+  bool serialize(void* msg_buf, const Header* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) stamp.serialize(writer, &topic->stamp);
     (void) ucdr_serialize_string(writer, topic->frame_id);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Header* topic)
+  bool deserialize(void* msg_buf, Header* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) stamp.deserialize(reader, &topic->stamp);
     (void) ucdr_deserialize_string(reader, topic->frame_id, sizeof(topic->frame_id));
 

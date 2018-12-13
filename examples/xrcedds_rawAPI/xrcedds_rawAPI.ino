@@ -26,7 +26,7 @@ bool Bool_deserialize_topic(struct ucdrBuffer* reader, Bool* topic);
 uint32_t Bool_size_of_topic(const Bool* topic, uint32_t size);
 
 /* Callback when reader is received topic */
-void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args);
+void onTopicUserCallback(uint16_t reader_id, void* msgs, void* args);
 
 
 xrcedds::Transport_t transport;
@@ -47,7 +47,7 @@ void setup()
   /* Init transport(Serial) & create session */
   transport.type = xrcedds::XRCE_DDS_COMM_USB;
   xrcedds::init(0);
-  xrcedds::initTransportAndSession(&transport, (void*)onTopicCallback, NULL);
+  xrcedds::initTransportAndSession(&transport, (void*)onTopicUserCallback, NULL);
   
   /* Create participant */
   xrcedds::createParticipant(&participant, "default_xrce_participant");
@@ -87,14 +87,14 @@ void loop()
 
 
 
-void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args)
+void onTopicUserCallback(uint16_t reader_id, void* msgs, void* args)
 {
-  (void) session; (void) object_id; (void) request_id; (void) stream_id; (void) args;
-  
-  if(object_id.id == data_reader.id)
+  (void)(args);
+
+  if(reader_id == data_reader.id)
   {
     Bool topic;
-    Bool_deserialize_topic(mb, &topic);
+    Bool_deserialize_topic((ucdrBuffer*)msgs, &topic);
     digitalWrite(LED_BUILTIN, topic.data);
   }
 }

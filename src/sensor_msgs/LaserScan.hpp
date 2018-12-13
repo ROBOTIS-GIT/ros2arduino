@@ -57,8 +57,9 @@ public:
   { 
   }
 
-  bool serialize(ucdrBuffer* writer, const LaserScan* topic)
+  bool serialize(void* msg_buf, const LaserScan* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     (void) ucdr_serialize_float(writer, topic->angle_min);
     (void) ucdr_serialize_float(writer, topic->angle_max);
@@ -73,8 +74,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, LaserScan* topic)
+  bool deserialize(void* msg_buf, LaserScan* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     (void) ucdr_deserialize_float(reader, &topic->angle_min);
     (void) ucdr_deserialize_float(reader, &topic->angle_max);

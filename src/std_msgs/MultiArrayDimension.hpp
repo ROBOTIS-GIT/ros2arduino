@@ -43,8 +43,9 @@ public:
   }
 
 
-  bool serialize(ucdrBuffer* writer, const MultiArrayDimension* topic)
+  bool serialize(void* msg_buf, const MultiArrayDimension* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_string(writer, topic->label);
     (void) ucdr_serialize_uint32_t(writer, topic->size);
     (void) ucdr_serialize_uint32_t(writer, topic->stride);
@@ -52,8 +53,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, MultiArrayDimension* topic)
+  bool deserialize(void* msg_buf, MultiArrayDimension* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_string(reader, topic->label, sizeof(topic->label));
     (void) ucdr_deserialize_uint32_t(reader, &topic->size);
     (void) ucdr_deserialize_uint32_t(reader, &topic->stride);

@@ -19,7 +19,6 @@ static uint8_t output_reliable_stream_buffer[BUFFER_SIZE];
 static uint8_t input_reliable_stream_buffer[BUFFER_SIZE];
 static uxr_session_t g_uxr_session;
 
-
 //-- External Functions
 //
 void xrcedds::init(uint8_t xrcedds_product)
@@ -29,7 +28,7 @@ void xrcedds::init(uint8_t xrcedds_product)
   g_uxr_session.session_key = 0xAABBCCDD;
 }
 
-bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callback_func, void* callback_args)
+bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callback_func, void* args)
 {
   if(transport_info == NULL)
   {
@@ -50,7 +49,8 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
   if(g_uxr_session.comm_port != NULL)
   {
     uxr_init_session(&g_uxr_session.session, g_uxr_session.comm_port, g_uxr_session.session_key);
-    uxr_set_topic_callback(&g_uxr_session.session, (uxrOnTopicFunc)callback_func, callback_args);
+    uxr_set_topic_callback(&g_uxr_session.session, uxr_onTopicCallback, args);
+    uxr_setOnTopicUserCallback((uxr_onTopicUserCallback)callback_func);
 
     g_uxr_session.is_init = uxr_create_session(&g_uxr_session.session);
 

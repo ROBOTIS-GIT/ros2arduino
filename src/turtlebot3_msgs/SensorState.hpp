@@ -54,8 +54,9 @@ public:
   { 
   }
 
-  bool serialize(ucdrBuffer* writer, const SensorState* topic)
+  bool serialize(void* msg_buf, const SensorState* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     (void) ucdr_serialize_uint8_t(writer, topic->bumper);
     (void) ucdr_serialize_float(writer, topic->cliff);
@@ -71,8 +72,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, SensorState* topic)
+  bool deserialize(void* msg_buf, SensorState* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     (void) ucdr_deserialize_uint8_t(reader, &topic->bumper);
     (void) ucdr_deserialize_float(reader, &topic->cliff);

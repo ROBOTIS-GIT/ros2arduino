@@ -21,12 +21,12 @@
 
 namespace ros2 {
 
-void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args);
-
 extern char* client_communication_method;
 extern char* server_ip;
 extern uint16_t server_port;
 extern Stream* serial_device;
+
+void runNodeSubUserCallback(uint16_t id, void* msgs, void* args);
 
 class Node
 {
@@ -57,7 +57,7 @@ class Node
       }
 
       xrcedds::init(0);
-      xrcedds::initTransportAndSession(&xrcedds_transport_, (void*)onTopicCallback, (void*)this);
+      xrcedds::initTransportAndSession(&xrcedds_transport_, (void*)runNodeSubUserCallback, (void*)this);
 
       node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_, "default_xrce_participant");
 

@@ -40,15 +40,17 @@ public:
   { 
   }
 
-  bool serialize(ucdrBuffer* writer, const Sound* topic)
+  bool serialize(void* msg_buf, const Sound* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_uint8_t(writer, topic->value);
 
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, Sound* topic)
+  bool deserialize(void* msg_buf, Sound* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_uint8_t(reader, &topic->value);
     
     return !reader->error;

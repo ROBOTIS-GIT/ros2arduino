@@ -44,30 +44,33 @@ public:
   {
   }
 
-  bool serialize(struct MicroBuffer* writer, const Duration* topic)
+  bool serialize(void* msg_buf, const Duration* topic)
   {
-    (void) serialize_int32_t(writer, topic->sec_);
-    (void) serialize_uint32_t(writer, topic->nanosec_);
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
+    (void) ucdr_serialize_int32_t(writer, topic->sec_);
+    (void) ucdr_serialize_uint32_t(writer, topic->nanosec_);
 
-    return writer->error == BUFFER_OK;
+    return !writer->error;
   }
 
-  bool deserialize(struct MicroBuffer* reader, Duration* topic)
+  bool deserialize(void* msg_buf, Duration* topic)
   {
-    (void) deserialize_int32_t(reader, &topic->sec_);
-    (void) deserialize_uint32_t(reader, &topic->nanosec_);
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
+    (void) ucdr_deserialize_int32_t(reader, &topic->sec_);
+    (void) ucdr_deserialize_uint32_t(reader, &topic->nanosec_);
 
-    return reader->error == BUFFER_OK;
+    return !reader->error;
   }
 
   uint32_t size_of_topic(const Duration* topic, uint32_t size)
   {
     (void)(topic);
+    
+    uint32_t previousSize = size;
+    size += ucdr_alignment(size, 4) + 4;
+    size += ucdr_alignment(size, 4) + 4;
 
-    size += 4 + get_alignment(size, 4);
-    size += 4 + get_alignment(size, 4);
-
-    return size;
+    return size - previousSize;
   }
 
 };

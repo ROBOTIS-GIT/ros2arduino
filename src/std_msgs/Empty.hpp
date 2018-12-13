@@ -30,15 +30,17 @@ class Empty: public ros2::Topic<Empty>
     {
     }
 
-    bool serialize(ucdrBuffer* writer, const Empty* topic)
+    bool serialize(void* msg_buf, const Empty* topic)
     {
+      ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
       ucdr_serialize_bool(writer, topic->_dummy);
 
       return !writer->error;
     }
 
-    bool deserialize(ucdrBuffer* reader, Empty* topic)
+    bool deserialize(void* msg_buf, Empty* topic)
     {
+      ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
       ucdr_deserialize_bool(reader, &topic->_dummy);
 
       return !reader->error;

@@ -46,8 +46,9 @@ public:
     memset(magnetic_field_covariance, 0, sizeof(magnetic_field_covariance));
   }
 
-  bool serialize(ucdrBuffer* writer, const MagneticField* topic)
+  bool serialize(void* msg_buf, const MagneticField* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     (void) magnetic_field.serialize(writer, &topic->magnetic_field);
     (void) ucdr_serialize_array_double(writer, topic->magnetic_field_covariance, 9);
@@ -55,8 +56,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, MagneticField* topic)
+  bool deserialize(void* msg_buf, MagneticField* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     (void) magnetic_field.deserialize(reader, &topic->magnetic_field);
     (void) ucdr_deserialize_array_double(reader, topic->magnetic_field_covariance, 9);

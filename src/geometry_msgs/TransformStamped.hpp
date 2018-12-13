@@ -46,8 +46,9 @@ public:
     memset(child_frame_id, 0, sizeof(child_frame_id));
   }
 
-  bool serialize(ucdrBuffer* writer, const TransformStamped* topic)
+  bool serialize(void* msg_buf, const TransformStamped* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) header.serialize(writer, &topic->header);
     (void) ucdr_serialize_string(writer, topic->child_frame_id);
     (void) transform.serialize(writer, &topic->transform);
@@ -55,8 +56,9 @@ public:
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, TransformStamped* topic)
+  bool deserialize(void* msg_buf, TransformStamped* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) header.deserialize(reader, &topic->header);
     (void) ucdr_deserialize_string(reader, topic->child_frame_id, sizeof(topic->child_frame_id));
     (void) transform.deserialize(reader, &topic->transform);

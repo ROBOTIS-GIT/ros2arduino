@@ -1,11 +1,10 @@
 /*
- * rtps_time.c
+ * micro_xrce_dds_time.c
  *
  *  Created on: Nov 14, 2018
  *      Author: kei
  */
 
-#include "xrcedds/xrcedds.hpp"
 #include <Arduino.h>
 
 int64_t uxr_millis(void)

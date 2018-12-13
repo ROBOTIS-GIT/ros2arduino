@@ -10,22 +10,9 @@
 
 #include <stdlib.h>
 #include "xrcedds/xrcedds.hpp"
-#include "xrcedds/micro_xrce_dds/lib/thirdparty/microcdr/include/ucdr/microcdr.h"
 #include "xrcedds/micro_xrce_dds/micro_xrce_dds.h"
 
 namespace ros2 {
-
-enum MessagePrefix{
-  TOPICS_PUBLISH = 0,
-  TOPICS_SUBSCRIBE,
-  SERVICE_REQUEST,
-  SERVICE_RESPONSE,
-  SERVICE,
-  PARAMETER,
-  ACTION
-};
-
-const char* getPrefixString(MessagePrefix prefix);
 
 /* Base Message Type */
 template <typename MsgT>
@@ -44,8 +31,8 @@ public:
   {
   }
 
-  virtual bool serialize(ucdrBuffer* writer, const MsgT* topic) = 0;
-  virtual bool deserialize(ucdrBuffer* reader, MsgT* topic) = 0;
+  virtual bool serialize(void* msg_buf, const MsgT* topic) = 0;
+  virtual bool deserialize(void* msg_buf, MsgT* topic) = 0;
   virtual uint32_t size_of_topic(const MsgT* topic, uint32_t size)
   {
     (void)(topic); (void)(size);

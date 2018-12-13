@@ -41,16 +41,18 @@ public:
     memset(value, 0, sizeof(value));
   }
 
-  bool serialize(ucdrBuffer* writer, const KeyValue* topic)
+  bool serialize(void* msg_buf, const KeyValue* topic)
   {
+    ucdrBuffer* writer = (ucdrBuffer*)msg_buf;
     (void) ucdr_serialize_string(writer, topic->key);
     (void) ucdr_serialize_string(writer, topic->value);
    
     return !writer->error;
   }
 
-  bool deserialize(ucdrBuffer* reader, KeyValue* topic)
+  bool deserialize(void* msg_buf, KeyValue* topic)
   {
+    ucdrBuffer* reader = (ucdrBuffer*)msg_buf;
     (void) ucdr_deserialize_string(reader, topic->key, sizeof(topic->key));
     (void) ucdr_deserialize_string(reader, topic->value, sizeof(topic->value));
     
