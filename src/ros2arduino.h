@@ -31,11 +31,9 @@ extern Stream* serial_device;
 class Node
 {
   public:
-    uint8_t err_code;
-
     Node()
     {
-      err_code = 0, pub_cnt_ = 0, sub_cnt_ = 0, node_register_state_ = false;
+      pub_cnt_ = 0, sub_cnt_ = 0, node_register_state_ = false;
       memset(pub_list_, 0, sizeof(pub_list_));
       memset(sub_list_, 0, sizeof(sub_list_));
       this->recreate();
@@ -45,7 +43,6 @@ class Node
 
     void recreate()
     {
-      err_code = 0;
       xrcedds_participant_.is_created = false;
       if(strcmp(client_communication_method, "Serial") == 0)
       {
@@ -94,7 +91,6 @@ class Node
 
       if(this->node_register_state_ == false)
       {
-        err_code = 1;
         return NULL;
       }
 
@@ -108,7 +104,6 @@ class Node
 
       if (ret == false)
       {
-        err_code = 2;
         return NULL;
       }
 
@@ -116,7 +111,6 @@ class Node
 
       if(p_pub->is_registered_ == false)
       {
-        err_code = 3;
         delete(p_pub);
         return NULL;
       }
@@ -131,8 +125,6 @@ class Node
         }
       }
 
-      err_code = 0;
-
       return p_pub;
     }
 
@@ -145,7 +137,6 @@ class Node
       
       if(this->node_register_state_ == false)
       {
-        err_code = 10 + 1;
         return NULL;
       }
 
@@ -159,7 +150,6 @@ class Node
 
       if (ret == false)
       {
-        err_code = 10 + 2;
         return NULL;
       }
 
@@ -167,7 +157,6 @@ class Node
 
       if(p_sub->is_registered_ == false)
       {
-        err_code = 10 + 3;
         delete(p_sub);
         return NULL;
       }
@@ -182,8 +171,6 @@ class Node
           break;
         }
       }
-
-      err_code = 0;
 
       return p_sub;
     }
