@@ -1,9 +1,8 @@
 #include "../../../../../include/uxr/client/profile/transport/tcp/tcp_transport_arduino.h"
 #include "tcp_transport_internal.h"
-#include <unistd.h>
-#include <sys/types.h>
-#include <string.h>
-#include <Arduino.h>
+// #include <unistd.h>
+// #include <sys/types.h>
+// #include <string.h>
 
 bool uxr_init_tcp_platform(struct uxrTCPPlatform* platform, const char* ip,
     uint16_t port)

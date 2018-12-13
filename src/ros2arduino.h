@@ -5,8 +5,8 @@
  *      Author: Kei
  */
 
-#ifndef ROS2_HPP_
-#define ROS2_HPP_
+#ifndef ROS2ARDUINO_H_
+#define ROS2ARDUINO_H_
 
 #include <string.h>
 #include "publisher.hpp"
@@ -15,9 +15,8 @@
 #include "msg_list.hpp"
 #include <Arduino.h>
 
-#define ROS2_PUBLISHER_MAX  20
-#define ROS2_SUBSCRIBER_MAX 20
-
+#define ROS2_PUBLISHER_MAX  10
+#define ROS2_SUBSCRIBER_MAX 10
 
 namespace ros2 {
 
@@ -270,4 +269,4 @@ builtin_interfaces::Time now();
 
 
 
-#endif /* ROS2_HPP_ */
+#endif /* ROS2ARDUINO_H_ */

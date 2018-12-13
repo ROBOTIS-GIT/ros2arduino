@@ -6,16 +6,17 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-ros2arduino	KEYWORD1
+CallbackFunc    KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-
-
+runNodeSubUserCallback  KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 
+ROS2_PUBLISHER_MAX  LITERAL1
+ROS2_SUBSCRIBER_MAX LITERAL1

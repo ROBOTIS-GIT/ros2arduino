@@ -1,10 +1,9 @@
 #include "../../../../../include/uxr/client/profile/transport/udp/udp_transport_arduino.h"
 #include "udp_transport_internal.h"
-#include <unistd.h>
-#include <sys/types.h>
-#include <string.h>
-#include <errno.h>
-#include <Arduino.h>
+//#include <unistd.h>
+//#include <sys/types.h>
+//#include <string.h>
+//#include <errno.h>
 
 bool uxr_init_udp_platform(uxrUDPPlatform* platform, const char* ip, uint16_t port)
 {

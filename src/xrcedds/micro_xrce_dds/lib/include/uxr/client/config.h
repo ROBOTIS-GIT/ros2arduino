@@ -44,15 +44,15 @@
 #define UXR_CONFIG_MIN_HEARTBEAT_TIME_INTERVAL        1
 
 #ifdef PROFILE_UDP_TRANSPORT
-#define UXR_CONFIG_UDP_TRANSPORT_MTU                  1024
+#define UXR_CONFIG_UDP_TRANSPORT_MTU                  512
 #endif
 
 #ifdef PROFILE_TCP_TRANSPORT
-#define UXR_CONFIG_TCP_TRANSPORT_MTU                  1024
+#define UXR_CONFIG_TCP_TRANSPORT_MTU                  512
 #endif
 
 #ifdef PROFILE_SERIAL_TRANSPORT
-#define UXR_CONFIG_SERIAL_TRANSPORT_MTU               1024
+#define UXR_CONFIG_SERIAL_TRANSPORT_MTU               512
 #endif
 
 #if !defined(UXR_CONFIG_SERIAL_TRANSPORT_MTU)
