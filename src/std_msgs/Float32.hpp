@@ -16,7 +16,6 @@
 #define _STD_MSGS_FLOAT32_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -29,7 +28,7 @@ public:
   float data;
 
   Float32():
-    Topic("std_msgs::msg::dds_::Float3232_", STD_MSGS_FLOAT32_TOPIC),
+    Topic("std_msgs::msg::dds_::Float32_", "Float32"),
     data(0)
   { 
   }

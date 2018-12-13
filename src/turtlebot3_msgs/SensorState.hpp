@@ -23,7 +23,6 @@
 #define _TURTLEBOT3_MSGS_SENSOR_STATE_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -48,7 +47,7 @@ public:
     float battery;
 
   SensorState():
-    Topic("turtlebot3_msgs::msg::dds_::SensorState_", TURTLEBOT3_MSGS_SENSOR_STATE_TOPIC),
+    Topic("turtlebot3_msgs::msg::dds_::SensorState_", "SensorState"),
     header(),
     bumper(0), cliff(0), sonar(0), illumination(0), led(0), button(0),
     torque(0), left_encoder(0), right_encoder(0), battery(0)

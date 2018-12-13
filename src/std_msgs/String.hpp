@@ -23,7 +23,6 @@
 #define _STD_MSGS_STRING_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -35,7 +34,7 @@ public:
   char data[64];
 
   String():
-    Topic("std_msgs::msg::dds_::String_", STD_MSGS_STRING_TOPIC)
+    Topic("std_msgs::msg::dds_::String_", "String")
   {
     memset(data, 0, sizeof(data));
   }

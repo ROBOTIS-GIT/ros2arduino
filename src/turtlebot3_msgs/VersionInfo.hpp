@@ -23,7 +23,6 @@
 #define _TURTLEBOT3_MSGS_VERSION_INFO_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -38,7 +37,7 @@ public:
     char software[255];
 
   VersionInfo():
-    Topic("turtlebot3_msgs::msg::dds_::VersionInfo_", TURTLEBOT3_MSGS_VERSION_INFO_TOPIC)
+    Topic("turtlebot3_msgs::msg::dds_::VersionInfo_", "VersionInfo")
   { 
     memset(hardware, 0, sizeof(hardware));
     memset(firmware, 0, sizeof(firmware));

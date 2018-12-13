@@ -23,7 +23,6 @@
 #define _TURTLEBOT3_MSGS_SOUND_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -36,7 +35,7 @@ public:
     uint8_t value;
 
   Sound():
-    Topic("turtlebot3_msgs::msg::dds_::Sound_", TURTLEBOT3_MSGS_SOUND_TOPIC),
+    Topic("turtlebot3_msgs::msg::dds_::Sound_", "Sound"),
     value(0)
   { 
   }

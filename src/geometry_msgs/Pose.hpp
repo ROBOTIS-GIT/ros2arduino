@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_POSE_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -39,7 +38,7 @@ public:
   geometry_msgs::Quaternion orientation;
 
   Pose():
-    Topic("geometry_msgs::msg::dds_::Pose_", GEOMETRY_MSGS_POSE_TOPIC),
+    Topic("geometry_msgs::msg::dds_::Pose_", "Pose"),
     position(),
     orientation()
   { 

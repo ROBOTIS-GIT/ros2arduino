@@ -16,7 +16,6 @@
 #define _STD_MSGS_UINT8_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -29,7 +28,7 @@ public:
   uint8_t data;
 
   UInt8():
-    Topic("std_msgs::msg::dds_::UInt8_", STD_MSGS_UINT8_TOPIC),
+    Topic("std_msgs::msg::dds_::UInt8_", "UInt8"),
     data(0)
   { 
   }

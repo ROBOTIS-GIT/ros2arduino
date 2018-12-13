@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_TRANSFORM_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -39,7 +38,7 @@ public:
   geometry_msgs::Quaternion rotation;
 
   Transform():
-    Topic("geometry_msgs::msg::dds_::Transform_", GEOMETRY_MSGS_TRANSFORM_TOPIC),
+    Topic("geometry_msgs::msg::dds_::Transform_", "Transform"),
     translation(),
     rotation()
   { 

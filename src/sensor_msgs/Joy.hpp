@@ -23,7 +23,6 @@
 #define _SENSOR_MSGS_JOY_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -41,7 +40,7 @@ public:
     int32_t buttons[10];
 
   Joy():
-    Topic("sensor_msgs::msg::dds_::Joy_", SENSOR_MSGS_JOY_TOPIC),
+    Topic("sensor_msgs::msg::dds_::Joy_", "Joy"),
     header(),
     axes_size(1), buttons_size(1)
   { 

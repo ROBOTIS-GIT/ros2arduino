@@ -16,7 +16,6 @@
 #define _STD_MSGS_INT64_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -29,7 +28,7 @@ public:
   int64_t data;
 
   Int64():
-    Topic("std_msgs::msg::dds_::Int64_", STD_MSGS_INT64_TOPIC),
+    Topic("std_msgs::msg::dds_::Int64_", "Int64"),
     data(0)
   { 
   }

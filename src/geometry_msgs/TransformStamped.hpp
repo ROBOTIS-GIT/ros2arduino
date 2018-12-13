@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_TRANSFORM_STAMPED_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -41,7 +40,7 @@ public:
     geometry_msgs::Transform transform;
 
   TransformStamped():
-    Topic("geometry_msgs::msg::dds_::TransformStamped_", GEOMETRY_MSGS_TRANSFORM_STAMPED_TOPIC),
+    Topic("geometry_msgs::msg::dds_::TransformStamped_", "TransformStamped"),
     header(), transform()
   { 
     memset(child_frame_id, 0, sizeof(child_frame_id));

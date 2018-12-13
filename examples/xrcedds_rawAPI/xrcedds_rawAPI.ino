@@ -2,49 +2,6 @@
 
 #define RTPS_SERIAL  Serial
 
-/* XML */
-const char* participant_xml = "<dds>"
-                                  "<participant>"
-                                      "<rtps>"
-                                          "<name>default_xrce_participant</name>"
-                                      "</rtps>"
-                                  "</participant>"
-                              "</dds>";
-
-const char* string_topic_xml =  "<dds>"
-                                  "<topic>"
-                                    "<name>string</name>"
-                                    "<dataType>std_msgs::msg::dds_::String_</dataType>"
-                                  "</topic>"
-                                "</dds>";
-
-const char* bool_topic_xml =  "<dds>"
-                                "<topic>"
-                                  "<name>bool</name>"
-                                  "<dataType>std_msgs::msg::dds_::Bool_</dataType>"
-                                "</topic>"
-                              "</dds>";                                
-
-const char* datawriter_xml = "<dds>"
-                                 "<data_writer>"
-                                     "<topic>"
-                                         "<kind>NO_KEY</kind>"
-                                         "<name>rt/string</name>"
-                                         "<dataType>std_msgs::msg::dds_::String_</dataType>"
-                                     "</topic>"
-                                 "</data_writer>"
-                             "</dds>";
-
-const char* datareader_xml = "<dds>"
-                                 "<data_reader>"
-                                     "<topic>"
-                                         "<kind>NO_KEY</kind>"
-                                         "<name>rt/bool</name>"
-                                         "<dataType>std_msgs::msg::dds_::Bool_</dataType>"
-                                     "</topic>"
-                                 "</data_reader>"
-                             "</dds>";
-
 
 struct ucdrBuffer;
 
@@ -72,38 +29,42 @@ uint32_t Bool_size_of_topic(const Bool* topic, uint32_t size);
 void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args);
 
 
-rtps::Transport_t transport;
-rtps::Participant_t participant;
-rtps::Publisher_t publisher;
-rtps::Subscriber_t subscriber;
+xrcedds::Transport_t transport;
+xrcedds::Participant_t participant;
+xrcedds::Publisher_t publisher;
+xrcedds::Subscriber_t subscriber;
+xrcedds::DataWriter_t data_writer;
+xrcedds::DataReader_t data_reader;
 
 void setup() 
 {
   pinMode(LED_BUILTIN, OUTPUT);
   RTPS_SERIAL.begin(1000000);
+  Serial4.begin(57600);
   
   while (!RTPS_SERIAL); 
 
   /* Init transport(Serial) & create session */
-  transport.type = 0;
-  rtps::initTransportAndSession(&transport, onTopicCallback, NULL);
+  transport.type = xrcedds::XRCE_DDS_COMM_USB;
+  xrcedds::init(0);
+  xrcedds::initTransportAndSession(&transport, (void*)onTopicCallback, NULL);
   
   /* Create participant */
-  participant.is_init = false;
-  rtps::createParticipant(&participant, participant_xml);
+  xrcedds::createParticipant(&participant, "default_xrce_participant");
   
   /* Register topics */
-  rtps::registerTopic(&participant, (char*)string_topic_xml, 1);
-  rtps::registerTopic(&participant, (char*)bool_topic_xml, 2);
+  xrcedds::registerTopic(&participant, "String", "std_msgs::msg::dds_::String_");
+  xrcedds::registerTopic(&participant, "Bool", "std_msgs::msg::dds_::Bool_");
   
   /* Create pub & sub */
-  rtps::createPublisher(&participant, &publisher, (char*)"", (char*)datawriter_xml);
-  rtps::createSubscriber(&participant, &subscriber, (char*)"", (char*)datareader_xml);
+  xrcedds::createPublisher(&participant, &publisher);
+  xrcedds::createSubscriber(&participant, &subscriber);
+
+  xrcedds::createDataWriter(&publisher, &data_writer, (char*)"rt/string", "std_msgs::msg::dds_::String_");
+  xrcedds::createDataReader(&subscriber, &data_reader, (char*)"rt/bool", "std_msgs::msg::dds_::Bool_");
 
   /* Start subscribe */
-  rtps::subscribe(&subscriber);
-  /* Communicate to agent */
-  rtps::runCommunication(1000);
+  xrcedds::read(&data_reader);
 }
 
 void loop() 
@@ -117,11 +78,11 @@ void loop()
     pre_time = millis();  
     
     ucdrBuffer buffer;
-    rtps::publish(&publisher, &buffer, String_size_of_topic(&string_topic, 0));
+    xrcedds::write(&data_writer, (void*)&buffer, String_size_of_topic(&string_topic, 0));
     sprintf(string_topic.data, "HELLO ros2arduino %d", (int)cnt++);
     String_serialize_topic(&buffer, &string_topic);
   }
-  rtps::runCommunication(1);
+  xrcedds::runCommunication(1);
 }
 
 
@@ -129,8 +90,8 @@ void loop()
 void onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args)
 {
   (void) session; (void) object_id; (void) request_id; (void) stream_id; (void) args;
-
-  if(object_id.id == subscriber.reader_id.id)
+  
+  if(object_id.id == data_reader.id)
   {
     Bool topic;
     Bool_deserialize_topic(mb, &topic);

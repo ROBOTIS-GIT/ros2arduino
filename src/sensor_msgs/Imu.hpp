@@ -23,7 +23,6 @@
 #define _SENSOR_MSGS_IMU_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -46,7 +45,7 @@ public:
     double linear_acceleration_covariance[9];
 
   Imu():
-    Topic("sensor_msgs::msg::dds_::Imu_", SENSOR_MSGS_IMU_TOPIC),
+    Topic("sensor_msgs::msg::dds_::Imu_", "Imu"),
     header(), orientation(), angular_velocity(), linear_acceleration()
   { 
     memset(orientation_covariance, 0, sizeof(orientation_covariance));

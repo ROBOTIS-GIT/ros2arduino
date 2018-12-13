@@ -15,7 +15,6 @@
 #ifndef _STD_MSGS_EMPTY_HPP_
 #define _STD_MSGS_EMPTY_HPP_
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 namespace std_msgs
@@ -27,7 +26,7 @@ class Empty: public ros2::Topic<Empty>
     bool _dummy;
 
     Empty()
-        : Topic("std_msgs::msg::dds_::Empty_", STD_MSGS_EMPTY_TOPIC), _dummy(0)
+        : Topic("std_msgs::msg::dds_::Empty_", "Empty"), _dummy(0)
     {
     }
 

@@ -13,11 +13,6 @@
 #include "node_handle.hpp"
 #include "topic.hpp"
 
-#ifdef PROFILE_CREATE_ENTITIES_XML
-//#define DEFAULT_READER_XML ("<profiles><subscriber profile_name=\"default_xrce_subscriber_profile\"><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType><historyQos><kind>KEEP_LAST</kind><depth>1</depth></historyQos><durability><kind>TRANSIENT_LOCAL</kind></durability></topic></subscriber></profiles>")
-#define DEFAULT_READER_XML ("<dds><data_reader><topic><kind>NO_KEY</kind><name>%s%s</name><dataType>%s</dataType></topic></data_reader></dds>")
-#endif
-
 
 namespace ros2
 {
@@ -29,13 +24,11 @@ class Subscriber:public SubscriberHandle
 {
 
   public:
-    Subscriber(xrcedds::Participant_t* node, const char* name, CallbackFunc callback, void* callback_arg)
+    Subscriber(xrcedds::Subscriber_t* subscriber, const char* name, CallbackFunc callback, void* callback_arg)
       : SubscriberHandle()
     {
-      MsgT topic;
-
-      node_ = node;
       name_ = name;
+      subscriber_ = subscriber;
       this->callback = callback;
       this->callback_arg = callback_arg;
       this->recreate();
@@ -48,39 +41,33 @@ class Subscriber:public SubscriberHandle
         return;
       }
 
-      xrcedds::subscribe(&subscriber_);
-      request_id_ = subscriber_.read_req;
+      xrcedds::read(&data_reader_);
+      request_id_ = data_reader_.request_id;
     }
 
     void runCallback(void* serialized_msg)
     {
       if(this->callback != NULL)
       {
-        MsgT msg;
-        msg.deserialize((ucdrBuffer*)serialized_msg, &msg);
+        topic_.deserialize((ucdrBuffer*)serialized_msg, &topic_);
 
-        this->callback(&msg, this->callback_arg);
+        this->callback(&topic_, this->callback_arg);
       }
     }
 
     void recreate()
     {
-      MsgT topic;
-
-      // char subscriber_profile[100] = {0, };
-      // sprintf(subscriber_profile, "<subscriber name=\"%s\"", name_);
-      const char* subscriber_profile = "";
-
-      char reader_profile[256] = {0, };
-      sprintf(reader_profile, DEFAULT_READER_XML, getPrefixString(TOPICS_SUBSCRIBE), name_, topic.type_);
-      is_registered_ = xrcedds::createSubscriber(node_, &subscriber_, (char*)subscriber_profile, reader_profile);
-      this->reader_id_ = subscriber_.reader_id.id;
+      char reader_name[64];
+      sprintf(reader_name, "%s/%s", getPrefixString(TOPICS_SUBSCRIBE), name_);
+      is_registered_ = xrcedds::createDataReader(subscriber_, &data_reader_, reader_name, topic_.type_);
+      this->reader_id_ = data_reader_.id;
     };  
 
   private:
+    MsgT topic_;
     const char* name_;
-    xrcedds::Participant_t* node_;
-    xrcedds::Subscriber_t subscriber_;
+    xrcedds::Subscriber_t* subscriber_;
+    xrcedds::DataReader_t data_reader_;
 };
 
 } // namespace ros2

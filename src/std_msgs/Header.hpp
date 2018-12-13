@@ -23,9 +23,7 @@
 #define _STD_MSGS_HEADER_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
-
 
 #include "builtin_interfaces/Time.hpp"
 
@@ -39,7 +37,7 @@ public:
   char frame_id[64];
 
   Header():
-    Topic("std_msgs::msg::dds_::Header_", STD_MSGS_HEADER_TOPIC),
+    Topic("std_msgs::msg::dds_::Header_", "Header"),
     stamp()
   { 
     memset(frame_id, 0, sizeof(frame_id));

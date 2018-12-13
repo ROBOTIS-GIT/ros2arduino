@@ -23,7 +23,6 @@
 #define _NAV_MSGS_ODOMETRY_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -43,7 +42,7 @@ public:
     geometry_msgs::TwistWithCovariance twist;
 
   Odometry():
-    Topic("nav_msgs::msg::dds_::Odometry_", NAV_MSGS_ODOMETRY_TOPIC),
+    Topic("nav_msgs::msg::dds_::Odometry_", "Odometry"),
     header(), pose(), twist()
   {
     memset(child_frame_id, 0, sizeof(child_frame_id));

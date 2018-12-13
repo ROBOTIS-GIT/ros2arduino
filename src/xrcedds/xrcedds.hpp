@@ -1,48 +1,68 @@
 /*
- * rtps.hpp
+ * xrcedds.hpp
  *
  *  Created on: Nov 14, 2018
  *      Author: Kei
  */
 
-#ifndef RTPS_HPP_
-#define RTPS_HPP_
+#ifndef XRCEDDS_HPP_
+#define XRCEDDS_HPP_
 
 #include <stdint.h>
-#include "micro_xrce_dds/include/uxr/client/client.h"
 
 namespace xrcedds {
 
-typedef struct Participant{
-  bool is_init;
-  uxrObjectId id;
+/* session
   uxrSession *session;
   uxrStreamId output_stream_id;
   uxrStreamId input_stream_id;
-} Participant_t;
+*/
 
-typedef struct Subscriber{
-  bool is_init;
-  uxrObjectId id;
-  uxrObjectId reader_id;
-  uint16_t read_req;
-  uxrDeliveryControl delivery_control;
-  Participant_t *participant;
-} Subscriber_t;
-
-typedef struct Publisher{
-  bool is_init;
-  uxrObjectId id;
-  uxrObjectId writer_id;
-  Participant_t *participant;
-} Publisher_t;
+typedef enum XrceDdsCommportType{
+  XRCE_DDS_COMM_USB = 0,
+  XRCE_DDS_COMM_UDP,
+  XRCE_DDS_COMM_TCP
+} XrceDdsCommportType_t;
 
 typedef struct Transport{
-  uint8_t type;
+  XrceDdsCommportType_t type;
   const char* server_ip;
   uint16_t server_port;
   void *serial_device;
 } Transport_t;
+
+typedef struct Participant{
+  bool is_created;
+  uint16_t id;
+} Participant_t;
+
+typedef struct Subscriber{
+  bool is_created;
+  uint16_t id;
+  Participant_t *participant;
+} Subscriber_t;
+
+typedef struct Publisher{
+  bool is_created;
+  uint16_t id;
+  Participant_t *participant;
+} Publisher_t;
+
+typedef struct DataReader{
+  bool is_created;
+  uint16_t id;
+  uint16_t request_id;
+  Subscriber_t *subscriber;
+} DataReader_t;
+
+typedef struct DataWriter{
+  bool is_created;
+  uint16_t id;
+  uint16_t request_id;
+  Publisher_t *publisher;
+} DataWriter_t;
+
+
 
 
 /*
@@ -80,14 +100,23 @@ typedef struct Transport{
 
 
 void init(uint8_t rtps_product);
-bool initTransportAndSession(Transport_t* transport_info, uxrOnTopicFunc callback_func, void* callback_args);
+
+bool initTransportAndSession(Transport_t* transport_info, void* callback_func, void* callback_args);
 void deleteTransportAndSession(void);
-bool createParticipant(Participant_t* participant, const char* participant_profile);
-bool registerTopic(Participant_t* participant, char* topic_profile, uint8_t topic_id);
-bool createPublisher(Participant_t* participant, Publisher_t* publisher, char* publisher_profile, char* writer_profile);
-bool createSubscriber(Participant_t* participant, Subscriber_t* subscriber, char* subscriber_profile, char* reader_profile);
-void subscribe(Subscriber_t* subscriber);
-void publish(Publisher_t* publisher, void* buffer, uint32_t topic_size);
+
+bool createParticipant(Participant_t* participant, const char* participant_name);
+
+bool registerTopic(Participant_t* participant, const char* topic_name, const char* topic_type);
+
+bool createPublisher(Participant_t* participant, Publisher_t* publisher);
+bool createSubscriber(Participant_t* participant, Subscriber_t* subscriber);
+
+bool createDataWriter(Publisher_t* publisher, DataWriter_t* data_writer, char* writer_name, const char* topic_type);
+bool createDataReader(Subscriber_t* subscriber, DataReader_t* data_reader, char* reader_name, const char* topic_type);
+
+bool read(DataReader_t* data_reader);
+bool write(DataWriter_t* data_writer, void* buffer, uint32_t topic_size);
+
 bool runCommunication(uint32_t timeout_ms);
 
 
@@ -95,4 +124,4 @@ bool runCommunication(uint32_t timeout_ms);
 
 
 
-#endif /* RTPS_HPP_ */
+#endif /* XRCEDDS_HPP_ */

@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_POINT_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -37,7 +36,7 @@ public:
     double z;
 
   Point():
-    Topic("geometry_msgs::msg::dds_::Point_", GEOMETRY_MSGS_POINT_TOPIC),
+    Topic("geometry_msgs::msg::dds_::Point_", "Point"),
     x(0), y(0), z(0)
   { 
   }

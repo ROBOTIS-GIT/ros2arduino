@@ -15,7 +15,6 @@
 #ifndef _STD_MSGS_BOOL_HPP_
 #define _STD_MSGS_BOOL_HPP_
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 namespace std_msgs
@@ -27,7 +26,7 @@ class Bool: public ros2::Topic<Bool>
     bool data;
 
     Bool()
-        : Topic("std_msgs::msg::dds_::Bool_", STD_MSGS_BOOL_TOPIC), data(false)
+        : Topic("std_msgs::msg::dds_::Bool_", "Bool"), data(false)
     {
     }
 

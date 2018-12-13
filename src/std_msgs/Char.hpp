@@ -15,7 +15,6 @@
 #ifndef _STD_MSGS_CHAR_HPP_
 #define _STD_MSGS_CHAR_HPP_
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 namespace std_msgs
@@ -27,7 +26,7 @@ class Char: public ros2::Topic<Char>
     char data;
 
     Char()
-        : Topic("std_msgs::msg::dds_::Char_", STD_MSGS_CHAR_TOPIC), data(0)
+        : Topic("std_msgs::msg::dds_::Char_", "Char"), data(0)
     {
     }
 

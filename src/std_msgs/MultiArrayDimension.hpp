@@ -23,7 +23,6 @@
 #define _STD_MSGS_MULTI_ARRAY_DIMENSION_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -37,7 +36,7 @@ public:
   uint32_t stride;
 
   MultiArrayDimension():
-    Topic("std_msgs::msg::dds_::MultiArrayDimension_", STD_MSGS_MULTI_ARRAY_DIMENSION_TOPIC),
+    Topic("std_msgs::msg::dds_::MultiArrayDimension_", "MultiArrayDimension"),
     size(0), stride(0)
   { 
     memset(label, 0, sizeof(label));

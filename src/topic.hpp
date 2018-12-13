@@ -10,10 +10,8 @@
 
 #include <stdlib.h>
 #include "xrcedds/xrcedds.hpp"
-#include "topic_config.h"
-#include "xrcedds/micro_xrce_dds/thirdparty/microcdr/include/ucdr/microcdr.h"
-
-#define DEFAULT_TOPIC_XML ("<dds><topic><name>%s</name><dataType>%s</dataType></topic></dds>")
+#include "xrcedds/micro_xrce_dds/lib/thirdparty/microcdr/include/ucdr/microcdr.h"
+#include "xrcedds/micro_xrce_dds/micro_xrce_dds.h"
 
 namespace ros2 {
 
@@ -36,9 +34,9 @@ class Topic
 
 public:
 
-  Topic(const char* type, uint8_t id):
+  Topic(const char* type, const char* name):
     type_(type),
-    id_(id)
+    name_(name)
   {
   }
 
@@ -56,7 +54,7 @@ public:
   }
 
   const char* type_;
-  uint8_t id_;
+  const char* name_;
 };
 
 

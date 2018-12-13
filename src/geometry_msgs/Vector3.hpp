@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_VECTOR3_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -37,7 +36,7 @@ public:
     double z;
 
   Vector3():
-    Topic("geometry_msgs::msg::dds_::Vector3_", GEOMETRY_MSGS_VECTOR3_TOPIC),
+    Topic("geometry_msgs::msg::dds_::Vector3_", "Vector3"),
     x(0), y(0), z(0)
   { 
   }

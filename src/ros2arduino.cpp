@@ -77,29 +77,30 @@ const char* ros2::getPrefixString(MessagePrefix prefix)
   switch(prefix)
   {
     case ros2::TOPICS_PUBLISH:
-      return "rt/";
+      return "rt";
 
     case ros2::TOPICS_SUBSCRIBE:
-      return "rt/";
+      return "rt";
 
     case ros2::SERVICE_REQUEST:
-      return "rq/";
+      return "rq";
 
     case ros2::SERVICE_RESPONSE:
-      return "rr/";
+      return "rr";
 
     case ros2::SERVICE:
-      return "rs/";
+      return "rs";
 
     case ros2::PARAMETER:
-      return "rp/";
+      return "rp";
 
     case ros2::ACTION:
-      return "ra/";
+      return "ra";
   }
 
   return "";
 }
+
 
 void ros2::onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args)
 {

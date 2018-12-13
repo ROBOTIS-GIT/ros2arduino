@@ -16,7 +16,6 @@
 #define _STD_MSGS_INT16_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -29,7 +28,7 @@ public:
   int16_t data;
 
   Int16():
-    Topic("std_msgs::msg::dds_::Int16_", STD_MSGS_INT16_TOPIC),
+    Topic("std_msgs::msg::dds_::Int16_", "Int16"),
     data(0)
   { 
   }

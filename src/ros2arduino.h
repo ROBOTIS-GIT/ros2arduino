@@ -46,31 +46,26 @@ class Node
     void recreate()
     {
       err_code = 0;
-      participant_.is_init = false;
+      xrcedds_participant_.is_created = false;
       if(strcmp(client_communication_method, "Serial") == 0)
       {
-        transport_.type = 0;
-        transport_.serial_device = (void*) serial_device;
+        xrcedds_transport_.type = xrcedds::XRCE_DDS_COMM_USB;
+        xrcedds_transport_.serial_device = (void*) serial_device;
       }
       else
       {
-        transport_.type = 1;
-        transport_.server_ip = (const char*)server_ip;
-        transport_.server_port = server_port;
+        xrcedds_transport_.type = xrcedds::XRCE_DDS_COMM_UDP;
+        xrcedds_transport_.server_ip = (const char*)server_ip;
+        xrcedds_transport_.server_port = server_port;
       }
 
-      xrcedds::initTransportAndSession(&transport_, onTopicCallback, (void*)this);
+      xrcedds::init(0);
+      xrcedds::initTransportAndSession(&xrcedds_transport_, (void*)onTopicCallback, (void*)this);
 
-      const char* participant_xml = "<dds>"
-                                        "<participant>"
-                                            "<xrcedds>"
-                                                "<name>default_xrce_participant</name>"
-                                            "</xrcedds>"
-                                        "</participant>"
-                                    "</dds>";
-      //const char* participant_xml = "default_xrce_participant_profile";
+      node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_, "default_xrce_participant");
 
-      node_register_state_ = xrcedds::createParticipant(&this->participant_, participant_xml);
+      xrcedds::createPublisher(&this->xrcedds_participant_, &this->xrcedds_publisher_);
+      xrcedds::createSubscriber(&this->xrcedds_participant_, &this->xrcedds_subscriber_);
 
       uint8_t i;
       for(i = 0; i < ROS2_PUBLISHER_MAX; i++)
@@ -109,7 +104,7 @@ class Node
       }
 
       // Register Topic
-      ret = this->registerTopic<MsgT>(name);
+      ret = this->registerTopic<MsgT>();
 
       if (ret == false)
       {
@@ -117,7 +112,7 @@ class Node
         return NULL;
       }
 
-      p_pub = new ros2::Publisher<MsgT>(&this->participant_, name);
+      p_pub = new ros2::Publisher<MsgT>(&this->xrcedds_publisher_, name);
 
       if(p_pub->is_registered_ == false)
       {
@@ -160,7 +155,7 @@ class Node
       }
 
       // Register Topic
-      ret = this->registerTopic<MsgT>(name);
+      ret = this->registerTopic<MsgT>();
 
       if (ret == false)
       {
@@ -168,7 +163,7 @@ class Node
         return NULL;
       }
 
-      p_sub = new ros2::Subscriber<MsgT>(&this->participant_, name, callback, callback_arg);
+      p_sub = new ros2::Subscriber<MsgT>(&this->xrcedds_subscriber_, name, callback, callback_arg);
 
       if(p_sub->is_registered_ == false)
       {
@@ -191,38 +186,6 @@ class Node
       err_code = 0;
 
       return p_sub;
-    }
-
-    void deleteWriter(uint8_t writer_id)
-    {
-      for(uint8_t i = 0; i < ROS2_PUBLISHER_MAX; i++)
-      {
-        if(pub_list_[i] != NULL && pub_list_[i]->writer_id_ == writer_id)
-        {
-          uxrObjectId obj_id = {pub_list_[i]->writer_id_, UXR_DATAWRITER_ID};
-          uxr_buffer_delete_entity(participant_.session, participant_.output_stream_id, obj_id);
-          delete(pub_list_[i]);
-          pub_list_[i] = NULL;
-          pub_cnt_--;
-          break;
-        }
-      }
-    }
-
-    void deleteReader(uint8_t reader_id)
-    {
-      for(uint8_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
-      {
-        if(sub_list_[i] != NULL && sub_list_[i]->reader_id_ == reader_id)
-        {
-          uxrObjectId obj_id = {sub_list_[i]->reader_id_, UXR_DATAREADER_ID};
-          uxr_buffer_delete_entity(participant_.session, participant_.output_stream_id, obj_id);
-          delete(sub_list_[i]);
-          sub_list_[i] = NULL;
-          sub_cnt_--;
-          break;
-        }
-      }
     }
 
     void createWallTimer(uint32_t msec, CallbackFunc callback, void* callback_arg, PublisherHandle* pub)
@@ -273,7 +236,6 @@ class Node
         if(p_sub != NULL && p_sub->is_registered_ && p_sub->reader_id_ == reader_id)
         {
           p_sub->runCallback(serialized_msg);
-          //p_sub->subscribe();
         }
       }
     }
@@ -284,14 +246,16 @@ class Node
 
   private:
     bool node_register_state_;
-    xrcedds::Participant_t participant_;
-    xrcedds::Transport_t transport_;
+    xrcedds::Transport_t xrcedds_transport_;
+    xrcedds::Participant_t xrcedds_participant_;
+    xrcedds::Publisher_t xrcedds_publisher_;
+    xrcedds::Subscriber_t xrcedds_subscriber_;
     uint8_t pub_cnt_;
     uint8_t sub_cnt_;
 
     template <
       typename MsgT>
-    bool registerTopic(const char* name)
+    bool registerTopic()
     {
       bool ret;
       MsgT topic;
@@ -301,9 +265,7 @@ class Node
         return false;
       }
 
-      char topic_profile[256] = {0, };
-      sprintf(topic_profile, DEFAULT_TOPIC_XML, name, topic.type_);
-      ret = xrcedds::registerTopic(&this->participant_, topic_profile, topic.id_);
+      ret = xrcedds::registerTopic(&this->xrcedds_participant_, topic.name_, topic.type_);
 
       return ret;
     }

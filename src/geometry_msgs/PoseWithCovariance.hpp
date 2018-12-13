@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_POSE_WITH_CONVARIANCE_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -38,7 +37,7 @@ public:
   double covariance[36];
 
   PoseWithCovariance():
-    Topic("geometry_msgs::msg::dds_::PoseWithCovariance_", GEOMETRY_MSGS_POSE_WITH_COVARIANCE_TOPIC),
+    Topic("geometry_msgs::msg::dds_::PoseWithCovariance_", "PoseWithCovariance"),
     pose()
   { 
     memset(covariance, 0, sizeof(covariance));

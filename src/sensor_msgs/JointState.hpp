@@ -23,7 +23,6 @@
 #define _SENSOR_MSGS_JOINT_STATE_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -45,7 +44,7 @@ public:
     uint32_t effort_size;
 
   JointState():
-    Topic("sensor_msgs::msg::dds_::JointState_", SENSOR_MSGS_JOINT_STATE_TOPIC),
+    Topic("sensor_msgs::msg::dds_::JointState_", "JointState"),
     header(),
     name_size(1), position_size(1), velocity_size(1), effort_size(1)
   { 

@@ -16,7 +16,6 @@
 #define _STD_MSGS_UINT32_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -29,7 +28,7 @@ public:
   uint32_t data;
 
   UInt32():
-    Topic("std_msgs::msg::dds_::UInt32_", STD_MSGS_UINT32_TOPIC),
+    Topic("std_msgs::msg::dds_::UInt32_", "UInt32"),
     data(0)
   { 
   }

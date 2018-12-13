@@ -16,7 +16,6 @@
 #define _STD_MSGS_INT32_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -29,7 +28,7 @@ public:
   int32_t data;
 
   Int32():
-    Topic("std_msgs::msg::dds_::Int32_", STD_MSGS_INT32_TOPIC),
+    Topic("std_msgs::msg::dds_::Int32_", "Int32"),
     data(0)
   { 
   }

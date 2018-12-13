@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_QUATERNION_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -38,7 +37,7 @@ public:
     double w;
 
   Quaternion():
-    Topic("geometry_msgs::msg::dds_::Quaternion_", GEOMETRY_MSGS_QUATERNION_TOPIC),
+    Topic("geometry_msgs::msg::dds_::Quaternion_", "Quaternion"),
     x(0), y(0), z(0), w(0)
   { 
   }

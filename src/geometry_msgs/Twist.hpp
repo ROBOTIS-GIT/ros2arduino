@@ -23,7 +23,6 @@
 #define _GEOMETRY_MSGS_TWIST_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 #include "geometry_msgs/Vector3.hpp"
@@ -38,7 +37,7 @@ public:
   geometry_msgs::Vector3 angular;
 
   Twist():
-    Topic("geometry_msgs::msg::dds_::Twist_", GEOMETRY_MSGS_TWIST_TOPIC),
+    Topic("geometry_msgs::msg::dds_::Twist_", "Twist"),
     linear(),
     angular()
   { 

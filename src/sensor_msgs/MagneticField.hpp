@@ -23,7 +23,6 @@
 #define _SENSOR_MSGS_MAGNETIC_FIELD_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -41,7 +40,7 @@ public:
     double magnetic_field_covariance[9];
 
   MagneticField():
-    Topic("sensor_msgs::msg::dds_::MagneticField_", SENSOR_MSGS_MAGNETIC_FIELD_TOPIC),
+    Topic("sensor_msgs::msg::dds_::MagneticField_", "MagneticField"),
     header(), magnetic_field()
   { 
     memset(magnetic_field_covariance, 0, sizeof(magnetic_field_covariance));

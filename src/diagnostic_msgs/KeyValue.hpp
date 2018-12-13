@@ -23,7 +23,6 @@
 #define _DIAGNOSTIC_MSGS_KEY_VALUE_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -36,7 +35,7 @@ public:
     char value[255];
 
   KeyValue():
-    Topic("diagnostic_msgs::msg::dds_::KeyValue_", DIAGNOSTIC_MSGS_KEY_VALUE_TOPIC)
+    Topic("diagnostic_msgs::msg::dds_::KeyValue_", "KeyValue")
   { 
     memset(key, 0, sizeof(key));
     memset(value, 0, sizeof(value));

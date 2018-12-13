@@ -16,7 +16,6 @@
 #define _STD_MSGS_FLOAT64_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -29,7 +28,7 @@ public:
   double data;
 
   Float64():
-    Topic("std_msgs::msg::dds_::Float64_", STD_MSGS_FLOAT64_TOPIC),
+    Topic("std_msgs::msg::dds_::Float64_", "Float64"),
     data(0)
   { 
   }

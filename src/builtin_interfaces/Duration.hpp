@@ -23,10 +23,7 @@
 #define _BUILTIN_INTERFACES_DURATION_HPP_
 
 
-#include "micrortps.hpp"
-#include <topic_config.h>
 #include <topic.hpp>
-
 
 namespace builtin_interfaces {
 
@@ -42,7 +39,7 @@ public:
   uint32_t nanosec_;
 
   Duration():
-    Topic("builtin_interfaces::msg::dds_::Duration_", BUILTIN_INTERFACES_DURATION_TOPIC),
+    Topic("builtin_interfaces::msg::dds_::Duration_", "Duration"),
     sec_(0), nanosec_(0)
   {
   }

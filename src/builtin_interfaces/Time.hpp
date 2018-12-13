@@ -23,7 +23,6 @@
 #define _BUILTIN_INTERFACES_TIME_HPP_
 
 
-#include <topic_config.h>
 #include <topic.hpp>
 
 
@@ -37,7 +36,7 @@ public:
   uint32_t nanosec;
 
   Time():
-    Topic("builtin_interfaces::msg::dds_::Time_", BUILTIN_INTERFACES_TIME_TOPIC),
+    Topic("builtin_interfaces::msg::dds_::Time_", "Time"),
     sec(0), nanosec(0)
   {
   }
