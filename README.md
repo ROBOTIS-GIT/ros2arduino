@@ -59,7 +59,7 @@ $ ros2 topic echo /arduino_chatter
 
 #### Lastest release
  - **Feature**
-    - Only one node avaliable
+    - Only one node available
     - Publisher
     - Subscriber
  - **Communication**
