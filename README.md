@@ -7,7 +7,7 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.0.1|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/prerelease-crystal-2018-12-08)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
+|0.0.1|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
 ||||
 
 <br>
