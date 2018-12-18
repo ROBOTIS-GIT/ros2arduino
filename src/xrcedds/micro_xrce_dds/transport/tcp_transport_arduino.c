@@ -1,5 +1,5 @@
-#include "../../../../../include/uxr/client/profile/transport/tcp/tcp_transport_arduino.h"
-#include "tcp_transport_internal.h"
+#include "tcp_transport_arduino.h"
+#include "../lib/src/c/profile/transport/tcp/tcp_transport_internal.h"
 // #include <unistd.h>
 // #include <sys/types.h>
 // #include <string.h>

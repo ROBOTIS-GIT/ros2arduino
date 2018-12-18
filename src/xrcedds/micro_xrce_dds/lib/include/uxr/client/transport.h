@@ -26,7 +26,7 @@
 #elif defined(PLATFORM_NAME_NUTTX)
 #include <uxr/client/profile/transport/udp/udp_transport_linux.h>
 #elif defined(PLATFORM_NAME_ARDUINO)
-#include "profile/transport/udp/udp_transport_arduino.h"
+#include "../../../../transport/udp_transport_arduino.h"
 #endif
 #endif //PROFILE_UDP_TRANSPORT
 
@@ -39,7 +39,7 @@
 #elif defined(PLATFORM_NAME_NUTTX)
 #include <uxr/client/profile/transport/tcp/tcp_transport_linux.h>
 #elif defined(PLATFORM_NAME_ARDUINO)
-#include "profile/transport/tcp/tcp_transport_arduino.h"
+#include "../../../../transport/tcp_transport_arduino.h"
 #endif
 #endif //PROFILE_TCP_TRANSPORT
 
@@ -51,7 +51,7 @@
 #elif defined(PLATFORM_NAME_NUTTX)
 #include <uxr/client/profile/transport/serial/serial_transport_linux.h>
 #elif defined(PLATFORM_NAME_ARDUINO)
-#include "profile/transport/serial/serial_transport_arduino.h"
+#include "../../../../transport/serial_transport_arduino.h"
 #endif
 #endif //PROFILE_SERIAL_TRANSPORT
 

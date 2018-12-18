@@ -1,8 +1,8 @@
-#include "../../../../../include/uxr/client/profile/transport/serial/serial_transport_arduino.h"
-#include "serial_transport_internal.h"
+#include "serial_transport_arduino.h"
+#include "../lib/src/c/profile/transport/serial/serial_transport_internal.h"
 #include <fcntl.h>
 #include <unistd.h>
-#include "../transport_arduino_internal.h"
+#include "transport_arduino_internal.h"
 
 bool uxr_init_serial_platform(struct uxrSerialPlatform* platform, int fd,
     uint8_t remote_addr, uint8_t local_addr)
