@@ -573,7 +573,7 @@ void print_tail(int64_t initial_log_time)
 #ifdef WIN32
     printf(" %st: %I64ims%s", BLUE, ms, RESTORE_COLOR);
 #else
-    printf(" %st: %lims%s", BLUE, ms, RESTORE_COLOR);
+    printf(" %st: %lims%s", BLUE, (long int)ms, RESTORE_COLOR);
 #endif
 }
 
