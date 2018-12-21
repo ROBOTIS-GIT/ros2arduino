@@ -7,8 +7,9 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
+|0.0.2|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
 |0.0.1|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
-||||
+
 
 <br>
 
@@ -34,6 +35,7 @@ Based on the normal behavior of publisher and subscriber.
 ## Getting Start
 
 #### Dependancy Installation
+You must install ROS2 and XRCE-DDS Agent. (The version should be the same as the Version-specific dependencies above)
  - [ROS2](https://index.ros.org/doc/ros2/Installation/)
  - XRCE-DDS Agent
 	 - [Micro-XRCE-DDS Agent](https://micro-xrce-dds.readthedocs.io/en/latest/installation.html#installing-the-agent-stand-alone) for FastRTPS
