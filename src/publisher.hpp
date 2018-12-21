@@ -15,8 +15,6 @@
 #include <Arduino.h>
 
 
-extern uint32_t micros(void);
-
 namespace ros2 {
 
 template <typename MsgT>
