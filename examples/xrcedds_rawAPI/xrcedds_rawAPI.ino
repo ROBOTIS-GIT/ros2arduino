@@ -40,8 +40,7 @@ void setup()
 {
   pinMode(LED_BUILTIN, OUTPUT);
   RTPS_SERIAL.begin(1000000);
-  Serial4.begin(57600);
-  
+   
   while (!RTPS_SERIAL); 
 
   /* Init transport(Serial) & create session */

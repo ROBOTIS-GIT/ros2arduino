@@ -1,5 +1,5 @@
-#include "../../../../../include/uxr/client/profile/transport/udp/udp_transport_arduino.h"
-#include "udp_transport_internal.h"
+#include "udp_transport_arduino.h"
+#include "../lib/src/c/profile/transport/udp/udp_transport_internal.h"
 //#include <unistd.h>
 //#include <sys/types.h>
 //#include <string.h>
