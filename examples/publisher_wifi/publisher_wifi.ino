@@ -33,7 +33,7 @@ void setup()
   WiFi.begin(SSID, SSID_PW);
   while(WiFi.status() != WL_CONNECTED); 
 
-  ros2::init(AGENT_IP, AGENT_PORT, true);
+  ros2::init(AGENT_IP, AGENT_PORT, false);
 }
 
 void loop() 
