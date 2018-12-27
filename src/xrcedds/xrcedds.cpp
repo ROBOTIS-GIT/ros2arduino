@@ -39,6 +39,7 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
   {
     case XRCE_DDS_COMM_USB:
     default:
+      g_uxr_session.platform.serial_device = transport_info->serial_device;
       if(uxr_init_serial_transport(&g_uxr_session.transport, &g_uxr_session.platform, 0, 0, 0) == true)
       {
         g_uxr_session.comm_port = &g_uxr_session.transport.comm;

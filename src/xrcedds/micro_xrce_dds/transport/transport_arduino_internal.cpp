@@ -21,8 +21,12 @@ bool uxr_closeSerialArduino()
 
 size_t uxr_writeSerialDataArduino(uint8_t* buf, size_t len)
 {
-  return Serial.write(buf, len);
-  //return rtps_serial->write(buf, len);
+  size_t tx_len = 0;
+
+  tx_len = rtps_serial->write(buf, len);
+  rtps_serial->flush();
+
+  return tx_len;
 }
 
 size_t uxr_readSerialDataArduino(uint8_t* buf, size_t len, int timeout)
@@ -33,8 +37,7 @@ size_t uxr_readSerialDataArduino(uint8_t* buf, size_t len, int timeout)
 
   while (rv <= 0 && (millis() - pre_time < (uint32_t)timeout))
   {
-    rv = Serial.available();
-    //rv = rtps_serial->available();
+    rv = rtps_serial->available();
   }
 
   if(rv > len)
@@ -46,8 +49,7 @@ size_t uxr_readSerialDataArduino(uint8_t* buf, size_t len, int timeout)
   {
     for (size_t i = 0; i < rv; i++)
     {
-      buf[i] = Serial.read();
-      //buf[i] = rtps_serial->read();
+      buf[i] = rtps_serial->read();
     }
   }
   
