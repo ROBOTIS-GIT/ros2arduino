@@ -39,7 +39,7 @@ xrcedds::DataReader_t data_reader;
 void setup() 
 {
   pinMode(LED_BUILTIN, OUTPUT);
-  RTPS_SERIAL.begin(1000000);
+  RTPS_SERIAL.begin(115200);
    
   while (!RTPS_SERIAL); 
 

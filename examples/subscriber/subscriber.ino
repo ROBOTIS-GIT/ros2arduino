@@ -23,11 +23,11 @@ public:
 
 void setup() 
 {
-  pinMode(LED_BUILTIN, OUTPUT);
-  XRCEDDS_PORT.begin(1000000);
-  ros2::init(&XRCEDDS_PORT);
-
+  XRCEDDS_PORT.begin(115200);
   while (!XRCEDDS_PORT); 
+
+  ros2::init(&XRCEDDS_PORT);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() 
