@@ -102,7 +102,7 @@ typedef struct DataWriter{
 void init(uint8_t rtps_product);
 
 bool initTransportAndSession(Transport_t* transport_info, void* callback_func, void* args);
-void deleteTransportAndSession(void);
+void deleteTransportAndSession(Transport_t* transport_info);
 
 bool createParticipant(Participant_t* participant, const char* participant_name);
 

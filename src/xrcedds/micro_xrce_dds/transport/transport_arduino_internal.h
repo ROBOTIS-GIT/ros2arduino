@@ -22,6 +22,17 @@ bool uxr_closeSerialArduino();
 size_t uxr_writeSerialDataArduino(uint8_t* buf, size_t len);
 size_t uxr_readSerialDataArduino(uint8_t* buf, size_t len, int timeout);
 
+bool uxr_initUdpArduino(const char* ip_address, uint16_t port);
+bool uxr_closeUdpArduino();
+size_t uxr_writeUdpDataArduino(const uint8_t* buf, size_t len);
+size_t uxr_readUdpDataArduino(uint8_t* buf, size_t len, int timeout);
+
+bool uxr_connectTcpArduino(const char* ip_address, uint16_t port);
+bool uxr_closeTcpArduino();
+size_t uxr_writeTcpDataArduino(const uint8_t* buf, size_t len);
+size_t uxr_readTcpDataArduino(uint8_t* buf, size_t len, int timeout);
+bool uxr_disconnectTcpArduino();
+
 #ifdef __cplusplus
 }
 #endif
