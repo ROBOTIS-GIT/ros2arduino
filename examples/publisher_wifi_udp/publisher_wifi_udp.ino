@@ -2,6 +2,7 @@
 #include "std_msgs/String.hpp"
 
 #include <WiFi.h>
+#include <WiFiUdp.h>
 #define SSID       "YOUR_SSID"
 #define SSID_PW    "YOUR_SSID_PASSWORD"
 #define AGENT_IP   "AGENT_IP_ADDRESS"
@@ -28,12 +29,14 @@ public:
   }
 };
 
+WiFiUDP udp;
+
 void setup() 
 {
   WiFi.begin(SSID, SSID_PW);
-  while(WiFi.status() != WL_CONNECTED); 
+  while(WiFi.status() != WL_CONNECTED);
 
-  ros2::init(AGENT_IP, AGENT_PORT, false);
+  ros2::init(&udp, AGENT_IP, AGENT_PORT);
 }
 
 void loop() 

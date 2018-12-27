@@ -14,6 +14,8 @@
 #include "topic.hpp"
 #include "msg_list.hpp"
 #include <Arduino.h>
+#include <Udp.h>
+#include <Client.h>
 
 #define ROS2_PUBLISHER_MAX  10
 #define ROS2_SUBSCRIBER_MAX 10
@@ -23,7 +25,7 @@ namespace ros2 {
 extern const char* client_communication_method;
 extern const char* server_ip;
 extern uint16_t server_port;
-extern Stream* serial_device;
+extern void* comm_instance;
 
 void runNodeSubUserCallback(uint16_t id, void* msgs, void* args);
 
@@ -46,7 +48,6 @@ class Node
       if(strcmp(client_communication_method, "Serial") == 0)
       {
         xrcedds_transport_.type = xrcedds::XRCE_DDS_COMM_USB;
-        xrcedds_transport_.serial_device = (void*) serial_device;
       }
       else if(strcmp(client_communication_method, "udp") == 0)
       {
@@ -59,11 +60,14 @@ class Node
         xrcedds_transport_.type = xrcedds::XRCE_DDS_COMM_TCP;
         xrcedds_transport_.server_ip = server_ip;
         xrcedds_transport_.server_port = server_port;
+        
       }
       else
       {
         return;
       }
+
+      xrcedds_transport_.comm_instance = (void*) comm_instance;
 
       xrcedds::init(0);
       xrcedds::initTransportAndSession(&xrcedds_transport_, (void*)runNodeSubUserCallback, (void*)this);
@@ -269,7 +273,8 @@ class Node
 
 
 bool init(Stream* serial_dev);
-bool init(const char* p_server_ip, uint16_t server_port, bool enable_tcp);
+bool init(UDP* comm_instance, const char* p_server_ip, uint16_t server_port);
+bool init(Client* comm_instance, const char* p_server_ip, uint16_t server_port);
 void spin(Node *node);
 void syncTimeFromRemote(builtin_interfaces::Time* time);
 builtin_interfaces::Time now();

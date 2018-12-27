@@ -9,9 +9,7 @@
 bool uxr_init_tcp_platform(struct uxrTCPPlatform* platform, const char* ip,
     uint16_t port)
 {
-  (void)(platform);
-
-  return uxr_connectTcpArduino(ip, port);
+  return uxr_connectTcpArduino(platform->client_instance, ip, port);
 }
 
 bool uxr_close_tcp_platform(struct uxrTCPPlatform* platform)

@@ -24,7 +24,7 @@ extern "C"
 
 typedef struct uxrSerialPlatform
 {
-  void *serial_device;
+  void *serial_instance;
   uint32_t baudrate;
 } uxrSerialPlatform;
 

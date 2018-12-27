@@ -29,7 +29,7 @@ typedef struct uxr_session{
   uxrSerialTransport transport_serial;
   uxrSerialPlatform  platform_serial;
   uxrUDPTransport    transport_udp;
-  uxrUDPPlatform    platform_udp;
+  uxrUDPPlatform     platform_udp;
   uxrTCPTransport    transport_tcp;
   uxrTCPPlatform     platform_tcp;
 } uxr_session_t;

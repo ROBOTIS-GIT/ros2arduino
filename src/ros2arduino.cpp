@@ -12,32 +12,53 @@ namespace ros2 {
   const char* client_communication_method;
   const char* server_ip;
   uint16_t server_port;
-  Stream* serial_device;
+  void* comm_instance;
 
   static builtin_interfaces::Time synced_time_from_remote;
   static uint32_t millis_when_synced_time;
 }
 
-bool ros2::init(Stream* serial_dev)
+bool ros2::init(Stream* comm_instance)
 {
+  if(comm_instance == NULL)
+  {
+    return false;
+  }
+
   ros2::client_communication_method = "Serial";
-  ros2::serial_device = serial_dev;
+  ros2::comm_instance = (void*)comm_instance;
 
   return true;
 }
 
-bool ros2::init(const char* p_server_ip, uint16_t server_port, bool enable_tcp)
+bool ros2::init(UDP* comm_instance, const char* p_server_ip, uint16_t server_port)
 {
-  if(enable_tcp == true )
+  if(comm_instance == NULL)
   {
-    ros2::client_communication_method = "tcp";
+    return false;
   }
-  else
-  {
-    ros2::client_communication_method = "udp";
-  }
+
+  ros2::client_communication_method = "udp";
+
   ros2::server_ip = p_server_ip;
   ros2::server_port = server_port;
+  ros2::comm_instance = (void*)comm_instance;
+
+  return true;
+}
+
+bool ros2::init(Client* comm_instance, const char* p_server_ip, uint16_t server_port)
+{
+  if(comm_instance == NULL)
+  {
+    return false;
+  }
+
+  ros2::client_communication_method = "tcp";
+
+  ros2::server_ip = p_server_ip;
+  ros2::server_port = server_port;
+  ros2::comm_instance = (void*)comm_instance;
 
   return true;
 }

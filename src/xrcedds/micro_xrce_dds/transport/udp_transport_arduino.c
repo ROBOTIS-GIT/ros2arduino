@@ -9,9 +9,7 @@
 
 bool uxr_init_udp_platform(uxrUDPPlatform* platform, const char* ip, uint16_t port)
 {
-  (void)(platform);
-
-  return uxr_initUdpArduino(ip, port);
+  return uxr_initUdpArduino(platform->udp_instance, ip, port);
 }
 
 bool uxr_close_udp_platform(uxrUDPPlatform* platform)
