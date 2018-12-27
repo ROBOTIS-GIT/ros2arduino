@@ -7,6 +7,7 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
+|0.0.4|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
 |0.0.3|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
 |0.0.2|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
 |0.0.1|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
@@ -23,15 +24,15 @@ Based on the normal behavior of publisher and subscriber.
  - [OpenCM9.04](http://emanual.robotis.com/docs/en/parts/controller/opencm904/)
  - Arduino MKR ZERO
  - Arduino DUE
- - ESP32 (Only serial yet)
- - ESP8266 (Only serial yet)
+ - ESP32 (not support TCP yet)
+ - ESP8266 (not support TCP yet)
 
 #### Communication
  ||Implemented|Note|
  |:-:|:-:|:-:|
  |Serial|YES||
- |UDP|NO||
- |TCP|NO||
+ |UDP|YES|ESP32, ESP8266|
+ |TCP|NO|Debugging...|
 
 <br>
 
@@ -69,14 +70,13 @@ $ ros2 topic echo /arduino_chatter
     - Subscriber
  - **Communication**
     - Serial
+    - UDP
 
 #### Plan
  - **Feature**
     - ROS2 service
  - **Communication**
     - Ethernet Shield (UDP, TCP)
-    - ESP32 (UDP, TCP)
-    - ESP8266 (UDP, TCP)
     - Official Arduino WiFi (MKR1000, MKRWiFi, etc)
  - **Enhancements**
     - Memory allocation / Management
