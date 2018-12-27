@@ -25,7 +25,6 @@ Based on the normal behavior of publisher and subscriber.
  - Arduino MKR ZERO
  - Arduino DUE
  - ESP32 (not support TCP yet)
- - ESP8266 (not support TCP yet)
 
 #### Communication
  ||Implemented|Note|
