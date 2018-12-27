@@ -9,8 +9,8 @@
 #include "ros2arduino.h"
 
 namespace ros2 {
-  char* client_communication_method;
-  char* server_ip;
+  const char* client_communication_method;
+  const char* server_ip;
   uint16_t server_port;
   Stream* serial_device;
 
@@ -20,16 +20,23 @@ namespace ros2 {
 
 bool ros2::init(Stream* serial_dev)
 {
-  ros2::client_communication_method = (char*)"Serial";
+  ros2::client_communication_method = "Serial";
   ros2::serial_device = serial_dev;
 
   return true;
 }
 
-bool ros2::init(const char* p_server_ip, uint16_t server_port)
+bool ros2::init(const char* p_server_ip, uint16_t server_port, bool enable_tcp)
 {
-  ros2::client_communication_method = (char*)"Ethernet";
-  ros2::server_ip = (char*)p_server_ip;
+  if(enable_tcp == true )
+  {
+    ros2::client_communication_method = "tcp";
+  }
+  else
+  {
+    ros2::client_communication_method = "udp";
+  }
+  ros2::server_ip = p_server_ip;
   ros2::server_port = server_port;
 
   return true;

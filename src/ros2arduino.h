@@ -20,8 +20,8 @@
 
 namespace ros2 {
 
-extern char* client_communication_method;
-extern char* server_ip;
+extern const char* client_communication_method;
+extern const char* server_ip;
 extern uint16_t server_port;
 extern Stream* serial_device;
 
@@ -48,11 +48,21 @@ class Node
         xrcedds_transport_.type = xrcedds::XRCE_DDS_COMM_USB;
         xrcedds_transport_.serial_device = (void*) serial_device;
       }
-      else
+      else if(strcmp(client_communication_method, "udp") == 0)
       {
         xrcedds_transport_.type = xrcedds::XRCE_DDS_COMM_UDP;
-        xrcedds_transport_.server_ip = (const char*)server_ip;
+        xrcedds_transport_.server_ip = server_ip;
         xrcedds_transport_.server_port = server_port;
+      }
+      else if(strcmp(client_communication_method, "tcp") == 0)
+      {
+        xrcedds_transport_.type = xrcedds::XRCE_DDS_COMM_TCP;
+        xrcedds_transport_.server_ip = server_ip;
+        xrcedds_transport_.server_port = server_port;
+      }
+      else
+      {
+        return;
       }
 
       xrcedds::init(0);
@@ -259,7 +269,7 @@ class Node
 
 
 bool init(Stream* serial_dev);
-bool init(const char* p_server_ip, uint16_t server_port);
+bool init(const char* p_server_ip, uint16_t server_port, bool enable_tcp);
 void spin(Node *node);
 void syncTimeFromRemote(builtin_interfaces::Time* time);
 builtin_interfaces::Time now();

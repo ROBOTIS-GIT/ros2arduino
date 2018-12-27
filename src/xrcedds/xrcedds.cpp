@@ -14,7 +14,7 @@
 //
 #include "micro_xrce_dds/micro_xrce_dds.h"
 #define STREAM_HISTORY 2
-#define BUFFER_SIZE    UXR_CONFIG_SERIAL_TRANSPORT_MTU * STREAM_HISTORY
+#define BUFFER_SIZE    512 * STREAM_HISTORY //UXR_CONFIG_SERIAL_TRANSPORT_MTU
 static uint8_t output_reliable_stream_buffer[BUFFER_SIZE];
 static uint8_t input_reliable_stream_buffer[BUFFER_SIZE];
 static uxr_session_t g_uxr_session;
@@ -38,13 +38,26 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
   switch(transport_info->type)
   {
     case XRCE_DDS_COMM_USB:
-    default:
-      g_uxr_session.platform.serial_device = transport_info->serial_device;
-      if(uxr_init_serial_transport(&g_uxr_session.transport, &g_uxr_session.platform, 0, 0, 0) == true)
+      g_uxr_session.platform_serial.serial_device = transport_info->serial_device;
+      if(uxr_init_serial_transport(&g_uxr_session.transport_serial, &g_uxr_session.platform_serial, 0, 0, 0) == true)
       {
-        g_uxr_session.comm_port = &g_uxr_session.transport.comm;
+        g_uxr_session.comm_port = &g_uxr_session.transport_serial.comm;
       }
       break;
+    case XRCE_DDS_COMM_UDP:
+      if(uxr_init_udp_transport(&g_uxr_session.transport_udp, &g_uxr_session.platform_udp, transport_info->server_ip, transport_info->server_port) == true)
+      {
+        g_uxr_session.comm_port = &g_uxr_session.transport_udp.comm;
+      }
+      break;
+    case XRCE_DDS_COMM_TCP:
+      if(uxr_init_tcp_transport(&g_uxr_session.transport_tcp, &g_uxr_session.platform_tcp, transport_info->server_ip, transport_info->server_port) == true)
+      {
+        g_uxr_session.comm_port = &g_uxr_session.transport_tcp.comm;
+      }
+      break;    
+    default:
+      return false;
   }
 
   if(g_uxr_session.comm_port != NULL)
@@ -64,10 +77,22 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
   return g_uxr_session.is_init;
 }
 
-void xrcedds::deleteTransportAndSession(void)
+void xrcedds::deleteTransportAndSession(Transport_t* transport_info)
 {
   uxr_delete_session(&g_uxr_session.session);
-  uxr_close_serial_transport(&g_uxr_session.transport);
+
+  switch(transport_info->type)
+  {
+    case XRCE_DDS_COMM_USB:
+      uxr_close_serial_transport(&g_uxr_session.transport_serial);
+      break;
+    case XRCE_DDS_COMM_UDP:
+      uxr_close_udp_transport(&g_uxr_session.transport_udp);  
+      break;
+    case XRCE_DDS_COMM_TCP:
+      uxr_close_tcp_transport(&g_uxr_session.transport_tcp);  
+      break;
+  }
 }
 
 bool xrcedds::createParticipant(xrcedds::Participant_t* participant, const char* participant_name)

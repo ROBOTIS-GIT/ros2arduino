@@ -26,8 +26,12 @@ typedef struct uxr_session{
   uxrCommunication  *comm_port;
   uxrStreamId        output_stream_id;
   uxrStreamId        input_stream_id;
-  uxrSerialTransport transport;
-  uxrSerialPlatform  platform;
+  uxrSerialTransport transport_serial;
+  uxrSerialPlatform  platform_serial;
+  uxrUDPTransport    transport_udp;
+  uxrUDPPlatform    platform_udp;
+  uxrTCPTransport    transport_tcp;
+  uxrTCPPlatform     platform_tcp;
 } uxr_session_t;
 
 void uxr_onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args);
