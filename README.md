@@ -1,4 +1,4 @@
-# ros2arduino
+# ros2arduino [![Build Status](https://travis-ci.org/ROBOTIS-GIT/ros2arduino.svg?branch=master)](https://travis-ci.org/ROBOTIS-GIT/ros2arduino/branches)
 Arduino library for communicating with ROS2(DDS)
 
 <br>
