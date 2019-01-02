@@ -12,7 +12,7 @@ bool uxr_init_serial_platform(struct uxrSerialPlatform* platform, int fd,
   (void) (local_addr);
 
   /* Open device */
-  return uxr_initSerialArduino(platform->serial_device);
+  return uxr_initSerialArduino(platform->serial_instance);
 }
 
 bool uxr_close_serial_platform(struct uxrSerialPlatform* platform)

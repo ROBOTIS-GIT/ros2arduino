@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _UXR_CLIENT_TCP_TRANSPORT_COMMXEL_H_
-#define _UXR_CLIENT_TCP_TRANSPORT_COMMXEL_H_
+#ifndef _UXR_CLIENT_TCP_TRANSPORT_ARDUINO_H_
+#define _UXR_CLIENT_TCP_TRANSPORT_ARDUINO_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -23,10 +23,11 @@ extern "C"
 typedef struct uxrTCPPlatform
 {
   int socket_fd;
+  void* client_instance;
 }uxrTCPPlatform;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //_UXR_CLIENT_TCP_TRANSPORT_COMMXEL_H_
+#endif //_UXR_CLIENT_TCP_TRANSPORT_ARDUINO_H_

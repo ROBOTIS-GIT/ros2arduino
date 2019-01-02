@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _UXR_CLIENT_UDP_TRANSPORT_COMMXEL_H_
-#define _UXR_CLIENT_UDP_TRANSPORT_COMMXEL_H_
+#ifndef _UXR_CLIENT_UDP_TRANSPORT_ARDUINO_H_
+#define _UXR_CLIENT_UDP_TRANSPORT_ARDUINO_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -23,6 +23,7 @@ extern "C"
 typedef struct uxrUDPPlatform
 {
   int socket_fd;
+  void* udp_instance;
 } uxrUDPPlatform;
 
 
@@ -30,4 +31,4 @@ typedef struct uxrUDPPlatform
 }
 #endif
 
-#endif //_UXR_CLIENT_UDP_TRANSPORT_COMMXEL_H_
+#endif //_UXR_CLIENT_UDP_TRANSPORT_ARDUINO_H_

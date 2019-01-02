@@ -28,7 +28,7 @@ typedef struct Transport{
   XrceDdsCommportType_t type;
   const char* server_ip;
   uint16_t server_port;
-  void *serial_device;
+  void *comm_instance;
 } Transport_t;
 
 typedef struct Participant{

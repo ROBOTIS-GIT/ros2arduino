@@ -1,13 +1,17 @@
 #include <ros2arduino.h>
 #include "std_msgs/String.hpp"
 
-#include <WiFi.h>
-#define SSID       "YOUR_SSID"
-#define SSID_PW    "YOUR_SSID_PASSWORD"
+#include <Ethernet.h>
 #define AGENT_IP   "AGENT_IP_ADDRESS"
 #define AGENT_PORT 2018 //AGENT port number
 
 #define PUBLISH_FREQUENCY 2 //hz
+
+// Enter a MAC address for your controller below.
+// Newer Ethernet shields have a MAC address printed on a sticker on the shield
+byte mac_address[6] = {
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+};
 
 void publishString(std_msgs::String* msg, void* arg)
 {
@@ -28,12 +32,14 @@ public:
   }
 };
 
+EthernetClient client;
+
 void setup() 
 {
-  WiFi.begin(SSID, SSID_PW);
-  while(WiFi.status() != WL_CONNECTED); 
+  Ethernet.begin(mac_address);
+  while(Ethernet.linkStatus() != LinkON);
 
-  ros2::init(AGENT_IP, AGENT_PORT, false);
+  ros2::init(&client, AGENT_IP, AGENT_PORT);
 }
 
 void loop() 

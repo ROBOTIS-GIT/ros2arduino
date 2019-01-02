@@ -38,19 +38,21 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
   switch(transport_info->type)
   {
     case XRCE_DDS_COMM_USB:
-      g_uxr_session.platform_serial.serial_device = transport_info->serial_device;
+      g_uxr_session.platform_serial.serial_instance = transport_info->comm_instance;
       if(uxr_init_serial_transport(&g_uxr_session.transport_serial, &g_uxr_session.platform_serial, 0, 0, 0) == true)
       {
         g_uxr_session.comm_port = &g_uxr_session.transport_serial.comm;
       }
       break;
     case XRCE_DDS_COMM_UDP:
+      g_uxr_session.platform_udp.udp_instance = transport_info->comm_instance;
       if(uxr_init_udp_transport(&g_uxr_session.transport_udp, &g_uxr_session.platform_udp, transport_info->server_ip, transport_info->server_port) == true)
       {
         g_uxr_session.comm_port = &g_uxr_session.transport_udp.comm;
       }
       break;
     case XRCE_DDS_COMM_TCP:
+      g_uxr_session.platform_tcp.client_instance = transport_info->comm_instance;
       if(uxr_init_tcp_transport(&g_uxr_session.transport_tcp, &g_uxr_session.platform_tcp, transport_info->server_ip, transport_info->server_port) == true)
       {
         g_uxr_session.comm_port = &g_uxr_session.transport_tcp.comm;
