@@ -25,7 +25,7 @@ export DISPLAY=:1.0
 
 # download and install arduino IDE
 wget https://downloads.arduino.cc/arduino-1.8.8-linux64.tar.xz -O $HOME/arduino_ide.tar.xz
-tar xf arduino_ide.tar.xz
+tar xf $HOME/arduino_ide.tar.xz
 
 # move this library to the arduino libraries folder
 ln -s $PWD $HOME/arduino_ide/libraries/ros2arduino
