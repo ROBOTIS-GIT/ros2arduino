@@ -16,14 +16,14 @@ bool String_deserialize_topic(struct ucdrBuffer* reader, String_* topic);
 uint32_t String_size_of_topic(const String_* topic, uint32_t size);
 
 /* Bool topic information */
-typedef struct Bool
+typedef struct Bool_
 {
     bool data;
-} Bool;
+} Bool_;
 
-bool Bool_serialize_topic(struct ucdrBuffer* writer, const Bool* topic);
-bool Bool_deserialize_topic(struct ucdrBuffer* reader, Bool* topic);
-uint32_t Bool_size_of_topic(const Bool* topic, uint32_t size);
+bool Bool_serialize_topic(struct ucdrBuffer* writer, const Bool_* topic);
+bool Bool_deserialize_topic(struct ucdrBuffer* reader, Bool_* topic);
+uint32_t Bool_size_of_topic(const Bool_* topic, uint32_t size);
 
 /* Callback when reader is received topic */
 void onTopicUserCallback(uint16_t reader_id, void* msgs, void* args);
@@ -92,7 +92,7 @@ void onTopicUserCallback(uint16_t reader_id, void* msgs, void* args)
 
   if(reader_id == data_reader.id)
   {
-    Bool topic;
+    Bool_ topic;
     Bool_deserialize_topic((ucdrBuffer*)msgs, &topic);
     digitalWrite(LED_BUILTIN, topic.data);
   }
@@ -121,21 +121,21 @@ uint32_t String_size_of_topic(const String_* topic, uint32_t size)
 
 
 
-bool Bool_serialize_topic(ucdrBuffer* writer, const Bool* topic)
+bool Bool_serialize_topic(ucdrBuffer* writer, const Bool_* topic)
 {
     (void) ucdr_serialize_bool(writer, topic->data);
 
     return !writer->error;
 }
 
-bool Bool_deserialize_topic(ucdrBuffer* reader, Bool* topic)
+bool Bool_deserialize_topic(ucdrBuffer* reader, Bool_* topic)
 {
     (void) ucdr_deserialize_bool(reader, &topic->data);
 
     return !reader->error;
 }
 
-uint32_t Bool_size_of_topic(const Bool* topic, uint32_t size)
+uint32_t Bool_size_of_topic(const Bool_* topic, uint32_t size)
 {
     (void)(topic);
     uint32_t previousSize = size;
