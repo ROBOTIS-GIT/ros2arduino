@@ -8,15 +8,7 @@ fi
 
 # associative array for the platforms that will be verified in build_main_platforms()
 # this will be eval'd in the functions below because arrays can't be exported
-export MAIN_PLATFORMS='declare -A main_platforms=(\
- [due]="arduino:sam:arduino_due_x"\
- [mkr1000]="arduino:samd:mkr1000"\
- [mkrzero]="arduino:samd:mkrzero"\
- [opencr]="OpenCR:OpenCR:OpenCR"\
- [esp32feather]="esp32:esp32:featheresp32"\
- [opencm904]="OpenCM904:OpenCM904:OpenCM904"\
- [esp8266nodemcu]="esp8266:esp8266:nodemcuv2"\
-)'
+export MAIN_PLATFORMS='declare -A main_platforms=([due]="arduino:sam:arduino_due_x" [mkr1000]="arduino:samd:mkr1000" [mkrzero]="arduino:samd:mkrzero" [opencr]="OpenCR:OpenCR:OpenCR" [esp32feather]="esp32:esp32:featheresp32" [opencm904]="OpenCM904:OpenCM904:OpenCM904" [esp8266nodemcu]="esp8266:esp8266:nodemcuv2")'
 
 # make display available for arduino CLI
 /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16
