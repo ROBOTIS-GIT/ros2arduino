@@ -1,0 +1,3 @@
+[submodule "src/ros2"]
+	path = src/ros2
+	url = https://github.com/ROBOTIS-GIT/ros2xrcedds.git

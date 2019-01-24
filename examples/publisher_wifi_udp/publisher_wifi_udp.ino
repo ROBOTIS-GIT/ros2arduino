@@ -1,5 +1,4 @@
 #include <ros2arduino.h>
-#include "std_msgs/String.hpp"
 
 #include <WiFi.h>
 #include <WiFiUdp.h>

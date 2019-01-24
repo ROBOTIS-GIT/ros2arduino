@@ -1,6 +1,5 @@
 #include <ros2arduino.h>
 
-#include "std_msgs/String.hpp"
 
 #define XRCEDDS_PORT  Serial
 #define PUBLISH_FREQUENCY 2 //hz

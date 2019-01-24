@@ -44,7 +44,7 @@ void setup()
   while (!RTPS_SERIAL); 
 
   /* Init transport(Serial) & create session */
-  transport.type = xrcedds::XRCE_DDS_COMM_USB;
+  transport.type = xrcedds::XRCE_DDS_COMM_SERIAL;
   xrcedds::init(0);
   xrcedds::initTransportAndSession(&transport, (void*)onTopicUserCallback, NULL);
   
