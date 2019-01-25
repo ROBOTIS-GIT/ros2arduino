@@ -6,12 +6,8 @@ before_install:
 script:
   - build_platform opencr
   - build_platform due
-  - build_platform mkrzero
   - build_platform mkr1000
-  - build_platform esp32feather
-  - build_platform opencm904
-  - build_platform esp8266nodemcu
-  
+
 notifications:
   email:
     on_success: change

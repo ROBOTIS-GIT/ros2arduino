@@ -1,5 +1,4 @@
 #include <ros2arduino.h>
-#include "std_msgs/String.hpp"
 
 #include <Ethernet.h>
 #define AGENT_IP   "AGENT_IP_ADDRESS"
