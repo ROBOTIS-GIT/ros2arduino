@@ -9,7 +9,7 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.0.6|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)| [specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/f46ea3c4942b7f04d6b35e58a32006d83d2e4eb5) |
+|0.0.7|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)| [specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/f46ea3c4942b7f04d6b35e58a32006d83d2e4eb5) |
 
 For the Micro-XRCE-DDS Agent, please install it using following commands.
 ```bash
@@ -25,7 +25,7 @@ $ sudo ldconfig /usr/local/lib/
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.0.6|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1) < |
+|0.0.7|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1) < |
 
 <br>
 
