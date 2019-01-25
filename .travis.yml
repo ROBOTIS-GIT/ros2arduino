@@ -7,7 +7,7 @@ script:
   - build_platform opencr
   - build_platform due
   - build_platform mkr1000
-  
+
 notifications:
   email:
     on_success: change

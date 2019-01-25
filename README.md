@@ -21,7 +21,6 @@ $ sudo make install
 $ sudo ldconfig /usr/local/lib/
 ```
 
-
 - All
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
