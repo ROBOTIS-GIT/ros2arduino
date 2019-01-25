@@ -9,12 +9,12 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.0.6|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)| [specific commit](2c136dc429178dab79b231cc5d67a7c229cca77a) |
+|0.0.6|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)| [specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/f46ea3c4942b7f04d6b35e58a32006d83d2e4eb5) |
 
 For the Micro-XRCE-DDS Agent, please install it using following commands.
 ```bash
 $ git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-$ cd Micro-XRCE-DDS-Agent && git checkout 2c136dc429178dab79b231cc5d67a7c229cca77a
+$ cd Micro-XRCE-DDS-Agent && git checkout f46ea3c4942b7f04d6b35e58a32006d83d2e4eb5
 $ mkdir build && cd build
 $ cmake -DTHIRDPARTY=ON -DCONFIG_UDP_TRANSPORT_MTU=4096 -DCONFIG_SERIAL_TRANSPORT_MTU=4096 ..
 $ sudo make install
@@ -73,7 +73,7 @@ You must install ROS2 and XRCE-DDS Agent. (The version should be the same as the
 #### Excute XRCE-DDS Agent
  - Serial
    ```bash
-   $ MicroXRCEAgent serial /dev/ttyACM0
+   $ MicroXRCEAgent serial /dev/ttyACM0 115200
    ```
  - UDP
    ```bash
