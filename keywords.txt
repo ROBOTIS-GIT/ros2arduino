@@ -6,17 +6,26 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-CallbackFunc    KEYWORD1
+ros2::Node  KEYWORD1    
+ros2::CallbackFunc    KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-runNodeSubUserCallback  KEYWORD2
+ros2::Node  KEYWORD2
+ros2::Publisher KEYWORD2
+ros2::Subscriber    KEYWORD2
+
+ros2::init  KEYWORD2
+ros2::spin  KEYWORD2
+
+createPublisher KEYWORD2
+createSubscriber    KEYWORD2
+createWallFreq  KEYWORD2
+createWallTimer  KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
 
-ROS2_PUBLISHER_MAX  LITERAL1
-ROS2_SUBSCRIBER_MAX LITERAL1

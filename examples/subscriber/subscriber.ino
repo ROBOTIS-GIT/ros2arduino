@@ -1,7 +1,5 @@
 #include <ros2arduino.h>
 
-#include "std_msgs/Bool.hpp"
-
 #define XRCEDDS_PORT  Serial 
 
 void subscribeLed(std_msgs::Bool* msg, void* arg)
