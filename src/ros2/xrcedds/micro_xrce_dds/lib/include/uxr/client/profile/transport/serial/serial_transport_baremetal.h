@@ -12,23 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _UXR_CLIENT_UDP_TRANSPORT_ARDUINO_H_
-#define _UXR_CLIENT_UDP_TRANSPORT_ARDUINO_H_
+#ifndef _UXR_CLIENT_SERIAL_TRANSPORT_BAREMETAL_H_
+#define _UXR_CLIENT_SERIAL_TRANSPORT_BAREMETAL_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-typedef struct uxrUDPPlatform
-{
-  int socket_fd;
-  void* udp_instance;
-} uxrUDPPlatform;
+#include <stdint.h>
 
+typedef struct uxrSerialPlatform
+{
+  void *serial_instance;
+  uint32_t baudrate;
+} uxrSerialPlatform;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //_UXR_CLIENT_UDP_TRANSPORT_ARDUINO_H_
+#endif //_UXR_CLIENT_SERIAL_TRANSPORT_BAREMETAL_H_

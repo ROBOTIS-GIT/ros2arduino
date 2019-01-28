@@ -12,22 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _UXR_CLIENT_TCP_TRANSPORT_ARDUINO_H_
-#define _UXR_CLIENT_TCP_TRANSPORT_ARDUINO_H_
+#ifndef _UXR_CLIENT_UDP_TRANSPORT_BAREMETAL_H_
+#define _UXR_CLIENT_UDP_TRANSPORT_BAREMETAL_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-typedef struct uxrTCPPlatform
+typedef struct uxrUDPPlatform
 {
   int socket_fd;
-  void* client_instance;
-}uxrTCPPlatform;
+  void* udp_instance;
+} uxrUDPPlatform;
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //_UXR_CLIENT_TCP_TRANSPORT_ARDUINO_H_
+#endif //_UXR_CLIENT_UDP_TRANSPORT_BAREMETAL_H_
