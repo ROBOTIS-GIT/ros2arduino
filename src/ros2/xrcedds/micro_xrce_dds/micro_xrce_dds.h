@@ -15,7 +15,9 @@ extern "C"
 
 #include <stdio.h>
 #include "micro_xrce_dds_xml.h"
+#include <uxr/client/client.h>
 #include <ucdr/microcdr.h>
+#include "transport_ex.h"
 
 typedef void(*uxr_onTopicUserCallback)(uint16_t id, void* msgs, void* args);
 

@@ -9,7 +9,6 @@
 #define MICRO_XRCE_DDS_XML_H_
 
 #include <stdio.h>
-#include <uxr/client/client.h>
 
 #ifdef PROFILE_CREATE_ENTITIES_XML
 #define UXR_PARTICIPANT_XML "<dds><participant><rtps><name>%s</name></rtps></participant></dds>"
