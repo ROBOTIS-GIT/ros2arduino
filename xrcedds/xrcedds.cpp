@@ -37,13 +37,18 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
 
   switch(transport_info->type)
   {
+#ifdef PROFILE_SERIAL_TRANSPORT
     case xrcedds::XRCE_DDS_COMM_SERIAL:
+
       g_uxr_session.platform_serial.serial_instance = transport_info->comm_instance;
       if(uxr_init_serial_transport(&g_uxr_session.transport_serial, &g_uxr_session.platform_serial, 0, 0, 0) == true)
       {
         g_uxr_session.comm_port = &g_uxr_session.transport_serial.comm;
       }
       break;
+#endif
+
+#ifdef PROFILE_UDP_TRANSPORT
     case xrcedds::XRCE_DDS_COMM_UDP:
       g_uxr_session.platform_udp.udp_instance = transport_info->comm_instance;
       if(uxr_init_udp_transport(&g_uxr_session.transport_udp, &g_uxr_session.platform_udp, transport_info->server_ip, transport_info->server_port) == true)
@@ -51,6 +56,9 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
         g_uxr_session.comm_port = &g_uxr_session.transport_udp.comm;
       }
       break;
+#endif
+
+#ifdef PROFILE_TCP_TRANSPORT
     case xrcedds::XRCE_DDS_COMM_TCP:
       g_uxr_session.platform_tcp.client_instance = transport_info->comm_instance;
       if(uxr_init_tcp_transport(&g_uxr_session.transport_tcp, &g_uxr_session.platform_tcp, transport_info->server_ip, transport_info->server_port) == true)
@@ -58,6 +66,8 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
         g_uxr_session.comm_port = &g_uxr_session.transport_tcp.comm;
       }
       break;    
+#endif
+
     default:
       return false;
   }
@@ -85,14 +95,25 @@ void xrcedds::deleteTransportAndSession(Transport_t* transport_info)
 
   switch(transport_info->type)
   {
+#ifdef PROFILE_SERIAL_TRANSPORT
     case XRCE_DDS_COMM_SERIAL:
       uxr_close_serial_transport(&g_uxr_session.transport_serial);
       break;
+#endif
+
+#ifdef PROFILE_UDP_TRANSPORT
     case XRCE_DDS_COMM_UDP:
       uxr_close_udp_transport(&g_uxr_session.transport_udp);  
       break;
+#endif
+
+#ifdef PROFILE_TCP_TRANSPORT
     case XRCE_DDS_COMM_TCP:
       uxr_close_tcp_transport(&g_uxr_session.transport_tcp);  
+      break;
+#endif
+
+    default:
       break;
   }
 }
@@ -246,7 +267,7 @@ bool xrcedds::createDataReader(xrcedds::Subscriber_t* subscriber, xrcedds::DataR
   return data_reader->is_created;
 }
 
-bool xrcedds::read(xrcedds::DataReader_t* data_reader)
+bool xrcedds::readData(xrcedds::DataReader_t* data_reader)
 {
   if(data_reader == NULL || data_reader->is_created == false)
   {
@@ -266,7 +287,7 @@ bool xrcedds::read(xrcedds::DataReader_t* data_reader)
   return true;
 }
 
-bool xrcedds::write(xrcedds::DataWriter_t* data_writer, void* buffer, uint32_t topic_size)
+bool xrcedds::writeData(xrcedds::DataWriter_t* data_writer, void* buffer, uint32_t topic_size)
 {
   if(data_writer == NULL || buffer == NULL || data_writer->is_created == false)
   {

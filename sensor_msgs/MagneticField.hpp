@@ -23,8 +23,7 @@
 #define _SENSOR_MSGS_MAGNETIC_FIELD_HPP_
 
 
-#include <ros2/topic.hpp>
-
+#include "../topic.hpp"
 
 #include "../std_msgs/Header.hpp"
 #include "../geometry_msgs/Vector3.hpp"

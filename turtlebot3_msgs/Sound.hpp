@@ -22,8 +22,7 @@
 #ifndef _TURTLEBOT3_MSGS_SOUND_HPP_
 #define _TURTLEBOT3_MSGS_SOUND_HPP_
 
-
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 namespace turtlebot3_msgs {

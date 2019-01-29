@@ -23,7 +23,7 @@
 #define _GEOMETRY_MSGS_VECTOR3_HPP_
 
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 namespace geometry_msgs {
