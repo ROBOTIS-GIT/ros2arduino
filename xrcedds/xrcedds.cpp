@@ -305,6 +305,9 @@ bool xrcedds::writeData(xrcedds::DataWriter_t* data_writer, void* buffer, uint32
 
 bool xrcedds::runCommunication(uint32_t timeout_ms)
 {
+  if(g_uxr_session.is_init == false)
+    return false;
+
   uint16_t request_list[20];
   uint8_t status_list[20];
   bool is_connected = uxr_run_session_until_all_status(&g_uxr_session.session, timeout_ms, request_list, status_list, 20);

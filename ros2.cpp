@@ -55,6 +55,9 @@ bool ros2::init(void* comm_instance, const char* p_server_ip, uint16_t server_po
 
 void ros2::spin(ros2::Node *node)
 {
+  if(node == NULL)
+    return;
+
   node->runPubCallback();
 
   if(xrcedds::runCommunication(1) == false)
