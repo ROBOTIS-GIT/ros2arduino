@@ -14,78 +14,34 @@
 #include "topic.hpp"
 #include "msg_list.hpp"
 
-#define ROS2_PUBLISHER_MAX  10
-#define ROS2_SUBSCRIBER_MAX 10
+#include <ros2_user_config.h>
+
+#define ROS2_PUBLISHER_MAX  USER_ROS2_PUBLISHER_MAX
+#define ROS2_SUBSCRIBER_MAX USER_ROS2_SUBSCRIBER_MAX
 
 namespace ros2 {
-
-extern xrcedds::XrceDdsCommportType client_communication_method;
-extern const char* server_ip;
-extern uint16_t server_port;
-extern void* comm_instance;
 
 void runNodeSubUserCallback(uint16_t id, void* msgs, void* args);
 
 class Node
 {
   public:
-    Node()
-    {
-      pub_cnt_ = 0, sub_cnt_ = 0, node_register_state_ = false;
-      memset(pub_list_, 0, sizeof(pub_list_));
-      memset(sub_list_, 0, sizeof(sub_list_));
-      this->recreate();
-    }
+    PublisherHandle*  pub_list_[ROS2_PUBLISHER_MAX];
+    SubscriberHandle* sub_list_[ROS2_SUBSCRIBER_MAX];
 
+    Node();
     virtual ~Node(){};
 
-    void recreate()
-    {
-      xrcedds_participant_.is_created = false;
-      xrcedds_transport_.type = client_communication_method;
+    void recreate();
+    void createWallTimer(uint32_t msec, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
+    void createWallFreq(uint32_t hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
+    void runPubCallback();
+    void runSubCallback(uint16_t reader_id, void* serialized_msg);
 
-      switch(xrcedds_transport_.type)
-      {
-        case xrcedds::XRCE_DDS_COMM_SERIAL:
-          break;
-
-        case xrcedds::XRCE_DDS_COMM_UDP:
-        case xrcedds::XRCE_DDS_COMM_TCP:
-          xrcedds_transport_.server_ip = server_ip;
-          xrcedds_transport_.server_port = server_port;
-          break;                    
-
-        default:
-          return;   
-      }
-
-      xrcedds_transport_.comm_instance = comm_instance;
-
-      xrcedds::init(0);
-      xrcedds::initTransportAndSession(&xrcedds_transport_, (void*)runNodeSubUserCallback, (void*)this);
-
-      node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_, "default_xrce_participant");
-
-      xrcedds::createPublisher(&this->xrcedds_participant_, &this->xrcedds_publisher_);
-      xrcedds::createSubscriber(&this->xrcedds_participant_, &this->xrcedds_subscriber_);
-
-      uint8_t i;
-      for(i = 0; i < ROS2_PUBLISHER_MAX; i++)
-      {
-        if(pub_list_[i] != NULL)
-        {
-          pub_list_[i]->recreate();
-        }
-      }
-
-      for(i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
-      {
-        if(sub_list_[i] != NULL)
-        {
-          sub_list_[i]->recreate();
-        }
-      }
-    }
+    void deletePublisher(const char* name);
+    void deletePublisher(uint16_t writer_id);
+    void deleteSubscriber(const char* name);
+    void deleteSubscriber(uint16_t reader_id);
 
     template <
       typename MsgT>
@@ -94,12 +50,12 @@ class Node
       bool ret = false;
       ros2::Publisher<MsgT> *p_pub = NULL;
 
-      if(this->node_register_state_ == false)
+      if (this->node_register_state_ == false)
       {
         return NULL;
       }
 
-      if(pub_cnt_ >= ROS2_PUBLISHER_MAX)
+      if (pub_cnt_ >= ROS2_PUBLISHER_MAX)
       {
         return NULL;
       }
@@ -114,15 +70,15 @@ class Node
 
       p_pub = new ros2::Publisher<MsgT>(&this->xrcedds_publisher_, name);
 
-      if(p_pub->is_registered_ == false)
+      if (p_pub->is_registered_ == false)
       {
-        delete(p_pub);
+        delete (p_pub);
         return NULL;
       }
 
-      for(uint8_t i = 0; i < ROS2_PUBLISHER_MAX; i++)
+      for (uint8_t i = 0; i < ROS2_PUBLISHER_MAX; i++)
       {
-        if(pub_list_[i] == NULL)
+        if (pub_list_[i] == NULL)
         {
           pub_list_[i] = p_pub;
           pub_cnt_++;
@@ -139,7 +95,7 @@ class Node
     {
       bool ret = false;
       ros2::Subscriber<MsgT> *p_sub = NULL;
-      
+
       if(this->node_register_state_ == false)
       {
         return NULL;
@@ -179,62 +135,6 @@ class Node
 
       return p_sub;
     }
-
-    void createWallTimer(uint32_t msec, CallbackFunc callback, void* callback_arg, PublisherHandle* pub)
-    {
-      if(pub == NULL)
-      {
-        return;
-      }
-
-      pub->setInterval(msec);
-      pub->callback = callback;
-      pub->callback_arg = callback_arg;
-    }
-
-    void createWallFreq(uint32_t hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub)
-    {
-      uint32_t msec;
-      if(hz > 1000)
-      {
-        hz = 1000;
-      }
-      msec = (uint32_t)(1000/hz);
-      this->createWallTimer(msec, callback, callback_arg, pub);
-    }
-
-    void runPubCallback()
-    {
-      uint8_t i;
-      ros2::PublisherHandle *p_pub;
-      for(i = 0; i < ROS2_PUBLISHER_MAX; i++)
-      {
-        p_pub = pub_list_[i];
-        if(p_pub != NULL && p_pub->is_registered_ && p_pub->isTimeToPublish())
-        {
-          p_pub->publish();
-          break;
-        }
-      }
-    }
-
-    void runSubCallback(uint16_t reader_id, void* serialized_msg)
-    {
-      uint8_t i;
-      ros2::SubscriberHandle *p_sub;
-      for(i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
-      {
-        p_sub = sub_list_[i];
-        if(p_sub != NULL && p_sub->is_registered_ && p_sub->reader_id_ == reader_id)
-        {
-          p_sub->runCallback(serialized_msg);
-        }
-      }
-    }
-
-    PublisherHandle*  pub_list_[ROS2_PUBLISHER_MAX];
-    SubscriberHandle* sub_list_[ROS2_SUBSCRIBER_MAX];
-
 
   private:
     bool node_register_state_;

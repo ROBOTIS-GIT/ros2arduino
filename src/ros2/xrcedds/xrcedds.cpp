@@ -312,4 +312,21 @@ bool xrcedds::runCommunication(uint32_t timeout_ms)
   return is_connected;
 }
 
+void xrcedds::deleteEntity(DataReader_t* data_reader)
+{
+  if(data_reader == NULL)
+    return;
+
+  uxrObjectId obj_id = {data_reader->id, UXR_DATAREADER_ID};
+  uxr_buffer_delete_entity(&g_uxr_session.session, g_uxr_session.output_stream_id, obj_id);
+}
+
+void xrcedds::deleteEntity(DataWriter_t* data_writer)
+{
+  if(data_writer == NULL)
+    return;
+
+  uxrObjectId obj_id = {data_writer->id, UXR_DATAWRITER_ID};
+  uxr_buffer_delete_entity(&g_uxr_session.session, g_uxr_session.output_stream_id, obj_id);
+}
 
