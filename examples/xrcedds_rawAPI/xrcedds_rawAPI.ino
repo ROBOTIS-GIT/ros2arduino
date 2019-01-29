@@ -63,7 +63,7 @@ void setup()
   xrcedds::createDataReader(&subscriber, &data_reader, (char*)"rt/bool", "std_msgs::msg::dds_::Bool_");
 
   /* Start subscribe */
-  xrcedds::read(&data_reader);
+  xrcedds::readData(&data_reader);
 }
 
 void loop() 
@@ -77,7 +77,7 @@ void loop()
     pre_time = millis();  
     
     ucdrBuffer buffer;
-    xrcedds::write(&data_writer, (void*)&buffer, String_size_of_topic(&string_topic, 0));
+    xrcedds::writeData(&data_writer, (void*)&buffer, String_size_of_topic(&string_topic, 0));
     sprintf(string_topic.data, "HELLO ros2arduino %d", (int)cnt++);
     String_serialize_topic(&buffer, &string_topic);
   }
