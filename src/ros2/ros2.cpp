@@ -5,8 +5,7 @@
  *      Author: kei
  */
 
-
-#include "ros2arduino.h"
+#include "ros2.hpp"
 
 namespace ros2 {
   xrcedds::XrceDdsCommportType client_communication_method;

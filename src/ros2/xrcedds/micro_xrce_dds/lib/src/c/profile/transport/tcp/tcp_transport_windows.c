@@ -1,7 +1,7 @@
-#include <uxr/client/profile/transport/tcp/tcp_transport_windows.h>
 #include "tcp_transport_internal.h"
 
 #if defined(PLATFORM_NAME_WINDOWS)
+#include <uxr/client/profile/transport/tcp/tcp_transport_windows.h>
 
 #include <uxr/client/util/time.h>
 

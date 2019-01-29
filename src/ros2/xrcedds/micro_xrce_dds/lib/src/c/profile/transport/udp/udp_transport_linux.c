@@ -1,7 +1,7 @@
-#include <uxr/client/profile/transport/udp/udp_transport_linux.h>
 #include "udp_transport_internal.h"
 
 #if defined(PLATFORM_NAME_LINUX)
+#include <uxr/client/profile/transport/udp/udp_transport_linux.h>
 
 #include <arpa/inet.h>
 #include <unistd.h>

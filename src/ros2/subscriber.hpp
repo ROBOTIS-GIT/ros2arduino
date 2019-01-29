@@ -41,7 +41,7 @@ class Subscriber:public SubscriberHandle
         return;
       }
 
-      xrcedds::read(&data_reader_);
+      xrcedds::readData(&data_reader_);
       request_id_ = data_reader_.request_id;
     }
 

@@ -114,8 +114,8 @@ bool createSubscriber(Participant_t* participant, Subscriber_t* subscriber);
 bool createDataWriter(Publisher_t* publisher, DataWriter_t* data_writer, char* writer_name, const char* topic_type);
 bool createDataReader(Subscriber_t* subscriber, DataReader_t* data_reader, char* reader_name, const char* topic_type);
 
-bool read(DataReader_t* data_reader);
-bool write(DataWriter_t* data_writer, void* buffer, uint32_t topic_size);
+bool readData(DataReader_t* data_reader);
+bool writeData(DataWriter_t* data_writer, void* buffer, uint32_t topic_size);
 
 bool runCommunication(uint32_t timeout_ms);
 

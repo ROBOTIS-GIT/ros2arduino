@@ -22,8 +22,7 @@
 #ifndef _TURTLEBOT3_MSGS_SENSOR_STATE_HPP_
 #define _TURTLEBOT3_MSGS_SENSOR_STATE_HPP_
 
-
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 #include "../std_msgs/Header.hpp"

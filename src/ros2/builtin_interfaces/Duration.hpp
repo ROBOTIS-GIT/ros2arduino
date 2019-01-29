@@ -23,7 +23,7 @@
 #define _BUILTIN_INTERFACES_DURATION_HPP_
 
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 namespace builtin_interfaces {
 

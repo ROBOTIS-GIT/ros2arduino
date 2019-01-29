@@ -28,12 +28,18 @@ typedef struct uxr_session{
   uxrCommunication  *comm_port;
   uxrStreamId        output_stream_id;
   uxrStreamId        input_stream_id;
+#ifdef PROFILE_SERIAL_TRANSPORT
   uxrSerialTransport transport_serial;
   uxrSerialPlatform  platform_serial;
+#endif
+#ifdef PROFILE_UDP_TRANSPORT
   uxrUDPTransport    transport_udp;
   uxrUDPPlatform     platform_udp;
+#endif
+#ifdef PROFILE_TCP_TRANSPORT
   uxrTCPTransport    transport_tcp;
   uxrTCPPlatform     platform_tcp;
+#endif
 } uxr_session_t;
 
 void uxr_onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args);

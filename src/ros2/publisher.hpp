@@ -41,7 +41,7 @@ public:
     }
 
     ucdrBuffer mb;
-    xrcedds::write(&data_writer_, (void*)&mb, topic_.size_of_topic(&topic_, 0));
+    xrcedds::writeData(&data_writer_, (void*)&mb, topic_.size_of_topic(&topic_, 0));
     topic_.serialize(&mb, &topic_);
   }
 
