@@ -117,6 +117,9 @@ bool createDataReader(Subscriber_t* subscriber, DataReader_t* data_reader, char*
 bool readData(DataReader_t* data_reader);
 bool writeData(DataWriter_t* data_writer, void* buffer, uint32_t topic_size);
 
+void deleteEntity(DataReader_t* data_reader);
+void deleteEntity(DataWriter_t* data_writer);
+
 bool runCommunication(uint32_t timeout_ms);
 
 

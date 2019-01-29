@@ -52,9 +52,13 @@ public:
     is_registered_ = xrcedds::createDataWriter(publisher_, &data_writer_, writer_name, topic_.type_);
   }
 
+  void destroy(void)
+  {
+    xrcedds::deleteEntity(&data_writer_);
+  }
+
 private:
   MsgT topic_;
-  const char* name_;
   xrcedds::Publisher_t* publisher_;
   xrcedds::DataWriter_t data_writer_;
 };

@@ -48,6 +48,7 @@ public:
   void*        callback_arg;
   virtual void recreate(void) = 0;
   virtual void publish(void) = 0;
+  virtual void destroy(void) = 0;
 
   void setInterval(uint32_t msec)
   {
@@ -67,6 +68,7 @@ public:
   bool is_registered_;
   uint32_t pub_msg_cnt_;
   uint16_t writer_id_;
+  const char* name_;
 
 private:
   uint32_t last_call_time_ms_;
@@ -91,6 +93,7 @@ public:
   void*        callback_arg;
   virtual void recreate(void) = 0;
   virtual void subscribe(void) = 0;
+  virtual void destroy(void) = 0;
 
   virtual void runCallback(void* serialized_msg) = 0;
 
@@ -98,6 +101,7 @@ public:
   uint32_t sub_msg_cnt_;
   uint16_t request_id_;
   uint16_t reader_id_;
+  const char* name_;
 };
 
 } // namespace ros2
