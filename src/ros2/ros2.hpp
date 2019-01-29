@@ -26,9 +26,6 @@ void runNodeSubUserCallback(uint16_t id, void* msgs, void* args);
 class Node
 {
   public:
-    PublisherHandle*  pub_list_[ROS2_PUBLISHER_MAX];
-    SubscriberHandle* sub_list_[ROS2_SUBSCRIBER_MAX];
-
     Node();
     virtual ~Node(){};
 
@@ -137,6 +134,9 @@ class Node
     }
 
   private:
+    PublisherHandle*  pub_list_[ROS2_PUBLISHER_MAX];
+    SubscriberHandle* sub_list_[ROS2_SUBSCRIBER_MAX];
+
     bool node_register_state_;
     xrcedds::Transport_t xrcedds_transport_;
     xrcedds::Participant_t xrcedds_participant_;
