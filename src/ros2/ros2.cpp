@@ -19,11 +19,6 @@ static uint32_t millis_when_synced_time;
 
 bool ros2::init(void* comm_instance)
 {
-  if(comm_instance == NULL)
-  {
-    return false;
-  }
-
   g_client_communication_method = xrcedds::XRCE_DDS_COMM_SERIAL;
   g_comm_instance = (void*)comm_instance;
 
@@ -32,11 +27,6 @@ bool ros2::init(void* comm_instance)
 
 bool ros2::init(void* comm_instance, const char* p_server_ip, uint16_t server_port, bool enable_tcp)
 {
-  if(comm_instance == NULL)
-  {
-    return false;
-  }
-
   if(enable_tcp == false)
   {
     g_client_communication_method = xrcedds::XRCE_DDS_COMM_UDP;
