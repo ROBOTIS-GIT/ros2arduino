@@ -23,7 +23,7 @@
 #define _NAV_MSGS_ODOMETRY_HPP_
 
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 #include "../std_msgs/Header.hpp"

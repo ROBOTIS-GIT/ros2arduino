@@ -22,8 +22,7 @@
 #ifndef _TURTLEBOT3_MSGS_VERSION_INFO_HPP_
 #define _TURTLEBOT3_MSGS_VERSION_INFO_HPP_
 
-
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 namespace turtlebot3_msgs {

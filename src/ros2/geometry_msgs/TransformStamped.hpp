@@ -23,7 +23,7 @@
 #define _GEOMETRY_MSGS_TRANSFORM_STAMPED_HPP_
 
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 #include "../std_msgs/Header.hpp"

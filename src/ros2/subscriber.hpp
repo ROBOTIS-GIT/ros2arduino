@@ -41,7 +41,7 @@ class Subscriber:public SubscriberHandle
         return;
       }
 
-      xrcedds::read(&data_reader_);
+      xrcedds::readData(&data_reader_);
       request_id_ = data_reader_.request_id;
     }
 
@@ -63,9 +63,13 @@ class Subscriber:public SubscriberHandle
       this->reader_id_ = data_reader_.id;
     };  
 
+    void destroy(void)
+    {
+      xrcedds::deleteEntity(&data_reader_);
+    }
+
   private:
     MsgT topic_;
-    const char* name_;
     xrcedds::Subscriber_t* subscriber_;
     xrcedds::DataReader_t data_reader_;
 };

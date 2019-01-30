@@ -23,7 +23,7 @@
 #define _DIAGNOSTIC_MSGS_KEY_VALUE_HPP_
 
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 namespace diagnostic_msgs {

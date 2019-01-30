@@ -257,7 +257,7 @@ size_t uxr_read_serial_msg(uxrSerialIO* serial_io,
         }
     }
 
-    if (0 < (bytes_read[0] + bytes_read[1]))
+    if (0 < (bytes_read[0] + bytes_read[1]) || (serial_io->rb_tail != serial_io->rb_head))
     {
         /* State Machine. */
         bool exit_cond = false;

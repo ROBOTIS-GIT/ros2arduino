@@ -15,7 +15,8 @@
 #ifndef _STD_MSGS_CHAR_HPP_
 #define _STD_MSGS_CHAR_HPP_
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
+
 
 namespace std_msgs
 {

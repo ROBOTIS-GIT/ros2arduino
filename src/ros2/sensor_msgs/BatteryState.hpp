@@ -23,7 +23,7 @@
 #define _SENSOR_MSGS_BATTERY_STATE_HPP_
 
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 #include "../std_msgs/Header.hpp"

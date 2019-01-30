@@ -1,7 +1,7 @@
-#include <uxr/client/profile/transport/udp/udp_transport_windows.h>
 #include "udp_transport_internal.h"
 
 #if defined(PLATFORM_NAME_WINDOWS)
+#include <uxr/client/profile/transport/udp/udp_transport_windows.h>
 
 bool uxr_init_udp_platform(uxrUDPPlatform* platform, const char* ip, uint16_t port)
 {

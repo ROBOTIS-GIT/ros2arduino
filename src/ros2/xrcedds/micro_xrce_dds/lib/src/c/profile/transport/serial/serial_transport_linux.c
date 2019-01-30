@@ -1,7 +1,7 @@
-#include <uxr/client/profile/transport/serial/serial_transport_linux.h>
 #include "serial_transport_internal.h"
 
 #if defined(PLATFORM_NAME_LINUX)
+#include <uxr/client/profile/transport/serial/serial_transport_linux.h>
 
 #include <unistd.h>
 #include <errno.h>

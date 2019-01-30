@@ -23,7 +23,7 @@
 #define _GEOMETRY_MSGS_POSE_WITH_CONVARIANCE_HPP_
 
 
-#include <ros2/topic.hpp>
+#include "../topic.hpp"
 
 
 #include "../geometry_msgs/Pose.hpp"
