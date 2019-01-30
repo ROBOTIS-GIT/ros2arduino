@@ -9,12 +9,12 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.0.8|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)| [specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/f46ea3c4942b7f04d6b35e58a32006d83d2e4eb5) |
+|0.0.8|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)| [specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/a495c65faa964ddc068ac6e1249f17f5c9f92787) |
 
 For the Micro-XRCE-DDS Agent, please install it using following commands.
 ```bash
 $ git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-$ cd Micro-XRCE-DDS-Agent && git checkout f46ea3c4942b7f04d6b35e58a32006d83d2e4eb5
+$ cd Micro-XRCE-DDS-Agent && git checkout a495c65faa964ddc068ac6e1249f17f5c9f92787
 $ mkdir build && cd build
 $ cmake -DTHIRDPARTY=ON -DCONFIG_UDP_TRANSPORT_MTU=4096 -DCONFIG_SERIAL_TRANSPORT_MTU=4096 ..
 $ sudo make install
