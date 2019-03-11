@@ -39,7 +39,7 @@ public:
     double magnetic_field_covariance[9];
 
   MagneticField():
-    Topic("sensor_msgs::msg::dds_::MagneticField_", "MagneticField"),
+    Topic("sensor_msgs::msg::dds_::MagneticField_", "MagneticField", SENSOR_MSGS_MAGNETIC_FIELD_ID),
     header(), magnetic_field()
   { 
     memset(magnetic_field_covariance, 0, sizeof(magnetic_field_covariance));

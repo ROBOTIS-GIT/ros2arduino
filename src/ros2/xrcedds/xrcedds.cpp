@@ -142,7 +142,7 @@ bool xrcedds::createParticipant(xrcedds::Participant_t* participant, const char*
   return participant->is_created;
 }
 
-bool xrcedds::registerTopic(xrcedds::Participant_t* participant, const char* topic_name, const char* topic_type)
+bool xrcedds::registerTopic(xrcedds::Participant_t* participant, const char* topic_name, const char* topic_type, uint8_t topic_id)
 {
   if(participant == NULL || participant->is_created == false || topic_name == NULL || topic_type == NULL)
   {
@@ -153,10 +153,9 @@ bool xrcedds::registerTopic(xrcedds::Participant_t* participant, const char* top
   uint8_t status;
   uint16_t topic_req;
   char topic_profile[256];
-  static uint8_t topic_id = 0x01;
   
   uxrObjectId part_object_id = uxr_object_id(participant->id, UXR_PARTICIPANT_ID);
-  uxrObjectId topic_object_id = uxr_object_id(topic_id++, UXR_TOPIC_ID);
+  uxrObjectId topic_object_id = uxr_object_id(topic_id, UXR_TOPIC_ID);
 
   sprintf(topic_profile, UXR_TOPIC_XML, topic_name, topic_type);
   topic_req = uxr_buffer_create_topic_xml(&g_uxr_session.session, g_uxr_session.output_stream_id, topic_object_id, part_object_id, topic_profile, UXR_REUSE);

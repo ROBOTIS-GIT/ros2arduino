@@ -42,7 +42,7 @@ public:
     geometry_msgs::TwistWithCovariance twist;
 
   Odometry():
-    Topic("nav_msgs::msg::dds_::Odometry_", "Odometry"),
+    Topic("nav_msgs::msg::dds_::Odometry_", "Odometry", NAV_MSGS_ODOMETRY_ID),
     header(), pose(), twist()
   {
     memset(child_frame_id, 0, sizeof(child_frame_id));

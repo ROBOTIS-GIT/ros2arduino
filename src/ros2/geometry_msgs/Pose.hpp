@@ -38,7 +38,7 @@ public:
   geometry_msgs::Quaternion orientation;
 
   Pose():
-    Topic("geometry_msgs::msg::dds_::Pose_", "Pose"),
+    Topic("geometry_msgs::msg::dds_::Pose_", "Pose", GEOMETRY_MSGS_POSE_ID),
     position(),
     orientation()
   { 

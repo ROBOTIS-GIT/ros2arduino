@@ -27,7 +27,7 @@ public:
   int16_t data;
 
   Int16():
-    Topic("std_msgs::msg::dds_::Int16_", "Int16"),
+    Topic("std_msgs::msg::dds_::Int16_", "Int16", STD_MSGS_INT16_ID),
     data(0)
   { 
   }

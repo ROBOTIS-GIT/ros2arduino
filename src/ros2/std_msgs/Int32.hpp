@@ -27,7 +27,7 @@ public:
   int32_t data;
 
   Int32():
-    Topic("std_msgs::msg::dds_::Int32_", "Int32"),
+    Topic("std_msgs::msg::dds_::Int32_", "Int32", STD_MSGS_INT32_ID),
     data(0)
   { 
   }

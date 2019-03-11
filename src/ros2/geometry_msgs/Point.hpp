@@ -36,7 +36,7 @@ public:
     double z;
 
   Point():
-    Topic("geometry_msgs::msg::dds_::Point_", "Point"),
+    Topic("geometry_msgs::msg::dds_::Point_", "Point", GEOMETRY_MSGS_POINT_ID),
     x(0), y(0), z(0)
   { 
   }

@@ -27,7 +27,7 @@ public:
   uint32_t data;
 
   UInt32():
-    Topic("std_msgs::msg::dds_::UInt32_", "UInt32"),
+    Topic("std_msgs::msg::dds_::UInt32_", "UInt32", STD_MSGS_UINT32_ID),
     data(0)
   { 
   }

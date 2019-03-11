@@ -33,7 +33,7 @@ public:
   char data[64];
 
   String():
-    Topic("std_msgs::msg::dds_::String_", "String")
+    Topic("std_msgs::msg::dds_::String_", "String", STD_MSGS_STRING_ID)
   {
     memset(data, 0, sizeof(data));
   }

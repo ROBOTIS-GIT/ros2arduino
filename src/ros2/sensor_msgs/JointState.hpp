@@ -43,7 +43,7 @@ public:
     uint32_t effort_size;
 
   JointState():
-    Topic("sensor_msgs::msg::dds_::JointState_", "JointState"),
+    Topic("sensor_msgs::msg::dds_::JointState_", "JointState", SENSOR_MSGS_JOINT_STATE_ID),
     header(),
     name_size(1), position_size(1), velocity_size(1), effort_size(1)
   { 

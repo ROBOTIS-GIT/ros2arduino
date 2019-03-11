@@ -27,7 +27,8 @@ class Empty: public ros2::Topic<Empty>
     bool _dummy;
 
     Empty()
-        : Topic("std_msgs::msg::dds_::Empty_", "Empty"), _dummy(0)
+        : Topic("std_msgs::msg::dds_::Empty_", "Empty", STD_MSGS_EMPTY_ID),
+          _dummy(0)
     {
     }
 

@@ -27,7 +27,8 @@ class Char: public ros2::Topic<Char>
     char data;
 
     Char()
-        : Topic("std_msgs::msg::dds_::Char_", "Char"), data(0)
+        : Topic("std_msgs::msg::dds_::Char_", "Char", STD_MSGS_CHAR_ID),
+          data(0)
     {
     }
 

@@ -27,7 +27,7 @@ public:
   uint8_t data;
 
   Int8():
-    Topic("std_msgs::msg::dds_::Int8_", "Int8"),
+    Topic("std_msgs::msg::dds_::Int8_", "Int8", STD_MSGS_INT8_ID),
     data(0)
   { 
   }

@@ -34,7 +34,7 @@ public:
     uint8_t value;
 
   Sound():
-    Topic("turtlebot3_msgs::msg::dds_::Sound_", "Sound"),
+    Topic("turtlebot3_msgs::msg::dds_::Sound_", "Sound", TURTLEBOT3_MSGS_SOUND_ID),
     value(0)
   { 
   }

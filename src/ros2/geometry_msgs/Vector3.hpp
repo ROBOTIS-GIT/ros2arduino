@@ -36,7 +36,7 @@ public:
     double z;
 
   Vector3():
-    Topic("geometry_msgs::msg::dds_::Vector3_", "Vector3"),
+    Topic("geometry_msgs::msg::dds_::Vector3_", "Vector3", GEOMETRY_MSGS_VECTOR3_ID),
     x(0), y(0), z(0)
   { 
   }

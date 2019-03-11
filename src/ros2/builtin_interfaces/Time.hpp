@@ -36,7 +36,7 @@ public:
   uint32_t nanosec;
 
   Time():
-    Topic("builtin_interfaces::msg::dds_::Time_", "Time"),
+    Topic("builtin_interfaces::msg::dds_::Time_", "Time", BUILTIN_INTERFACES_TIME_ID),
     sec(0), nanosec(0)
   {
   }

@@ -37,7 +37,7 @@ public:
     double w;
 
   Quaternion():
-    Topic("geometry_msgs::msg::dds_::Quaternion_", "Quaternion"),
+    Topic("geometry_msgs::msg::dds_::Quaternion_", "Quaternion", GEOMETRY_MSGS_QUATERNION_ID),
     x(0), y(0), z(0), w(0)
   { 
   }

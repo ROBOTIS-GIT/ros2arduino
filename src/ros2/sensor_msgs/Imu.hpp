@@ -45,7 +45,7 @@ public:
     double linear_acceleration_covariance[9];
 
   Imu():
-    Topic("sensor_msgs::msg::dds_::Imu_", "Imu"),
+    Topic("sensor_msgs::msg::dds_::Imu_", "Imu", SENSOR_MSGS_IMU_ID),
     header(), orientation(), angular_velocity(), linear_acceleration()
   { 
     memset(orientation_covariance, 0, sizeof(orientation_covariance));
