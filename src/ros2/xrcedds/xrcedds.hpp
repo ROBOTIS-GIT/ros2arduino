@@ -106,7 +106,7 @@ void deleteTransportAndSession(Transport_t* transport_info);
 
 bool createParticipant(Participant_t* participant, const char* participant_name);
 
-bool registerTopic(Participant_t* participant, const char* topic_name, const char* topic_type);
+bool registerTopic(Participant_t* participant, const char* topic_name, const char* topic_type, uint8_t topic_id);
 
 bool createPublisher(Participant_t* participant, Publisher_t* publisher);
 bool createSubscriber(Participant_t* participant, Subscriber_t* subscriber);

@@ -39,7 +39,7 @@ public:
     int32_t buttons[10];
 
   Joy():
-    Topic("sensor_msgs::msg::dds_::Joy_", "Joy"),
+    Topic("sensor_msgs::msg::dds_::Joy_", "Joy", SENSOR_MSGS_JOY_ID),
     header(),
     axes_size(1), buttons_size(1)
   { 

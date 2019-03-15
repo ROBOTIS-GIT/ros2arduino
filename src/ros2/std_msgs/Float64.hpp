@@ -27,7 +27,7 @@ public:
   double data;
 
   Float64():
-    Topic("std_msgs::msg::dds_::Float64_", "Float64"),
+    Topic("std_msgs::msg::dds_::Float64_", "Float64", STD_MSGS_FLOAT64_ID),
     data(0)
   { 
   }

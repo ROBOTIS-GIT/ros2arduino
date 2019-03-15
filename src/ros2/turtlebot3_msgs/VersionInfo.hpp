@@ -36,7 +36,7 @@ public:
     char software[255];
 
   VersionInfo():
-    Topic("turtlebot3_msgs::msg::dds_::VersionInfo_", "VersionInfo")
+    Topic("turtlebot3_msgs::msg::dds_::VersionInfo_", "VersionInfo", TURTLEBOT3_MSGS_VERSION_INFO_ID)
   { 
     memset(hardware, 0, sizeof(hardware));
     memset(firmware, 0, sizeof(firmware));

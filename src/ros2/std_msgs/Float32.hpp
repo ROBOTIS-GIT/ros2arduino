@@ -27,7 +27,7 @@ public:
   float data;
 
   Float32():
-    Topic("std_msgs::msg::dds_::Float32_", "Float32"),
+    Topic("std_msgs::msg::dds_::Float32_", "Float32", STD_MSGS_FLOAT32_ID),
     data(0)
   { 
   }

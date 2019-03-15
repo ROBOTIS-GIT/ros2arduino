@@ -40,9 +40,19 @@ public:
       callback((void*)&topic_, callback_arg);
     }
 
+    this->publish(&topic_);
+  }
+
+  void publish(MsgT *msg)
+  {
+    if(is_registered_ ==  false)
+    {
+      return;
+    }
+
     ucdrBuffer mb;
-    xrcedds::writeData(&data_writer_, (void*)&mb, topic_.size_of_topic(&topic_, 0));
-    topic_.serialize(&mb, &topic_);
+    xrcedds::writeData(&data_writer_, (void*)&mb, msg->size_of_topic(msg, 0));
+    msg->serialize(&mb, msg);
   }
 
   void recreate()

@@ -27,7 +27,7 @@ public:
   uint64_t data;
 
   UInt64():
-    Topic("std_msgs::msg::dds_::UInt64_", "UInt64"),
+    Topic("std_msgs::msg::dds_::UInt64_", "UInt64", STD_MSGS_UINT64_ID),
     data(0)
   { 
   }

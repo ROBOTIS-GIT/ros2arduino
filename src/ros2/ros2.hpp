@@ -157,7 +157,7 @@ class Node
         return false;
       }
 
-      ret = xrcedds::registerTopic(&this->xrcedds_participant_, topic.name_, topic.type_);
+      ret = xrcedds::registerTopic(&this->xrcedds_participant_, topic.name_, topic.type_, topic.id_);
 
       return ret;
     }

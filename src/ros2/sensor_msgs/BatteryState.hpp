@@ -84,7 +84,7 @@ public:
     char serial_number[32];
 
   BatteryState():
-    Topic("sensor_msgs::msg::dds_::BatteryState_", "BatteryState"),
+    Topic("sensor_msgs::msg::dds_::BatteryState_", "BatteryState", SENSOR_MSGS_BATTERY_STATE_ID),
     header(),
     voltage(0), current(0), charge(0), capacity(0), design_capacity(0), percentage(0),
     power_supply_status(0), power_supply_health(0), power_supply_technology(0),

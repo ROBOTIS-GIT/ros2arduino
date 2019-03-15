@@ -37,7 +37,7 @@ public:
   geometry_msgs::Vector3 angular;
 
   Twist():
-    Topic("geometry_msgs::msg::dds_::Twist_", "Twist"),
+    Topic("geometry_msgs::msg::dds_::Twist_", "Twist", GEOMETRY_MSGS_TWIST_ID),
     linear(),
     angular()
   { 

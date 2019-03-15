@@ -27,7 +27,7 @@ public:
   int64_t data;
 
   Int64():
-    Topic("std_msgs::msg::dds_::Int64_", "Int64"),
+    Topic("std_msgs::msg::dds_::Int64_", "Int64", STD_MSGS_INT64_ID),
     data(0)
   { 
   }

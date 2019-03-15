@@ -27,7 +27,8 @@ class Bool: public ros2::Topic<Bool>
     bool data;
 
     Bool()
-        : Topic("std_msgs::msg::dds_::Bool_", "Bool"), data(false)
+        : Topic("std_msgs::msg::dds_::Bool_", "Bool", STD_MSGS_BOOL_ID),
+          data(false)
     {
     }
 

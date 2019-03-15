@@ -38,7 +38,7 @@ public:
   geometry_msgs::Quaternion rotation;
 
   Transform():
-    Topic("geometry_msgs::msg::dds_::Transform_", "Transform"),
+    Topic("geometry_msgs::msg::dds_::Transform_", "Transform", GEOMETRY_MSGS_TRANSFORM_ID),
     translation(),
     rotation()
   { 

@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include "xrcedds/xrcedds.hpp"
 #include "xrcedds/micro_xrce_dds/micro_xrce_dds.h"
+#include "topic_id_number.h"
 
 namespace ros2 {
 
@@ -21,9 +22,10 @@ class Topic
 
 public:
 
-  Topic(const char* type, const char* name):
+  Topic(const char* type, const char* name, uint8_t id):
     type_(type),
-    name_(name)
+    name_(name),
+    id_(id)
   {
   }
 
@@ -42,6 +44,7 @@ public:
 
   const char* type_;
   const char* name_;
+  uint8_t id_;
 };
 
 

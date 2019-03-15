@@ -39,7 +39,7 @@ public:
   uint32_t nanosec_;
 
   Duration():
-    Topic("builtin_interfaces::msg::dds_::Duration_", "Duration"),
+    Topic("builtin_interfaces::msg::dds_::Duration_", "Duration", BUILTIN_INTERFACES_DURATION_ID),
     sec_(0), nanosec_(0)
   {
   }

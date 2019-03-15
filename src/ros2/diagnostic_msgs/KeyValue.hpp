@@ -35,7 +35,7 @@ public:
     char value[255];
 
   KeyValue():
-    Topic("diagnostic_msgs::msg::dds_::KeyValue_", "KeyValue")
+    Topic("diagnostic_msgs::msg::dds_::KeyValue_", "KeyValue", DIAGNOSTIC_MSGS_KEY_VALUE_ID)
   { 
     memset(key, 0, sizeof(key));
     memset(value, 0, sizeof(value));

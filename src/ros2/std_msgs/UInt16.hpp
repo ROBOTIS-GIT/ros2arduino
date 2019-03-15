@@ -27,7 +27,7 @@ public:
   uint16_t data;
 
   UInt16():
-    Topic("std_msgs::msg::dds_::UInt16_", "UInt16"),
+    Topic("std_msgs::msg::dds_::UInt16_", "UInt16", STD_MSGS_UINT16_ID),
     data(0)
   { 
   }

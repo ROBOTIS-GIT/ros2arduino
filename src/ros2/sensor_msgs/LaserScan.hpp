@@ -47,7 +47,7 @@ public:
     uint32_t intensities_size;
 
   LaserScan():
-    Topic("sensor_msgs::msg::dds_::LaserScan_", "LaserScan"),
+    Topic("sensor_msgs::msg::dds_::LaserScan_", "LaserScan", SENSOR_MSGS_LASER_SCAN_ID),
     header(),
     angle_min(0), angle_max(0), angle_increment(0), time_increment(0),
     scan_time(0), range_min(0), range_max(0),
