@@ -73,15 +73,15 @@ You must install ROS2 and XRCE-DDS Agent. (The version should be the same as the
 #### Excute XRCE-DDS Agent
  - Serial
    ```bash
-   $ MicroXRCEAgent serial /dev/ttyACM0 115200
+   $ MicroXRCEAgent --serial /dev/ttyACM0 115200
    ```
  - UDP
    ```bash
-   $ MicroXRCEAgent udp 2018
+   $ MicroXRCEAgent --udp 2018
    ```
  - TCP
    ```bash
-   $ MicroXRCEAgent tcp 2018
+   $ MicroXRCEAgent --tcp 2018
    ```
 #### Check topic on ROS2
 ```bash
