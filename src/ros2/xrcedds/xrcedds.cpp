@@ -14,7 +14,7 @@
 //
 #include "micro_xrce_dds/micro_xrce_dds.h"
 #define STREAM_HISTORY 2
-#define BUFFER_SIZE    512 * STREAM_HISTORY //UXR_CONFIG_SERIAL_TRANSPORT_MTU
+#define BUFFER_SIZE    2048 * STREAM_HISTORY
 static uint8_t output_reliable_stream_buffer[BUFFER_SIZE];
 static uint8_t input_reliable_stream_buffer[BUFFER_SIZE];
 static uxr_session_t g_uxr_session;
@@ -30,7 +30,7 @@ void xrcedds::init(uint8_t xrcedds_product)
 
 bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callback_func, void* args)
 {
-  if(transport_info == NULL)
+  if(transport_info == nullptr)
   {
     return false;
   }
@@ -72,7 +72,7 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
       return false;
   }
 
-  if(g_uxr_session.comm_port != NULL)
+  if(g_uxr_session.comm_port != nullptr)
   {
     uxr_init_session(&g_uxr_session.session, g_uxr_session.comm_port, g_uxr_session.session_key);
     uxr_set_topic_callback(&g_uxr_session.session, uxr_onTopicCallback, args);
@@ -120,22 +120,25 @@ void xrcedds::deleteTransportAndSession(Transport_t* transport_info)
 
 bool xrcedds::createParticipant(xrcedds::Participant_t* participant, const char* participant_name)
 {
-  if(participant == NULL || g_uxr_session.is_init == false || participant_name == NULL)
+  if(participant == nullptr || g_uxr_session.is_init == false || participant_name == nullptr)
   {
     return false;
   }
   
   uint8_t status;
   uint16_t participant_req;
-  char participant_profile[256];
   static uint8_t participant_id = 0x01;
 
   participant->id            = participant_id++;
   uxrObjectId part_object_id = uxr_object_id(participant->id, UXR_PARTICIPANT_ID);
 
+#if (UXR_CREATE_ENTITIES_USING_XML)
+  char participant_profile[256];
   sprintf(participant_profile, UXR_PARTICIPANT_XML, participant_name);
   participant_req = uxr_buffer_create_participant_xml(&g_uxr_session.session, g_uxr_session.output_stream_id, part_object_id, 0, participant_profile, UXR_REPLACE);
-  //participant_req = uxr_buffer_create_participant_ref(&g_uxr_session.session, g_uxr_session.output_stream_id, participant->id, 0, participant_profile, UXR_REPLACE);
+#else  
+  participant_req = uxr_buffer_create_participant_ref(&g_uxr_session.session, g_uxr_session.output_stream_id, part_object_id, 0, participant_name, UXR_REPLACE);
+#endif  
 
   participant->is_created = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &participant_req, &status, 1);
 
@@ -144,7 +147,7 @@ bool xrcedds::createParticipant(xrcedds::Participant_t* participant, const char*
 
 bool xrcedds::registerTopic(xrcedds::Participant_t* participant, const char* topic_name, const char* topic_type, uint8_t topic_id)
 {
-  if(participant == NULL || participant->is_created == false || topic_name == NULL || topic_type == NULL)
+  if(participant == nullptr || participant->is_created == false || topic_name == nullptr || topic_type == nullptr)
   {
     return false;
   }
@@ -152,13 +155,17 @@ bool xrcedds::registerTopic(xrcedds::Participant_t* participant, const char* top
   bool ret = false;
   uint8_t status;
   uint16_t topic_req;
-  char topic_profile[256];
   
   uxrObjectId part_object_id = uxr_object_id(participant->id, UXR_PARTICIPANT_ID);
   uxrObjectId topic_object_id = uxr_object_id(topic_id, UXR_TOPIC_ID);
 
+#if (UXR_CREATE_ENTITIES_USING_XML)
+  char topic_profile[256];
   sprintf(topic_profile, UXR_TOPIC_XML, topic_name, topic_type);
   topic_req = uxr_buffer_create_topic_xml(&g_uxr_session.session, g_uxr_session.output_stream_id, topic_object_id, part_object_id, topic_profile, UXR_REUSE);
+#else
+  topic_req = uxr_buffer_create_topic_ref(&g_uxr_session.session, g_uxr_session.output_stream_id, topic_object_id, part_object_id, topic_name, UXR_REUSE);
+#endif  
   ret = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &topic_req, &status, 1);
   if(ret == false && status == UXR_STATUS_ERR_ALREADY_EXISTS)
   {
@@ -170,7 +177,7 @@ bool xrcedds::registerTopic(xrcedds::Participant_t* participant, const char* top
 
 bool xrcedds::createPublisher(xrcedds::Participant_t* participant, xrcedds::Publisher_t* publisher)
 {
-  if(participant == NULL || publisher == NULL ||participant->is_created == false)
+  if(participant == nullptr || publisher == nullptr ||participant->is_created == false)
   {
     return false;
   }
@@ -193,14 +200,13 @@ bool xrcedds::createPublisher(xrcedds::Participant_t* participant, xrcedds::Publ
 
 bool xrcedds::createDataWriter(xrcedds::Publisher_t* publisher, xrcedds::DataWriter_t* data_writer, char* writer_name, const char* topic_type)
 {
-  if(publisher == NULL || data_writer == NULL || writer_name == NULL || topic_type == NULL)
+  if(publisher == nullptr || data_writer == nullptr || writer_name == nullptr || topic_type == nullptr)
   {
     return false;
   }
 
   uint8_t status;
   uint16_t datawriter_req;
-  char writer_profile[256];
   static uint8_t writer_id = 0x01;
 
   data_writer->publisher = publisher;
@@ -209,8 +215,13 @@ bool xrcedds::createDataWriter(xrcedds::Publisher_t* publisher, xrcedds::DataWri
   uxrObjectId pub_object_id  = uxr_object_id(publisher->id, UXR_PUBLISHER_ID);
   uxrObjectId writer_object_id = uxr_object_id(data_writer->id, UXR_DATAWRITER_ID);
 
+#if (UXR_CREATE_ENTITIES_USING_XML)
+  char writer_profile[256];
   sprintf(writer_profile, UXR_WRITER_XML, writer_name, topic_type);
   datawriter_req = uxr_buffer_create_datawriter_xml(&g_uxr_session.session, g_uxr_session.output_stream_id, writer_object_id, pub_object_id, writer_profile, UXR_REPLACE);
+#else
+  datawriter_req = uxr_buffer_create_datawriter_ref(&g_uxr_session.session, g_uxr_session.output_stream_id, writer_object_id, pub_object_id, writer_name, UXR_REPLACE);
+#endif
 
   data_writer->is_created = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &datawriter_req, &status, 1);
 
@@ -219,7 +230,7 @@ bool xrcedds::createDataWriter(xrcedds::Publisher_t* publisher, xrcedds::DataWri
 
 bool xrcedds::createSubscriber(xrcedds::Participant_t* participant, xrcedds::Subscriber_t* subscriber)
 {
-  if(participant == NULL || subscriber == NULL || participant->is_created == false)
+  if(participant == nullptr || subscriber == nullptr || participant->is_created == false)
   {
     return false;
   }
@@ -242,14 +253,13 @@ bool xrcedds::createSubscriber(xrcedds::Participant_t* participant, xrcedds::Sub
 
 bool xrcedds::createDataReader(xrcedds::Subscriber_t* subscriber, xrcedds::DataReader_t* data_reader, char* reader_name, const char* topic_type)
 {
-  if(subscriber == NULL || data_reader == NULL || reader_name == NULL || topic_type == NULL)
+  if(subscriber == nullptr || data_reader == nullptr || reader_name == nullptr || topic_type == nullptr)
   {
     return false;
   }
 
   uint8_t status;
   uint16_t datareader_req;
-  char reader_profile[256];
   static uint8_t reader_id = 0x01;
 
   data_reader->subscriber = subscriber;
@@ -258,8 +268,13 @@ bool xrcedds::createDataReader(xrcedds::Subscriber_t* subscriber, xrcedds::DataR
   uxrObjectId sub_object_id  = uxr_object_id(subscriber->id, UXR_SUBSCRIBER_ID);
   uxrObjectId reader_object_id = uxr_object_id(data_reader->id, UXR_DATAREADER_ID);
 
+#if (UXR_CREATE_ENTITIES_USING_XML)
+  char reader_profile[256];
   sprintf(reader_profile, UXR_READER_XML, reader_name, topic_type);
   datareader_req = uxr_buffer_create_datareader_xml(&g_uxr_session.session, g_uxr_session.output_stream_id, reader_object_id, sub_object_id, reader_profile, UXR_REPLACE);
+#else
+  datareader_req = uxr_buffer_create_datareader_ref(&g_uxr_session.session, g_uxr_session.output_stream_id, reader_object_id, sub_object_id, reader_name, UXR_REPLACE);
+#endif  
 
   data_reader->is_created = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &datareader_req, &status, 1);
 
@@ -268,7 +283,7 @@ bool xrcedds::createDataReader(xrcedds::Subscriber_t* subscriber, xrcedds::DataR
 
 bool xrcedds::readData(xrcedds::DataReader_t* data_reader)
 {
-  if(data_reader == NULL || data_reader->is_created == false)
+  if(data_reader == nullptr || data_reader->is_created == false)
   {
     return false;
   }
@@ -288,7 +303,7 @@ bool xrcedds::readData(xrcedds::DataReader_t* data_reader)
 
 bool xrcedds::writeData(xrcedds::DataWriter_t* data_writer, void* buffer, uint32_t topic_size)
 {
-  if(data_writer == NULL || buffer == NULL || data_writer->is_created == false)
+  if(data_writer == nullptr || buffer == nullptr || data_writer->is_created == false)
   {
     return false;
   }
@@ -316,7 +331,7 @@ bool xrcedds::runCommunication(uint32_t timeout_ms)
 
 void xrcedds::deleteEntity(DataReader_t* data_reader)
 {
-  if(data_reader == NULL)
+  if(data_reader == nullptr)
     return;
 
   uxrObjectId obj_id = {data_reader->id, UXR_DATAREADER_ID};
@@ -325,7 +340,7 @@ void xrcedds::deleteEntity(DataReader_t* data_reader)
 
 void xrcedds::deleteEntity(DataWriter_t* data_writer)
 {
-  if(data_writer == NULL)
+  if(data_writer == nullptr)
     return;
 
   uxrObjectId obj_id = {data_writer->id, UXR_DATAWRITER_ID};

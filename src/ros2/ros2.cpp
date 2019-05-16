@@ -45,7 +45,7 @@ bool ros2::init(void* comm_instance, const char* p_server_ip, uint16_t server_po
 
 void ros2::spin(ros2::Node *node)
 {
-  if(node == NULL)
+  if(node == nullptr)
     return;
 
   node->runPubCallback();
@@ -117,7 +117,7 @@ void ros2::runNodeSubUserCallback(uint16_t id, void* msgs, void* args)
 {
   ros2::Node* p_node = (ros2::Node*) args;
 
-  if(p_node != NULL)
+  if(p_node != nullptr)
   {
     p_node->runSubCallback(id, msgs);
   }
@@ -128,8 +128,14 @@ void ros2::runNodeSubUserCallback(uint16_t id, void* msgs, void* args)
 ros2::Node::Node()
 {
   pub_cnt_ = 0, sub_cnt_ = 0, node_register_state_ = false;
-  memset(pub_list_, 0, sizeof(pub_list_));
-  memset(sub_list_, 0, sizeof(sub_list_));
+  for(size_t i = 0; i < ROS2_PUBLISHER_MAX; i++)
+  {
+    pub_list_[i] = nullptr;
+  }
+  for(size_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
+  {
+    sub_list_[i] = nullptr;
+  }
   this->recreate();
 }
 
@@ -160,7 +166,7 @@ void ros2::Node::recreate()
       (void*) runNodeSubUserCallback, (void*) this);
 
   node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_,
-      "default_xrce_participant");
+      "ros2_xrcedds_participant");
 
   xrcedds::createPublisher(&this->xrcedds_participant_,
       &this->xrcedds_publisher_);
@@ -170,7 +176,7 @@ void ros2::Node::recreate()
   uint8_t i;
   for (i = 0; i < ROS2_PUBLISHER_MAX; i++)
   {
-    if (pub_list_[i] != NULL)
+    if (pub_list_[i] != nullptr)
     {
       pub_list_[i]->recreate();
     }
@@ -178,7 +184,7 @@ void ros2::Node::recreate()
 
   for (i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
   {
-    if (sub_list_[i] != NULL)
+    if (sub_list_[i] != nullptr)
     {
       sub_list_[i]->recreate();
     }
@@ -187,7 +193,7 @@ void ros2::Node::recreate()
 
 void ros2::Node::createWallTimer(uint32_t msec, CallbackFunc callback, void* callback_arg, PublisherHandle* pub)
 {
-  if(pub == NULL)
+  if(pub == nullptr)
   {
     return;
   }
@@ -215,7 +221,7 @@ void ros2::Node::runPubCallback()
   for(i = 0; i < ROS2_PUBLISHER_MAX; i++)
   {
     p_pub = pub_list_[i];
-    if(p_pub != NULL && p_pub->is_registered_ && p_pub->isTimeToPublish())
+    if(p_pub != nullptr && p_pub->is_registered_ && p_pub->isTimeToPublish())
     {
       p_pub->publish();
       break;
@@ -230,7 +236,7 @@ void ros2::Node::runSubCallback(uint16_t reader_id, void* serialized_msg)
   for(i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
   {
     p_sub = sub_list_[i];
-    if(p_sub != NULL && p_sub->is_registered_ && p_sub->reader_id_ == reader_id)
+    if(p_sub != nullptr && p_sub->is_registered_ && p_sub->reader_id_ == reader_id)
     {
       p_sub->runCallback(serialized_msg);
     }
@@ -244,11 +250,11 @@ void ros2::Node::deletePublisher(const char* name)
   for(uint8_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
   {
     publisher = pub_list_[i];
-    if(publisher != NULL && !strcmp(publisher->name_, name))
+    if(publisher != nullptr && !strcmp(publisher->name_, name))
     {
       publisher->destroy();
       delete(publisher);
-      pub_list_[i] = NULL;
+      pub_list_[i] = nullptr;
       pub_cnt_--;
       break;
     }
@@ -262,11 +268,11 @@ void ros2::Node::deletePublisher(uint16_t writer_id)
   for(uint8_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
   {
     publisher = pub_list_[i];
-    if(publisher != NULL && publisher->writer_id_ == writer_id)
+    if(publisher != nullptr && publisher->writer_id_ == writer_id)
     {
       publisher->destroy();
       delete(publisher);
-      pub_list_[i] = NULL;
+      pub_list_[i] = nullptr;
       pub_cnt_--;
       break;
     }
@@ -280,11 +286,11 @@ void ros2::Node::deleteSubscriber(const char* name)
   for(uint8_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
   {
     subscriber = sub_list_[i];
-    if(subscriber != NULL && !strcmp(subscriber->name_, name))
+    if(subscriber != nullptr && !strcmp(subscriber->name_, name))
     {
       subscriber->destroy();
       delete(subscriber);
-      sub_list_[i] = NULL;
+      sub_list_[i] = nullptr;
       sub_cnt_--;
       break;
     }
@@ -298,11 +304,11 @@ void ros2::Node::deleteSubscriber(uint16_t reader_id)
   for(uint8_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
   {
     subscriber = sub_list_[i];
-    if(subscriber != NULL && subscriber->reader_id_ == reader_id)
+    if(subscriber != nullptr && subscriber->reader_id_ == reader_id)
     {
       subscriber->destroy();
       delete(subscriber);
-      sub_list_[i] = NULL;
+      sub_list_[i] = nullptr;
       sub_cnt_--;
       break;
     }

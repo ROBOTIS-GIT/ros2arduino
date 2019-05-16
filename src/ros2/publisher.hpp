@@ -35,7 +35,7 @@ public:
       return;
     }
 
-    if(callback != NULL)
+    if(callback != nullptr)
     {
       callback((void*)&topic_, callback_arg);
     }
@@ -57,9 +57,13 @@ public:
 
   void recreate()
   {
+#if (UXR_CREATE_ENTITIES_USING_XML)
     char writer_name[64];
-    sprintf(writer_name, "%s/%s", getPrefixString(TOPICS_PUBLISH), name_);
+    sprintf(writer_name, "%s/%s", getPrefixString(TOPICS_PUBLISH), name_);    
     is_registered_ = xrcedds::createDataWriter(publisher_, &data_writer_, writer_name, topic_.type_);
+#else
+    is_registered_ = xrcedds::createDataWriter(publisher_, &data_writer_, (char*)name_, topic_.type_);
+#endif    
   }
 
   void destroy(void)

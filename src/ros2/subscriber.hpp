@@ -47,7 +47,7 @@ class Subscriber:public SubscriberHandle
 
     void runCallback(void* serialized_msg)
     {
-      if(this->callback != NULL)
+      if(this->callback != nullptr)
       {
         topic_.deserialize((ucdrBuffer*)serialized_msg, &topic_);
 
@@ -57,9 +57,13 @@ class Subscriber:public SubscriberHandle
 
     void recreate()
     {
+#if (UXR_CREATE_ENTITIES_USING_XML)      
       char reader_name[64];
       sprintf(reader_name, "%s/%s", getPrefixString(TOPICS_SUBSCRIBE), name_);
       is_registered_ = xrcedds::createDataReader(subscriber_, &data_reader_, reader_name, topic_.type_);
+#else
+      is_registered_ = xrcedds::createDataReader(subscriber_, &data_reader_, (char*)name_, topic_.type_);
+#endif      
       this->reader_id_ = data_reader_.id;
     };  
 

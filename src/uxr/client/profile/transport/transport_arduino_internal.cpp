@@ -73,7 +73,7 @@ bool uxr_initUdpArduino(void* udp_instance, const char* ip_address, uint16_t por
 {
   bool rv = false;
 
-  if(udp_instance == NULL)
+  if(udp_instance == nullptr)
   {
     return false;
   }
@@ -142,7 +142,7 @@ bool uxr_connectTcpArduino(void* client_instance, const char* ip_address, uint16
 {
   bool rv = false;
 
-  if(client_instance == NULL)
+  if(client_instance == nullptr)
   {
     return false;
   }
