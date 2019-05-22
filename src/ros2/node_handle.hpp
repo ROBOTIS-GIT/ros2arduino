@@ -36,8 +36,8 @@ public:
   PublisherHandle()
     : is_registered_(false), writer_id_(0)
   {
-    callback = NULL;
-    callback_arg = NULL;
+    callback = nullptr;
+    callback_arg = nullptr;
     pub_msg_cnt_ = 0;
     callback_interval_ms_ = 0;
     last_call_time_ms_ = 0;
@@ -83,8 +83,8 @@ public:
   SubscriberHandle()
     : is_registered_(false), request_id_(0), reader_id_(0)
   {
-    callback = NULL;
-    callback_arg = NULL;
+    callback = nullptr;
+    callback_arg = nullptr;
     sub_msg_cnt_ = 0;
   }
   virtual ~SubscriberHandle(){};

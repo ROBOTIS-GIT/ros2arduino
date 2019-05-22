@@ -27,8 +27,8 @@ extern "C" {
 #include <stddef.h>
 
 typedef enum ucdrEndianness {
-    UCDR_BIG_ENDIANNESS,
-    UCDR_LITTLE_ENDIANNESS
+    UCDR_BIG_ENDIANNESS = 0,
+    UCDR_LITTLE_ENDIANNESS = 1
 
 } ucdrEndianness;
 
@@ -44,8 +44,6 @@ typedef struct ucdrBuffer
     bool error;
 
 } ucdrBuffer;
-
-UCDRDLLAPI extern const ucdrEndianness UCDR_MACHINE_ENDIANNESS;
 
 // ------------------------------------------------
 //              Main library functions

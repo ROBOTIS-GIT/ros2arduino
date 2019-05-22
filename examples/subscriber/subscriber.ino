@@ -15,7 +15,7 @@ public:
   LedSub()
   : Node()
   {
-    this->createSubscriber<std_msgs::Bool>("arduino_led", (ros2::CallbackFunc)subscribeLed, NULL);
+    this->createSubscriber<std_msgs::Bool>("arduino_led", (ros2::CallbackFunc)subscribeLed, nullptr);
   }
 };
 

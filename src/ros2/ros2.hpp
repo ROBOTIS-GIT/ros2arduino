@@ -45,16 +45,16 @@ class Node
     Publisher<MsgT>* createPublisher(const char* name)
     {
       bool ret = false;
-      ros2::Publisher<MsgT> *p_pub = NULL;
+      ros2::Publisher<MsgT> *p_pub = nullptr;
 
       if (this->node_register_state_ == false)
       {
-        return NULL;
+        return nullptr;
       }
 
       if (pub_cnt_ >= ROS2_PUBLISHER_MAX)
       {
-        return NULL;
+        return nullptr;
       }
 
       // Register Topic
@@ -62,7 +62,7 @@ class Node
 
       if (ret == false)
       {
-        return NULL;
+        return nullptr;
       }
 
       p_pub = new ros2::Publisher<MsgT>(&this->xrcedds_publisher_, name);
@@ -70,12 +70,12 @@ class Node
       if (p_pub->is_registered_ == false)
       {
         delete (p_pub);
-        return NULL;
+        return nullptr;
       }
 
       for (uint8_t i = 0; i < ROS2_PUBLISHER_MAX; i++)
       {
-        if (pub_list_[i] == NULL)
+        if (pub_list_[i] == nullptr)
         {
           pub_list_[i] = p_pub;
           pub_cnt_++;
@@ -91,16 +91,16 @@ class Node
     Subscriber<MsgT>* createSubscriber(const char* name, CallbackFunc callback, void* callback_arg)
     {
       bool ret = false;
-      ros2::Subscriber<MsgT> *p_sub = NULL;
+      ros2::Subscriber<MsgT> *p_sub = nullptr;
 
       if(this->node_register_state_ == false)
       {
-        return NULL;
+        return nullptr;
       }
 
       if(sub_cnt_ >= ROS2_SUBSCRIBER_MAX)
       {
-        return NULL;
+        return nullptr;
       }
 
       // Register Topic
@@ -108,7 +108,7 @@ class Node
 
       if (ret == false)
       {
-        return NULL;
+        return nullptr;
       }
 
       p_sub = new ros2::Subscriber<MsgT>(&this->xrcedds_subscriber_, name, callback, callback_arg);
@@ -116,12 +116,12 @@ class Node
       if(p_sub->is_registered_ == false)
       {
         delete(p_sub);
-        return NULL;
+        return nullptr;
       }
 
       for(uint8_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
       {
-        if(sub_list_[i] == NULL)
+        if(sub_list_[i] == nullptr)
         {
           sub_list_[i] = p_sub;
           sub_cnt_++;
@@ -174,4 +174,4 @@ builtin_interfaces::Time now();
 
 
 
-#endif /* ROS2ARDUINO_H_ */
+#endif /* ROS2_H_ */

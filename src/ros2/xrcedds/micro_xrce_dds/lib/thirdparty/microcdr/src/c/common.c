@@ -16,12 +16,6 @@
 
 #include <string.h>
 
-#if __BIG_ENDIAN__
-    const ucdrEndianness UCDR_MACHINE_ENDIANNESS = UCDR_BIG_ENDIANNESS;
-#else
-    const ucdrEndianness UCDR_MACHINE_ENDIANNESS = UCDR_LITTLE_ENDIANNESS;
-#endif
-
 // -------------------------------------------------------------------
 //                   INTERNAL UTIL IMPLEMENTATIONS
 // -------------------------------------------------------------------

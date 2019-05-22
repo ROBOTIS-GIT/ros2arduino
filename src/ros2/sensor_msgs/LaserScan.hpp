@@ -41,9 +41,9 @@ public:
     float scan_time;
     float range_min;
     float range_max;
-    float* ranges;
+    float ranges[360];
     uint32_t ranges_size;
-    float* intensities;
+    float intensities[360];
     uint32_t intensities_size;
 
   LaserScan():
@@ -51,9 +51,10 @@ public:
     header(),
     angle_min(0), angle_max(0), angle_increment(0), time_increment(0),
     scan_time(0), range_min(0), range_max(0),
-    ranges(NULL), ranges_size(0),
-    intensities(NULL), intensities_size(0)
+    ranges_size(0), intensities_size(0)
   { 
+    memset(ranges, 0, sizeof(ranges));
+    memset(intensities, 0, sizeof(intensities));
   }
 
   bool serialize(void* msg_buf, const LaserScan* topic)
