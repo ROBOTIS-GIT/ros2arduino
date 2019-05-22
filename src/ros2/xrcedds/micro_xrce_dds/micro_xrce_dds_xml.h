@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <uxr/client/config.h>
 
-#if (UXR_CREATE_ENTITIES_USING_XML)
+#ifdef UXR_CREATE_ENTITIES_USING_XML
 #define UXR_PARTICIPANT_XML "<dds><participant><rtps><name>%s</name></rtps></participant></dds>"
 #define UXR_WRITER_XML "<dds><data_writer><topic><kind>NO_KEY</kind><name>%s</name><dataType>%s</dataType></topic></data_writer></dds>"
 #define UXR_READER_XML "<dds><data_reader><topic><kind>NO_KEY</kind><name>%s</name><dataType>%s</dataType></topic></data_reader></dds>"
