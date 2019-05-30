@@ -7,15 +7,14 @@
 #######################################
 
 Node	KEYWORD1
-CallbackFunc	KEYWORD1
+Publisher KEYWORD1
+Subscriber  KEYWORD1
+
+CallbackFunc  KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
-
-Node	KEYWORD2
-Publisher	KEYWORD2
-Subscriber	KEYWORD2
 
 init	KEYWORD2
 spin	KEYWORD2
