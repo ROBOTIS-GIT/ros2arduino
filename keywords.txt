@@ -8,9 +8,9 @@
 
 Node	KEYWORD1
 Publisher KEYWORD1
-Subscriber  KEYWORD1
+Subscriber	KEYWORD1
 
-CallbackFunc  KEYWORD1
+CallbackFunc	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -23,6 +23,10 @@ createPublisher	KEYWORD2
 createSubscriber	KEYWORD2
 createWallFreq	KEYWORD2
 createWallTimer	KEYWORD2
+
+#######################################
+# Structures (KEYWORD3)
+#######################################
 
 #######################################
 # Constants (LITERAL1)
