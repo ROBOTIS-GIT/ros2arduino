@@ -2,9 +2,6 @@
 #include <ros2/xrcedds/micro_xrce_dds/lib/src/c/profile/transport/tcp/tcp_transport_internal.h>
 
 #include "../transport_arduino_internal.h"
-// #include <unistd.h>
-// #include <sys/types.h>
-// #include <string.h>
 
 bool uxr_init_tcp_platform(struct uxrTCPPlatform* platform, const char* ip,
     uint16_t port)

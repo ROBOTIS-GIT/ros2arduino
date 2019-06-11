@@ -20,7 +20,7 @@ extern "C"
 {
 #endif
 
-#include <uxr/client/dll.h>
+#include <uxr/client/visibility.h>
 #include <uxr/client/config.h>
 
 #include <stdint.h>
@@ -32,6 +32,7 @@ extern "C"
 #include <sys/socket.h>
 #include <poll.h>
 #elif defined(PLATFORM_NAME_WINDOWS)
+#include <winsock2.h>
 #endif
 
 
@@ -43,15 +44,30 @@ typedef struct uxrUDPTransportDatagram
     uint8_t buffer[UXR_UDP_TRANSPORT_MTU_DATAGRAM];
     struct pollfd poll_fd;
 #elif defined(PLATFORM_NAME_WINDOWS)
-    #error "Windows platform not implemented"
+    uint8_t buffer[UXR_UDP_TRANSPORT_MTU_DATAGRAM];
+    WSAPOLLFD poll_fd;
 #endif
 
 } uxrUDPTransportDatagram;
 
 bool uxr_init_udp_transport_datagram(struct uxrUDPTransportDatagram* transport);
-bool uxr_udp_send_datagram_to(struct uxrUDPTransportDatagram* transport, const uint8_t* buf, size_t len, const char* ip, uint16_t port);
-bool uxr_udp_recv_datagram(struct uxrUDPTransportDatagram* transport, uint8_t** buf, size_t* len, int timeout);
-void uxr_bytes_to_ip(const uint8_t* bytes, char* ip);
+
+bool uxr_udp_send_datagram_to(
+        struct uxrUDPTransportDatagram* transport,
+        const uint8_t* buf,
+        size_t len,
+        const char* ip,
+        uint16_t port);
+
+bool uxr_udp_recv_datagram(
+        struct uxrUDPTransportDatagram* transport,
+        uint8_t** buf,
+        size_t* len,
+        int timeout);
+
+void uxr_bytes_to_ip(
+        const uint8_t* bytes,
+        char* ip);
 
 #ifdef __cplusplus
 }

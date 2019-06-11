@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _SRC_C_CORE_SESSION_LOG_LOG_INTERNAL_H_
-#define _SRC_C_CORE_SESSION_LOG_LOG_INTERNAL_H_
+#ifndef _SRC_C_CORE_LOG_LOG_INTERNAL_H_
+#define _SRC_C_CORE_LOG_LOG_INTERNAL_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -24,7 +24,9 @@ extern "C"
 #include <stddef.h>
 
 #define UXR_SEND 1
+#define UXR_ERROR_SEND ~1
 #define UXR_RECV 2
+#define UXR_ERROR_RECV ~2
 
 #ifdef UXR_MESSAGE_LOGS
 #define UXR_MESSAGE_LOGS_AVAILABLE 1
@@ -43,7 +45,8 @@ void uxr_print_serialization(int direction, const uint8_t* buffer, size_t size);
 
 #if defined(UXR_MESSAGE_LOGS) || defined(UXR_SERIALIZATION_LOGS)
 #define UXR_DEBUG_PRINT_MESSAGE(direction, buffer, size, client_key) \
-    do { \
+    do \
+    { \
         if (UXR_MESSAGE_LOGS_AVAILABLE) uxr_print_message(direction, buffer, size, client_key); \
         if (UXR_SERIALIZATION_LOGS_AVAILABLE) uxr_print_serialization(direction, buffer, size); \
     } while (0)
@@ -55,4 +58,4 @@ void uxr_print_serialization(int direction, const uint8_t* buffer, size_t size);
 }
 #endif
 
-#endif // _SRC_C_CORE_SESSION_LOG_LOG_INTERNAL_H_
+#endif // _SRC_C_CORE_LOG_LOG_INTERNAL_H_

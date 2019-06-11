@@ -11,14 +11,14 @@
 uxrStreamId uxr_stream_id(uint8_t index, uxrStreamType type, uxrStreamDirection direction)
 {
     uxrStreamId stream_id;
-    stream_id.direction = direction;
+    stream_id.direction = (uint8_t)direction;
     stream_id.index = index;
-    stream_id.type = type;
+    stream_id.type = (uint8_t)type;
 
     switch(type)
     {
         case UXR_NONE_STREAM:
-            stream_id.raw = index;
+            stream_id.raw = 0;
             break;
         case UXR_BEST_EFFORT_STREAM:
             stream_id.raw = (uint8_t)(index + BEST_EFFORT_STREAM_THRESHOLD);
@@ -35,7 +35,7 @@ uxrStreamId uxr_stream_id_from_raw(uint8_t stream_id_raw, uxrStreamDirection dir
 {
     uxrStreamId stream_id;
     stream_id.raw = stream_id_raw;
-    stream_id.direction = direction;
+    stream_id.direction = (uint8_t)direction;
 
     if(BEST_EFFORT_STREAM_THRESHOLD > stream_id_raw)
     {

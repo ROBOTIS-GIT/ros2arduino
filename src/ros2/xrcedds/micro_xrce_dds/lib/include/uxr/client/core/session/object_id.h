@@ -20,7 +20,7 @@ extern "C"
 {
 #endif
 
-#include <uxr/client/dll.h>
+#include <uxr/client/visibility.h>
 #include <stdint.h>
 
 #define UXR_INVALID_ID     0x00

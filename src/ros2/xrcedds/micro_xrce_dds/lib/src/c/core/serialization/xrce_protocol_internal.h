@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _SRC_C_CORE_SERIALIZATION_XRCE_PROTOCOL_INTERNAL_H_
-#define _SRC_C_CORE_SERIALIZATION_XRCE_PROTOCOL_INTERNAL_H_
+#ifndef SRC_C_CORE_SERIALIZATION_XRCE_PROTOCOL_INTERNAL_H_
+#define SRC_C_CORE_SERIALIZATION_XRCE_PROTOCOL_INTERNAL_H_
 
 #ifdef __cplusplus
 extern "C"
 {
+#define INLINE_STRUCT(x) (x)
+#else
+#define INLINE_STRUCT(x)  x
 #endif
+
+#include <uxr/client/defines.h>
 
 #include <ucdr/microcdr.h>
 #include <stdint.h>
@@ -33,7 +38,7 @@ extern "C"
 #define UXR_SAMPLE_DELTA_SEQUENCE_MAX      8
 #define UXR_PACKED_SAMPLES_SEQUENCE_MAX    8
 #define UXR_TRANSPORT_LOCATOR_SEQUENCE_MAX 1
-#define UXR_PROPERTY_SEQUENCE_MAX          8
+#define UXR_PROPERTY_SEQUENCE_MAX          1
 
 typedef struct Time_t
 {
@@ -62,7 +67,8 @@ typedef struct ClientKey
 
 } ClientKey;
 
-#define CLIENT_INVALID (ClientKey){{0x00, 0x00, 0x00, 0x00}}
+
+#define CLIENT_INVALID COMPOUND_LITERAL(ClientKey){{0x00, 0x00, 0x00, 0x00}}
 
 typedef uint8_t ObjectKind;
 #define OBJK_INVALID 0x00
@@ -92,10 +98,10 @@ typedef struct ObjectPrefix
     uint8_t data[2];
 
 } ObjectPrefix;
-#define OBJECTID_INVALID (ObjectId){{0x00, 0x00}}
-#define OBJECTID_AGENT (ObjectId){{0xFF, 0xFD}}
-#define OBJECTID_CLIENT (ObjectId){{0xFF, 0xFE}}
-#define OBJECTID_SESSION (ObjectId){{0xFF, 0xFF}}
+#define OBJECTID_INVALID COMPOUND_LITERAL(ObjectId){{0x00, 0x00}}
+#define OBJECTID_AGENT COMPOUND_LITERAL(ObjectId){{0xFF, 0xFD}}
+#define OBJECTID_CLIENT COMPOUND_LITERAL(ObjectId){{0xFF, 0xFE}}
+#define OBJECTID_SESSION COMPOUND_LITERAL(ObjectId){{0xFF, 0xFF}}
 
 
 typedef struct XrceCookie
@@ -103,7 +109,7 @@ typedef struct XrceCookie
     uint8_t data[4];
 
 } XrceCookie;
-#define XRCE_COOKIE (XrceCookie){{0x58, 0x52, 0x43, 0x45}}
+#define XRCE_COOKIE COMPOUND_LITERAL(XrceCookie){{0x58, 0x52, 0x43, 0x45}}
 
 
 typedef struct XrceVersion
@@ -113,7 +119,7 @@ typedef struct XrceVersion
 } XrceVersion;
 #define XRCE_VERSION_MAJOR 0x01
 #define XRCE_VERSION_MINOR 0x00
-#define XRCE_VERSION (XrceVersion){{XRCE_VERSION_MAJOR, XRCE_VERSION_MINOR}}
+#define XRCE_VERSION COMPOUND_LITERAL(XrceVersion){{XRCE_VERSION_MAJOR, XRCE_VERSION_MINOR}}
 
 
 typedef struct XrceVendorId
@@ -201,7 +207,7 @@ typedef struct Property
 typedef struct PropertySeq
 {
     uint32_t size;
-    Property* data;
+    Property data[UXR_PROPERTY_SEQUENCE_MAX];
 
 } PropertySeq;
 
@@ -211,11 +217,11 @@ typedef struct CLIENT_Representation
     XrceCookie xrce_cookie;
     XrceVersion xrce_version;
     XrceVendorId xrce_vendor_id;
-    Time_t client_timestamp;
     ClientKey client_key;
     uint8_t session_id;
     bool optional_properties;
     PropertySeq properties;
+    uint16_t mtu;
 
 } CLIENT_Representation;
 
@@ -225,7 +231,6 @@ typedef struct AGENT_Representation
     XrceCookie xrce_cookie;
     XrceVersion xrce_version;
     XrceVendorId xrce_vendor_id;
-    Time_t agent_timestamp;
     bool optional_properties;
     PropertySeq properties;
 
@@ -665,7 +670,7 @@ typedef struct DataDeliveryControl
 
 typedef struct ReadSpecification
 {
-    uint8_t input_stream_id;
+    uint8_t preferred_stream_id;
     uint8_t data_format;
     bool optional_content_filter_expression;
     char* content_filter_expression;
@@ -824,7 +829,6 @@ typedef struct DataRepresentation
 
 typedef struct CREATE_CLIENT_Payload
 {
-    BaseObjectRequest base;
     CLIENT_Representation client_representation;
 
 } CREATE_CLIENT_Payload;
@@ -855,7 +859,7 @@ typedef struct DELETE_Payload
 
 typedef struct STATUS_AGENT_Payload
 {
-    BaseObjectReply base;
+    ResultStatus result;
     AGENT_Representation agent_info;
 
 } STATUS_AGENT_Payload;
@@ -926,7 +930,6 @@ typedef struct WRITE_DATA_Payload_PackedSamples
 typedef struct DATA_Payload_Data
 {
     BaseObjectRequest base;
-    SampleData data;
 
 } DATA_Payload_Data;
 
@@ -967,6 +970,7 @@ typedef struct ACKNACK_Payload
 {
     uint16_t first_unacked_seq_num;
     uint8_t nack_bitmap[2];
+    uint8_t stream_id;
 
 } ACKNACK_Payload;
 
@@ -974,8 +978,34 @@ typedef struct HEARTBEAT_Payload
 {
     uint16_t first_unacked_seq_nr;
     uint16_t last_unacked_seq_nr;
+    uint8_t stream_id;
 
 } HEARTBEAT_Payload;
+
+typedef struct TIMESTAMP_Payload
+{
+    Time_t transmit_timestamp;
+
+} TIMESTAMP_Payload;
+
+typedef struct TIMESTAMP_REPLY_Payload
+{
+    Time_t transmit_timestamp;
+    Time_t receive_timestamp;
+    Time_t originate_timestamp;
+
+} TIMESTAMP_REPLY_Payload;
+
+#ifdef PERFORMANCE_TESTING
+typedef struct PERFORMANCE_Payload
+{
+    uint32_t epoch_time_lsb;
+    uint32_t epoch_time_msb;
+    uint8_t* buf;
+    uint16_t len;
+
+} PERFORMANCE_Payload;
+#endif
 
 bool uxr_serialize_Time_t(ucdrBuffer* buffer, const Time_t* input);
 bool uxr_deserialize_Time_t(ucdrBuffer* buffer, Time_t* output);
@@ -1253,8 +1283,19 @@ bool uxr_deserialize_ACKNACK_Payload(ucdrBuffer* buffer, ACKNACK_Payload* output
 bool uxr_serialize_HEARTBEAT_Payload(ucdrBuffer* buffer, const HEARTBEAT_Payload* input);
 bool uxr_deserialize_HEARTBEAT_Payload(ucdrBuffer* buffer, HEARTBEAT_Payload* output);
 
+bool uxr_serialize_TIMESTAMP_Payload(ucdrBuffer* buffer, const TIMESTAMP_Payload* input);
+bool uxr_deserialize_TIMESTAMP_Payload(ucdrBuffer* buffer, TIMESTAMP_Payload* output);
+
+bool uxr_serialize_TIMESTAMP_REPLY_Payload(ucdrBuffer* buffer, const TIMESTAMP_REPLY_Payload* input);
+bool uxr_deserialize_TIMESTAMP_REPLY_Payload(ucdrBuffer* buffer, TIMESTAMP_REPLY_Payload* output);
+
+#ifdef PERFORMANCE_TESTING
+bool uxr_serialize_PERFORMANCE_Payload(ucdrBuffer* buffer, const PERFORMANCE_Payload* input);
+bool uxr_deserialize_PERFORMANCE_Payload(ucdrBuffer* buffer, PERFORMANCE_Payload* input);
+#endif
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif //_SRC_C_CORE_SERIALIZATION_XRCE_PROTOCOL_H_
+#endif // SRC_C_CORE_SERIALIZATION_XRCE_PROTOCOL_H_

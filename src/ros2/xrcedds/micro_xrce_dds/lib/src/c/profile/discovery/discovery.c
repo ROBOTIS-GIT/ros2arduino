@@ -19,46 +19,55 @@
 
 typedef struct CallbackData
 {
-    uxrAgentAddress* chosen;
     uxrOnAgentFound on_agent;
     void* args;
 
 } CallbackData;
 
-static void write_get_info_message(ucdrBuffer* mb);
+static void write_get_info_message(ucdrBuffer* ub);
 static bool listen_info_message(uxrUDPTransportDatagram* transport, int period, CallbackData* callback);
-static bool read_info_headers(ucdrBuffer* mb);
-static bool read_info_message(ucdrBuffer* mb, CallbackData* callback);
-static bool process_info(CallbackData* callback, Time_t timestamp, TransportLocator* transport);
+static bool read_info_headers(ucdrBuffer* ub);
+static bool read_info_message(ucdrBuffer* ub, CallbackData* callback);
+static bool process_info(CallbackData* callback, TransportLocator* transport);
 
 //==================================================================
 //                             PUBLIC
 //==================================================================
 
-bool uxr_discovery_agents_multicast(uint32_t attemps, int period, uxrOnAgentFound on_agent_func, void* args, uxrAgentAddress* chosen)
+void uxr_discovery_agents_default(
+        uint32_t attempts,
+        int period,
+        uxrOnAgentFound on_agent_func,
+        void* args)
 {
     uxrAgentAddress multicast = {MULTICAST_DEFAULT_IP, MULTICAST_DEFAULT_PORT};
-    return uxr_discovery_agents_unicast(attemps, period, on_agent_func, args, chosen, &multicast, 1);
+    uxr_discovery_agents(attempts, period, on_agent_func, args, &multicast, 1);
 }
 
-bool uxr_discovery_agents_unicast(uint32_t attempts, int period, uxrOnAgentFound on_agent_func, void* args, uxrAgentAddress* chosen,
-                                 const uxrAgentAddress* agent_list, size_t agent_list_size)
+void uxr_discovery_agents(
+        uint32_t attempts,
+        int period,
+        uxrOnAgentFound on_agent_func,
+        void* args,
+        const uxrAgentAddress* agent_list,
+        size_t agent_list_size)
 {
-    CallbackData callback = {chosen, on_agent_func, args};
+    CallbackData callback;
+    callback.on_agent = on_agent_func;
+    callback.args = args;
 
     uint8_t output_buffer[UXR_UDP_TRANSPORT_MTU_DATAGRAM];
-    ucdrBuffer mb;
-    ucdr_init_buffer(&mb, output_buffer, UXR_UDP_TRANSPORT_MTU_DATAGRAM);
-    write_get_info_message(&mb);
-    size_t message_length = ucdr_buffer_length(&mb);
+    ucdrBuffer ub;
+    ucdr_init_buffer(&ub, output_buffer, UXR_UDP_TRANSPORT_MTU_DATAGRAM);
+    write_get_info_message(&ub);
+    size_t message_length = ucdr_buffer_length(&ub);
 
-    bool consumed = false;
     uxrUDPTransportDatagram transport;
     if(uxr_init_udp_transport_datagram(&transport))
     {
-        for(uint32_t a = 0; a < attempts && !consumed; ++a)
+        for(uint32_t a = 0; a < attempts; ++a)
         {
-            for(size_t i = 0; i < agent_list_size && !consumed; ++i)
+            for(size_t i = 0; i < agent_list_size; ++i)
             {
                 (void) uxr_udp_send_datagram_to(&transport, output_buffer, message_length, agent_list[i].ip, agent_list[i].port);
                 UXR_DEBUG_PRINT_MESSAGE(UXR_SEND, output_buffer, message_length, 0);
@@ -66,36 +75,36 @@ bool uxr_discovery_agents_unicast(uint32_t attempts, int period, uxrOnAgentFound
 
             int64_t timestamp = uxr_millis();
             int poll = period;
-            while(0 < poll && !consumed)
+            while(0 < poll)
             {
-                consumed = listen_info_message(&transport, poll, &callback);
+                (void) listen_info_message(&transport, poll, &callback);
                 poll -= (int)(uxr_millis() - timestamp);
             }
         }
     }
-
-    return consumed;
 }
 
 //==================================================================
 //                             INTERNAL
 //==================================================================
 
-void write_get_info_message(ucdrBuffer* mb)
+void write_get_info_message(ucdrBuffer* ub)
 {
     GET_INFO_Payload payload;
     payload.base.request_id = (RequestId){{0x00, GET_INFO_REQUEST_ID}};
     payload.base.object_id = OBJECTID_AGENT;
     payload.info_mask = INFO_CONFIGURATION | INFO_ACTIVITY;
 
-    uxr_serialize_message_header(mb, UXR_SESSION_ID_WITHOUT_CLIENT_KEY, 0, 0, 0);
-    (void) uxr_buffer_submessage_header(mb, SUBMESSAGE_ID_GET_INFO, GET_INFO_MSG_SIZE, 0);
-    (void) uxr_serialize_GET_INFO_Payload(mb, &payload);
+    uxr_serialize_message_header(ub, SESSION_ID_WITHOUT_CLIENT_KEY, 0, 0, 0);
+    (void) uxr_buffer_submessage_header(ub, SUBMESSAGE_ID_GET_INFO, GET_INFO_MSG_SIZE, 0);
+    (void) uxr_serialize_GET_INFO_Payload(ub, &payload);
 }
 
-bool listen_info_message(uxrUDPTransportDatagram* transport, int poll, CallbackData* callback)
+bool listen_info_message(
+        uxrUDPTransportDatagram* transport,
+        int poll,
+        CallbackData* callback)
 {
-    bool consumed = false;
     uint8_t* input_buffer; size_t length;
 
     bool received = uxr_udp_recv_datagram(transport, &input_buffer, &length, poll);
@@ -103,66 +112,66 @@ bool listen_info_message(uxrUDPTransportDatagram* transport, int poll, CallbackD
     {
         UXR_DEBUG_PRINT_MESSAGE(UXR_RECV, input_buffer, length, 0);
 
-        ucdrBuffer mb;
-        ucdr_init_buffer(&mb, input_buffer, (uint32_t)length);
-        if(read_info_headers(&mb))
+        ucdrBuffer ub;
+        ucdr_init_buffer(&ub, input_buffer, (uint32_t)length);
+        if(read_info_headers(&ub))
         {
-            consumed = read_info_message(&mb, callback);
+            (void) read_info_message(&ub, callback);
         }
     }
 
-    return consumed;
+    return received;
 }
 
-bool read_info_headers(ucdrBuffer* mb)
+bool read_info_headers(ucdrBuffer* ub)
 {
-    bool valid = false;
+    uint8_t session_id; uint8_t stream_id_raw; uxrSeqNum seq_num; uint8_t key[CLIENT_KEY_SIZE];
+    uxr_deserialize_message_header(ub, &session_id, &stream_id_raw, &seq_num, key);
 
-    uint8_t session_id; uint8_t stream_id_raw; uxrSeqNum seq_num; uint8_t key[UXR_CLIENT_KEY_SIZE];
-    uxr_deserialize_message_header(mb, &session_id, &stream_id_raw, &seq_num, key);
-
-    uint8_t id; uint16_t length; uint8_t flags; uint8_t* payload_it = NULL;
-    if(uxr_read_submessage_header(mb, &id, &length, &flags, &payload_it))
-    {
-        valid = true;
-    }
-
-    return valid;
+    uint8_t id; uint16_t length; uint8_t flags;
+    return uxr_read_submessage_header(ub, &id, &length, &flags);
 }
 
-bool read_info_message(ucdrBuffer* mb, CallbackData* callback)
+bool read_info_message(
+        ucdrBuffer* ub,
+        CallbackData* callback)
 {
-    bool consumed = false;
+    bool well_read = false;
     INFO_Payload payload;
 
-    if(uxr_deserialize_INFO_Payload(mb, &payload))
+    if(uxr_deserialize_INFO_Payload(ub, &payload))
     {
         XrceVersion* version = &payload.object_info.config._.agent.xrce_version;
         TransportLocator* transport = &payload.object_info.activity._.agent.address_seq.data[0];
-        Time_t timestamp = payload.object_info.config._.agent.agent_timestamp;
 
         if(0 == memcmp(version->data, XRCE_VERSION.data, sizeof(XRCE_VERSION.data)))
         {
-            consumed = process_info(callback, timestamp, transport);
+            (void) process_info(callback, transport);
+            well_read = true;
         }
     }
 
-    return consumed;
+    return well_read;
 }
 
-bool process_info(CallbackData* callback, Time_t timestamp, TransportLocator* locator)
+bool process_info(
+        CallbackData* callback,
+        TransportLocator* locator)
 {
-    bool consumed = false;
-    int64_t nanoseconds = (int64_t)timestamp.seconds + (int64_t)timestamp.nanoseconds * 1000000000L;
+    bool processed = false;
 
     if(locator->format == ADDRESS_FORMAT_MEDIUM)
     {
-        callback->chosen->port = locator->_.medium_locator.locator_port;
-        uxr_bytes_to_ip(locator->_.medium_locator.address, callback->chosen->ip);
+        char ip[16];
+        uxr_bytes_to_ip(locator->_.medium_locator.address, ip);
 
-        consumed = callback->on_agent(callback->chosen, nanoseconds, callback->args);
+        uxrAgentAddress address = {ip, locator->_.medium_locator.locator_port};
+
+        callback->on_agent(&address, callback->args);
+
+        processed = true;
     }
 
-    return consumed;
+    return processed;
 }
 

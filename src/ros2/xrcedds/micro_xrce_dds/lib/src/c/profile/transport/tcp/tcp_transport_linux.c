@@ -49,7 +49,7 @@ bool uxr_init_tcp_platform(struct uxrTCPPlatform* platform, const char* ip, uint
 
 bool uxr_close_tcp_platform(struct uxrTCPPlatform* platform)
 {
-    return (0 == close(platform->poll_fd.fd));
+    return (-1 == platform->poll_fd.fd) ? true : (0 == close(platform->poll_fd.fd));
 }
 
 size_t uxr_write_tcp_data_platform(struct uxrTCPPlatform* platform,
@@ -106,4 +106,4 @@ void uxr_disconnect_tcp_platform(struct uxrTCPPlatform* platform)
 }
 
 
-#endif
+#endif //PLATFORM_NAME_LINUX

@@ -1,4 +1,4 @@
-#include "serial_transport_internal.h"
+#include "serial_protocol_internal.h"
 
 #if defined(PLATFORM_NAME_LINUX)
 #include <uxr/client/profile/transport/serial/serial_transport_linux.h>
@@ -20,7 +20,7 @@ bool uxr_init_serial_platform(struct uxrSerialPlatform* platform, int fd, uint8_
 
 bool uxr_close_serial_platform(struct uxrSerialPlatform* platform)
 {
-    return (0 == close(platform->poll_fd.fd));
+    return (-1 == platform->poll_fd.fd) ? true : (0 == close(platform->poll_fd.fd));
 }
 
 size_t uxr_write_serial_data_platform(uxrSerialPlatform* platform, uint8_t* buf, size_t len, uint8_t* errcode)
@@ -65,4 +65,5 @@ size_t uxr_read_serial_data_platform(uxrSerialPlatform* platform, uint8_t* buf, 
     return rv;
 }
 
-#endif
+
+#endif //PLATFORM_NAME_LINUX

@@ -1,4 +1,4 @@
-// Copyright 2018 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+// Copyright 2019 Proyectos y Sistemas de Mantenimiento SL (eProsima).
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _UXR_CLIENT_UDP_TRANSPORT_H_
-#define _UXR_CLIENT_UDP_TRANSPORT_H_
+#ifndef UXR_CLIENT_UDP_TRANSPORT_H_
+#define UXR_CLIENT_UDP_TRANSPORT_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -22,7 +22,7 @@ extern "C"
 
 #include <uxr/client/core/communication/communication.h>
 #include <uxr/client/config.h>
-#include <uxr/client/dll.h>
+#include <uxr/client/visibility.h>
 
 struct uxrUDPPlatform;
 
@@ -34,11 +34,26 @@ typedef struct uxrUDPTransport
 
 } uxrUDPTransport;
 
-UXRDLLAPI bool uxr_init_udp_transport(uxrUDPTransport* transport,
-                                      struct uxrUDPPlatform* platform,
-                                      const char* ip,
-                                      uint16_t port);
+/**
+ * @brief Initializes a UDP transport.
+ * @param transport The uninitialized transport structure used for managing the transport.
+ *                  This structure must be accesible during the connection.
+ * @param platform  A structure that contains the platform dependencies.
+ * @param ip        The IP address of the Agent.
+ * @param port      The port of the Agent.
+ * @return `true` in case of successful initialization. `false` in other case.
+ */
+UXRDLLAPI bool uxr_init_udp_transport(
+        uxrUDPTransport* transport,
+        struct uxrUDPPlatform* platform,
+        const char* ip,
+        uint16_t port);
 
+/**
+ * @brief Closes a UDP transport.
+ * @param transport The transport structure.
+ * @return `true` in case of successful closing. `false` in other case.
+ */
 UXRDLLAPI bool uxr_close_udp_transport(uxrUDPTransport* transport);
 
 
@@ -46,4 +61,4 @@ UXRDLLAPI bool uxr_close_udp_transport(uxrUDPTransport* transport);
 }
 #endif
 
-#endif //_UXR_CLIENT_UDP_TRANSPORT_H_
+#endif // UXR_CLIENT_UDP_TRANSPORT_H_

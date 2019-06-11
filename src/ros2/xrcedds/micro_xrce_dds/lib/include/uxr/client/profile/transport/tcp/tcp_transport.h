@@ -22,7 +22,7 @@ extern "C"
 
 #include <uxr/client/core/communication/communication.h>
 #include <uxr/client/config.h>
-#include <uxr/client/dll.h>
+#include <uxr/client/visibility.h>
 
 typedef enum uxrTCPInputBufferState
 {
@@ -53,11 +53,26 @@ typedef struct uxrTCPTransport
 
 } uxrTCPTransport;
 
-UXRDLLAPI bool uxr_init_tcp_transport(uxrTCPTransport* transport,
-                                      struct uxrTCPPlatform* platform,
-                                      const char* ip,
-                                      uint16_t port);
+/**
+ * @brief Initializes a TCP transport.
+ * @param transport The uninitialized transport structure used for managing the transport.
+ *                  This structure must be accesible during the connection.
+ * @param platform  A structure that contains the platform dependencies.
+ * @param ip        The IP address of the Agent.
+ * @param port      The port of the Agent.
+ * @return `true` in case of successful initialization. `false` in other case.
+ */
+UXRDLLAPI bool uxr_init_tcp_transport(
+        uxrTCPTransport* transport,
+        struct uxrTCPPlatform* platform,
+        const char* ip,
+        uint16_t port);
 
+/**
+ * @brief Closes a TCP transport.
+ * @param transport The transport structure.
+ * @return `true` in case of successful closing. `false` in other case.
+ */
 UXRDLLAPI bool uxr_close_tcp_transport(uxrTCPTransport* transport);
 
 #ifdef __cplusplus

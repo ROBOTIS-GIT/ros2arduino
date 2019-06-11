@@ -1,7 +1,6 @@
 #include "serial_transport_baremetal.h"
 #include <ros2/xrcedds/micro_xrce_dds/lib/src/c/profile/transport/serial/serial_transport_internal.h>
-#include <fcntl.h>
-#include <unistd.h>
+
 #include "../transport_arduino_internal.h"
 
 bool uxr_init_serial_platform(struct uxrSerialPlatform* platform, int fd,

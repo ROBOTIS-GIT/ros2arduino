@@ -27,6 +27,16 @@ extern "C"
 
 struct ucdrBuffer;
 
+typedef enum FragmentationInfo
+{
+    NO_FRAGMENTED,
+    INTERMEDIATE_FRAGMENT,
+    LAST_FRAGMENT
+
+} FragmentationInfo;
+
+typedef FragmentationInfo (*OnGetFragmentationInfo)(uint8_t* buffer);
+
 typedef struct uxrInputReliableStream
 {
     uint8_t* buffer;
@@ -35,6 +45,8 @@ typedef struct uxrInputReliableStream
 
     uxrSeqNum last_handled;
     uxrSeqNum last_announced;
+
+    OnGetFragmentationInfo on_get_fragmentation_info;
 
 } uxrInputReliableStream;
 

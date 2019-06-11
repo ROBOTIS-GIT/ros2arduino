@@ -17,27 +17,16 @@
 
 #include <uxr/client/config.h>
 
-#ifdef PROFILE_CREATE_ENTITIES_REF
-#include <uxr/client/profile/session/create_entities_ref.h>
-#endif //PROFILE_CREATE_ENTITIES_REF
-
-#ifdef PROFILE_CREATE_ENTITIES_XML
-#include <uxr/client/profile/session/create_entities_xml.h>
-#endif //PROFILE_CREATE_ENTITIES_XML
-
-#ifdef PROFILE_READ_ACCESS
-#include <uxr/client/profile/session/read_access.h>
-#endif //PROFILE_READ_ACCESS
-
-#ifdef PROFILE_WRITE_ACCESS
-#include <uxr/client/profile/session/write_access.h>
-#endif //PROFILE_WRITE_ACCESS
-
 #ifdef PROFILE_DISCOVERY
 #include <uxr/client/profile/discovery/discovery.h>
 #endif //PROFILE_DISCOVERY
 
-#include <uxr/client/transport.h>
 #include <uxr/client/core/session/session.h>
+#include <uxr/client/core/session/write_access.h>
+#include <uxr/client/core/session/read_access.h>
+#include <uxr/client/core/session/create_entities_ref.h>
+#include <uxr/client/core/session/create_entities_xml.h>
+
+#include <uxr/client/transport.h>
 
 #endif // _UXR_CLIENT_CLIENT_H_

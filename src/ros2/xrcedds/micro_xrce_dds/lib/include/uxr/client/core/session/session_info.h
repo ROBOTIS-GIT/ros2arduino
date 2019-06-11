@@ -38,6 +38,9 @@ extern "C"
 
 #define UXR_REUSE            0x01 << 1
 #define UXR_REPLACE          0x01 << 2
+#ifdef PERFORMANCE_TESTING
+#define UXR_ECHO             0x01 << 7
+#endif
 
 #define UXR_INVALID_REQUEST_ID 0
 

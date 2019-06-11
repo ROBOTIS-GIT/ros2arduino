@@ -26,17 +26,22 @@ extern "C"
 #include <stdbool.h>
 #include <stddef.h>
 
+#define ACKNACK_PAYLOAD_SIZE  5
+
 struct ucdrBuffer;
 
-void uxr_init_input_reliable_stream(uxrInputReliableStream* stream, uint8_t* buffer, size_t size, uint16_t history);
+void uxr_init_input_reliable_stream(uxrInputReliableStream* stream, uint8_t* buffer, size_t size, uint16_t history, OnGetFragmentationInfo on_get_fragmentation_info);
 void uxr_reset_input_reliable_stream(uxrInputReliableStream* stream);
-bool uxr_receive_reliable_message(uxrInputReliableStream* stream, uint16_t seq_num, uint8_t* buffer, size_t length);
-bool uxr_next_input_reliable_buffer_available(uxrInputReliableStream* stream, struct ucdrBuffer* mb);
+bool uxr_receive_reliable_message(uxrInputReliableStream* stream, uint16_t seq_num, uint8_t* buffer, size_t length, bool* message_stored);
+bool uxr_next_input_reliable_buffer_available(uxrInputReliableStream* stream, struct ucdrBuffer* ub, size_t fragment_offset);
 
-void uxr_buffer_acknack(const uxrInputReliableStream* stream, struct ucdrBuffer* mb);
-void uxr_read_heartbeat(uxrInputReliableStream* stream, struct ucdrBuffer* payload);
+uint16_t uxr_compute_acknack(const uxrInputReliableStream* stream, uxrSeqNum* from);
+void uxr_process_heartbeat(uxrInputReliableStream* stream, uxrSeqNum first_seq_num, uxrSeqNum last_seq_num);
 
-bool uxr_is_input_reliable_stream_busy(uxrInputReliableStream* stream);
+bool uxr_is_input_up_to_date(const uxrInputReliableStream* stream);
+
+uint8_t* uxr_get_input_buffer(const uxrInputReliableStream* stream, size_t history_pos);
+size_t uxr_get_input_buffer_size(const uxrInputReliableStream* stream);
 
 #ifdef __cplusplus
 }

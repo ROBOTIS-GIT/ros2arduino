@@ -1,5 +1,23 @@
+#ifndef _UXR_CLIENT_TCP_TRANSPORT_BAREMETAL_H_
+#define _UXR_CLIENT_TCP_TRANSPORT_BAREMETAL_H_
+
 #include <uxr/client/config.h>
 
 #if defined(PLATFORM_NAME_BAREMETAL)
-#include <ros2/xrcedds/micro_xrce_dds/lib/include/uxr/client/profile/transport/tcp/tcp_transport_baremetal.h>
+#ifdef __cplusplus
+extern "C"
+{
 #endif
+
+typedef struct uxrTCPPlatform
+{
+  int socket_fd;
+  void* client_instance;
+}uxrTCPPlatform;
+
+#ifdef __cplusplus
+}
+#endif
+#endif //PLATFORM_NAME_BAREMETAL
+
+#endif //_UXR_CLIENT_TCP_TRANSPORT_BAREMETAL_H_
