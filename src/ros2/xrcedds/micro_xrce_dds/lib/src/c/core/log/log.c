@@ -23,6 +23,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <inttypes.h>
 
 #define YELLOW_DARK    "\x1B[0;33m"
 #define PURPLE_DARK    "\x1B[0;35m"
@@ -654,7 +655,7 @@ void print_tail(int64_t initial_log_time)
 #ifdef WIN32
     printf(" %st: %I64ims%s", BLUE, ms, RESTORE_COLOR);
 #else
-    printf(" %st: %lims%s", BLUE, (long int)ms, RESTORE_COLOR);
+    printf(" %st: %" PRId64 "ms%s", BLUE, ms, RESTORE_COLOR);
 #endif
 }
 
