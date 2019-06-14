@@ -5,18 +5,19 @@ Arduino library for communicating with ROS2(DDS)
 
 ## Version-specific dependencies
 
-- Recommend version (current)
+- Recommend version (present)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.0.9|[Crystal Clemmys Patch3](https://github.com/ros2/ros2/releases/tag/release-crystal-20190314)| [specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/b3c43bd20b16bd3570a128f05a9bf1a164883435) |
+|0.1.0|[Dashing Diademata](https://github.com/ros2/ros2/releases/tag/release-dashing-20190531)|[specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/26d6ee42d9812a3465548590a66588d81c511ddc)|
 
 For the Micro-XRCE-DDS Agent, please install it using following commands.
 ```bash
 $ git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-$ cd Micro-XRCE-DDS-Agent && git checkout b3c43bd20b16bd3570a128f05a9bf1a164883435
+$ cd Micro-XRCE-DDS-Agent && git checkout 26d6ee42d9812a3465548590a66588d81c511ddc
 $ mkdir build && cd build
-$ cmake -DTHIRDPARTY=ON -DCONFIG_UDP_TRANSPORT_MTU=4096 -DCONFIG_SERIAL_TRANSPORT_MTU=4096 ..
+$ cmake ..
+$ make
 $ sudo make install
 $ sudo ldconfig /usr/local/lib/
 ```
@@ -25,13 +26,14 @@ $ sudo ldconfig /usr/local/lib/
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.0.9|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1) < |
+|0.1.0|[Dashing Diademata](https://github.com/ros2/ros2/releases/tag/release-dashing-20190531)|[specific commit](https://github.com/eProsima/Micro-XRCE-DDS-Agent/commit/26d6ee42d9812a3465548590a66588d81c511ddc)|
+|0.0.9|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
 
 <br>
 
 ## Restrictions
 
-#### Available boards (What we've tested on our own)
+#### Available boards (What we've tested on our own, RAM size >= 20Kb(OpenCM9.04))
 Based on the normal behavior of publisher and subscriber.
 
  - [OpenCR](http://emanual.robotis.com/docs/en/parts/controller/opencr10/)
@@ -70,24 +72,101 @@ You must install ROS2 and XRCE-DDS Agent. (The version should be the same as the
  - [Sketch] - [Upload]
  
  
-#### Excute XRCE-DDS Agent
- - Serial
-   ```bash
-   $ MicroXRCEAgent --serial /dev/ttyACM0 115200
-   ```
- - UDP
-   ```bash
-   $ MicroXRCEAgent --udp 2018
-   ```
- - TCP
-   ```bash
-   $ MicroXRCEAgent --tcp 2018
-   ```
+#### Excute Micro-XRCE-DDS Agent
+
+- Please refer to [eProsima manual](https://micro-xrce-dds.readthedocs.io/en/latest/agent.html) for Micro-XRCE-DDS-Agent usage.
+
+- 0.1.0 or above (Micro-XRCE-DDS-Agent 1.1.0 or above)
+  - Serial
+    ```bash
+    $ MicroXRCEAgent serial --dev /dev/ttyACM0 -b 115200
+    ```
+  - UDP
+    ```bash
+    $ MicroXRCEAgent udp -p 2019
+    ```
+  - TCP
+    ```bash
+    $ MicroXRCEAgent tcp -p 2019
+    ```
+
+- 0.0.9 (Micro-XRCE-DDS-Agent 1.0.1)
+  - Serial
+    ```bash
+    $ MicroXRCEAgent --serial /dev/ttyACM0 115200
+    ```
+  - UDP
+    ```bash
+    $ MicroXRCEAgent --udp 2018
+    ```
+  - TCP
+    ```bash
+    $ MicroXRCEAgent --tcp 2018
+    ```
+
 #### Check topic on ROS2
 ```bash
 $ ros2 topic echo /arduino_chatter
 ```
- 
+
+#### Appendix: How to configure entities from reference file. (available at 0.1.0 or above)
+- Use the reference method supported by Client and Agent. Please refer to [eProsima manual](https://micro-xrce-dds.readthedocs.io/en/latest/agent.html#run-an-agent) for detailed usage.
+- In addition, you need to change the settings in ros2arduino.
+- In the [user_config.h](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/src/user_config.h) file, you must comment out `#define UXR_CREATE_ENTITIES_USING_XML` to use the reference method.
+
+For example, create .refs file(in XML format) and run the Agent with the following options:
+```bash
+$ MicroXRCEAgent serial --dev /dev/ttyACM0 -b 115200 -r ros2arduino.refs
+```
+- ros2arduino.refs
+```xml
+<profiles>
+    <participant profile_name="ros2_xrcedds_participant">
+        <rtps>
+            <name>ros2_xrcedds_participant</name>
+            <builtin>
+                <domainId>0</domainId>
+            </builtin>
+        </rtps>
+    </participant>
+
+
+    <data_writer profile_name="arduino_chatter">
+        <topic>
+            <kind>NO_KEY</kind>
+            <name>rt/arduino_chatter</name>
+            <dataType>std_msgs::msg::dds_::String_</dataType>
+            <historyQos>
+                <kind>KEEP_LAST</kind>
+                <depth>10</depth>
+            </historyQos>
+        </topic>
+    </data_writer>
+
+
+    <data_reader profile_name="arduino_led">
+        <topic>
+            <name>rt/arduino_led</name>
+            <dataType>std_msgs::msg::dds_::Bool_</dataType>
+        </topic>
+    </data_reader>
+
+
+    <topic profile_name="Bool">
+        <kind>NO_KEY</kind>
+        <name>Bool</name>
+        <dataType>std_msgs::msg::dds_::Bool_</dataType>
+    </topic>
+
+    <topic profile_name="String">
+        <kind>NO_KEY</kind>
+        <name>String</name>
+        <dataType>std_msgs::msg::dds_::String_</dataType>
+    </topic>
+</profiles>
+
+```
+
  <br>
  
 ## Development Note
