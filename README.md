@@ -83,11 +83,11 @@ You must install ROS2 and XRCE-DDS Agent. (The version should be the same as the
     ```
   - UDP
     ```bash
-    $ MicroXRCEAgent udp -p 2019
+    $ MicroXRCEAgent udp -p 2018
     ```
   - TCP
     ```bash
-    $ MicroXRCEAgent tcp -p 2019
+    $ MicroXRCEAgent tcp -p 2018
     ```
 
 - 0.0.9 (Micro-XRCE-DDS-Agent 1.0.1)
