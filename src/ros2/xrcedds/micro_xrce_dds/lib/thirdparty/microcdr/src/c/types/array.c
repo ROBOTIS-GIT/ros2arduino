@@ -12,407 +12,148 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <ucdr/types/array.h>
-
-#include "../common_internals.h"
-#include "array_internals.h"
-#include "basic_internals.h"
+#include "../common_internal.h"
 
 #include <string.h>
 
+static void ucdr_array_to_buffer(ucdrBuffer* ub, const uint8_t* array, size_t size, size_t data_size);
+static void ucdr_buffer_to_array(ucdrBuffer* ub, uint8_t* array, size_t size, size_t data_size);
+
 // -------------------------------------------------------------------
-//                INTERNAL SERIALIZATION IMPLEMENTATION
+//                         SERIALIZE MACROS
 // -------------------------------------------------------------------
-
-bool ucdr_serialize_array_byte_1(ucdrBuffer* mb, const uint8_t* array, const uint32_t size)
+void ucdr_array_to_buffer(ucdrBuffer* ub, const uint8_t* array, size_t size, size_t data_size)
 {
-    uint32_t data_size = sizeof(uint8_t);
-    if(ucdr_check_buffer(mb, size))
+    if(ucdr_check_buffer_available_for(ub, size))
     {
-        memcpy(mb->iterator, array, size);
-
-        mb->iterator += size;
-        mb->last_data_size = data_size;
+        memcpy(ub->iterator, array, size);
+        ub->iterator += size;
     }
-    return !mb->error;
-}
-
-bool ucdr_serialize_array_byte_2(ucdrBuffer* mb, const ucdrEndianness endianness, const uint16_t* array, const uint32_t size)
-{
-    uint32_t data_size = sizeof(uint16_t);
-    uint32_t array_size = size * data_size;
-    uint32_t alignment = ucdr_buffer_alignment(mb, sizeof(uint16_t));
-
-    if(ucdr_check_buffer(mb, alignment + array_size))
+    else
     {
-        mb->iterator += alignment;
-        if(UCDR_MACHINE_ENDIANNESS == endianness)
+        size_t remaining_size = size;
+        size_t serialization_size;
+        while(0 < (serialization_size = ucdr_check_final_buffer_behavior_array(ub, remaining_size, data_size)))
         {
-            memcpy(mb->iterator, array, array_size);
-
-            mb->iterator += array_size;
-            mb->last_data_size = data_size;
-        }
-        else
-        {
-            for(uint32_t i = 0; i < size; i++)
-            {
-                ucdr_serialize_byte_2(mb, endianness, array + i);
-            }
+            memcpy(ub->iterator, array + (size - remaining_size), serialization_size);
+            remaining_size -= serialization_size;
+            ub->iterator += serialization_size;
         }
     }
-    return !mb->error;
+    ub->last_data_size = (uint8_t)data_size;
 }
 
-bool ucdr_serialize_array_byte_4(ucdrBuffer* mb, const ucdrEndianness endianness, const uint32_t* array, const uint32_t size)
+void ucdr_buffer_to_array(ucdrBuffer* ub, uint8_t* array, size_t size, size_t data_size)
 {
-    uint32_t data_size = sizeof(uint32_t);
-    uint32_t array_size = size * data_size;
-    uint32_t alignment = ucdr_buffer_alignment(mb, sizeof(uint32_t));
-
-    if(ucdr_check_buffer(mb, alignment + array_size))
+    if(ucdr_check_buffer_available_for(ub, size))
     {
-        mb->iterator += alignment;
-
-        if(UCDR_MACHINE_ENDIANNESS == endianness)
+        memcpy(array, ub->iterator, size);
+        ub->iterator += size;
+    }
+    else
+    {
+        size_t remaining_size = size;
+        size_t deserialization_size;
+        while(0 < (deserialization_size = ucdr_check_final_buffer_behavior_array(ub, remaining_size, data_size)))
         {
-            memcpy(mb->iterator, array, array_size);
-            mb->iterator += array_size;
-            mb->last_data_size = data_size;
-        }
-        else
-        {
-            for(uint32_t i = 0; i < size; i++)
-            {
-                ucdr_serialize_byte_4(mb, endianness, array + i);
-            }
+            memcpy(array + (size - remaining_size), ub->iterator, deserialization_size);
+            remaining_size -= deserialization_size;
+            ub->iterator += deserialization_size;
         }
     }
-    return !mb->error;
+    ub->last_data_size = (uint8_t)data_size;
 }
 
-bool ucdr_serialize_array_byte_8(ucdrBuffer* mb, const ucdrEndianness endianness, const uint64_t* array, const uint32_t size)
-{
-    uint32_t data_size = sizeof(uint64_t);
-    uint32_t array_size = size * data_size;
-    uint32_t alignment = ucdr_buffer_alignment(mb, sizeof(uint64_t));
+#define UCDR_SERIALIZE_ARRAY_BYTE_1(TYPE, ENDIAN) \
+    (void)ENDIAN; \
+    ucdr_array_to_buffer(ub, (uint8_t*)array, size, 1); \
+    return !ub->error;
 
-    if(ucdr_check_buffer(mb, alignment + array_size))
-    {
-        mb->iterator += alignment;
+#define UCDR_SERIALIZE_ARRAY_BYTE_N(TYPE, TYPE_SIZE, ENDIAN) \
+    ub->iterator += ucdr_buffer_alignment(ub, TYPE_SIZE); \
+    if(UCDR_MACHINE_ENDIANNESS == ENDIAN) \
+    { \
+        ucdr_array_to_buffer(ub, (uint8_t*)array, size * TYPE_SIZE, TYPE_SIZE); \
+    } \
+    else \
+    { \
+        for(uint32_t i = 0; i < size; ++i) \
+        { \
+            ucdr_serialize_endian_ ## TYPE(ub, ENDIAN, *(array + i)); \
+        } \
+    } \
+    return !ub->error;
 
-        if(UCDR_MACHINE_ENDIANNESS == endianness)
-        {
-            memcpy(mb->iterator, array, array_size);
-            mb->iterator += array_size;
-            mb->last_data_size = data_size;
-        }
-        else
-        {
-            for(uint32_t i = 0; i < size; i++)
-            {
-                ucdr_serialize_byte_8(mb, endianness, array + i);
-            }
-        }
+#define UCDR_SERIALIZE_ARRAY_BYTE_2(TYPE, ENDIAN) UCDR_SERIALIZE_ARRAY_BYTE_N(TYPE, 2, ENDIAN)
+#define UCDR_SERIALIZE_ARRAY_BYTE_4(TYPE, ENDIAN) UCDR_SERIALIZE_ARRAY_BYTE_N(TYPE, 4, ENDIAN)
+#define UCDR_SERIALIZE_ARRAY_BYTE_8(TYPE, ENDIAN) UCDR_SERIALIZE_ARRAY_BYTE_N(TYPE, 8, ENDIAN)
+
+#define UCDR_SERIALIZE_ARRAY_DEFINITION(SUFFIX, TYPE, TYPE_SIZE) \
+    bool ucdr_serialize_array ## SUFFIX(ucdrBuffer* ub, const TYPE* array, size_t size) \
+    { \
+        UCDR_SERIALIZE_ARRAY_BYTE_ ## TYPE_SIZE(TYPE, ub->endianness) \
+    } \
+    bool ucdr_serialize_endian_array ## SUFFIX(ucdrBuffer* ub, const ucdrEndianness endianness, const TYPE* array, size_t size) \
+    { \
+        UCDR_SERIALIZE_ARRAY_BYTE_ ## TYPE_SIZE(TYPE, endianness) \
+    } \
+
+// -------------------------------------------------------------------
+//                         DESERIALIZE MACROS
+// -------------------------------------------------------------------
+#define UCDR_DESERIALIZE_ARRAY_BYTE_1(TYPE, ENDIAN) \
+    (void)ENDIAN; \
+    ucdr_buffer_to_array(ub, (uint8_t*)array, size, 1); \
+    return !ub->error;
+
+#define UCDR_DESERIALIZE_ARRAY_BYTE_N(TYPE, TYPE_SIZE, ENDIAN) \
+    ub->iterator += ucdr_buffer_alignment(ub, TYPE_SIZE); \
+    if(UCDR_MACHINE_ENDIANNESS == ENDIAN) \
+    { \
+        ucdr_buffer_to_array(ub, (uint8_t*)array, size * TYPE_SIZE, TYPE_SIZE); \
+    } \
+    else \
+    { \
+        for(uint32_t i = 0; i < size; ++i) \
+        { \
+            ucdr_deserialize_endian_ ## TYPE(ub, ENDIAN, array + i); \
+        } \
+    } \
+    return !ub->error;
+
+#define UCDR_DESERIALIZE_ARRAY_BYTE_2(TYPE, ENDIAN) UCDR_DESERIALIZE_ARRAY_BYTE_N(TYPE, 2, ENDIAN)
+#define UCDR_DESERIALIZE_ARRAY_BYTE_4(TYPE, ENDIAN) UCDR_DESERIALIZE_ARRAY_BYTE_N(TYPE, 4, ENDIAN)
+#define UCDR_DESERIALIZE_ARRAY_BYTE_8(TYPE, ENDIAN) UCDR_DESERIALIZE_ARRAY_BYTE_N(TYPE, 8, ENDIAN)
+
+#define UCDR_DESERIALIZE_ARRAY_DEFINITION(SUFFIX, TYPE, TYPE_SIZE) \
+    bool ucdr_deserialize_array ## SUFFIX(ucdrBuffer* ub, TYPE* array, size_t size) \
+    { \
+        UCDR_DESERIALIZE_ARRAY_BYTE_ ## TYPE_SIZE(TYPE, ub->endianness) \
+    } \
+    bool ucdr_deserialize_endian_array ## SUFFIX(ucdrBuffer* ub, ucdrEndianness endianness, TYPE* array, size_t size) \
+    { \
+        UCDR_DESERIALIZE_ARRAY_BYTE_ ## TYPE_SIZE(TYPE, endianness) \
     }
-    return !mb->error;
-}
 
-bool ucdr_deserialize_array_byte_1(ucdrBuffer* mb, uint8_t* array, const uint32_t size)
-{
-    uint32_t data_size = sizeof(uint8_t);
-    if(ucdr_check_buffer(mb, size))
-    {
-        memcpy(array, mb->iterator, size);
-
-        mb->iterator += size;
-        mb->last_data_size = data_size;
-    }
-    return !mb->error;
-}
-
-bool ucdr_deserialize_array_byte_2(ucdrBuffer* mb, const ucdrEndianness endianness, uint16_t* array, const uint32_t size)
-{
-    uint32_t data_size = sizeof(uint16_t);
-    uint32_t array_size = size * data_size;
-    uint32_t alignment = ucdr_buffer_alignment(mb, sizeof(uint16_t));
-
-    if(ucdr_check_buffer(mb, alignment + array_size))
-    {
-        mb->iterator += alignment;
-
-        if(UCDR_MACHINE_ENDIANNESS == endianness)
-        {
-            memcpy(array, mb->iterator, array_size);
-            mb->iterator += array_size;
-            mb->last_data_size = data_size;
-        }
-        else
-        {
-            for(uint32_t i = 0; i < size; i++)
-            {
-                ucdr_deserialize_byte_2(mb, endianness, array + i);
-            }
-        }
-    }
-    return !mb->error;
-}
-
-bool ucdr_deserialize_array_byte_4(ucdrBuffer* mb, const ucdrEndianness endianness, uint32_t* array, const uint32_t size)
-{
-    uint32_t data_size = sizeof(uint32_t);
-    uint32_t array_size = size * data_size;
-    uint32_t alignment = ucdr_buffer_alignment(mb, sizeof(uint32_t));
-
-    if(ucdr_check_buffer(mb, alignment + array_size))
-    {
-        mb->iterator += alignment;
-
-        if(UCDR_MACHINE_ENDIANNESS == endianness)
-        {
-            memcpy(array, mb->iterator, array_size);
-            mb->iterator += array_size;
-            mb->last_data_size = data_size;
-        }
-        else
-        {
-            for(uint32_t i = 0; i < size; i++)
-            {
-                ucdr_deserialize_byte_4(mb, endianness, array + i);
-            }
-        }
-    }
-    return !mb->error;
-}
-
-bool ucdr_deserialize_array_byte_8(ucdrBuffer* mb, const ucdrEndianness endianness, uint64_t* array, const uint32_t size)
-{
-    uint32_t data_size = sizeof(uint64_t);
-    uint32_t array_size = size * data_size;
-    uint32_t alignment = ucdr_buffer_alignment(mb, sizeof(uint64_t));
-
-    if(ucdr_check_buffer(mb, alignment + array_size))
-    {
-        mb->iterator += alignment;
-
-        if(UCDR_MACHINE_ENDIANNESS == endianness)
-        {
-            memcpy(array, mb->iterator, array_size);
-            mb->iterator += array_size;
-            mb->last_data_size = data_size;
-        }
-        else
-        {
-            for(uint32_t i = 0; i < size; i++)
-            {
-                ucdr_deserialize_byte_8(mb, endianness, array + i);
-            }
-        }
-    }
-    return !mb->error;
-}
+// -------------------------------------------------------------------
+//                         DEFINITION MACRO
+// -------------------------------------------------------------------
+#define UCDR_ARRAY_DEFINITIONS(SUFFIX, TYPE, TYPE_SIZE) \
+    UCDR_SERIALIZE_ARRAY_DEFINITION(SUFFIX, TYPE, TYPE_SIZE) \
+    UCDR_DESERIALIZE_ARRAY_DEFINITION(SUFFIX, TYPE, TYPE_SIZE) \
 
 // -------------------------------------------------------------------
 //              PUBLIC SERIALIZATION IMPLEMENTATIONS
 // -------------------------------------------------------------------
-
-bool ucdr_serialize_array_char(ucdrBuffer* mb, const char* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_1(mb, (uint8_t*)array, size);
-}
-
-bool ucdr_serialize_array_bool(ucdrBuffer* mb, const bool* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_1(mb, (uint8_t*)array, size);
-}
-
-bool ucdr_serialize_array_uint8_t(ucdrBuffer* mb, const uint8_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_1(mb, array, size);
-}
-
-bool ucdr_serialize_array_uint16_t(ucdrBuffer* mb, const uint16_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_2(mb, mb->endianness, array, size);
-}
-
-bool ucdr_serialize_array_uint32_t(ucdrBuffer* mb, const uint32_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_4(mb, mb->endianness, array, size);
-}
-
-bool ucdr_serialize_array_uint64_t(ucdrBuffer* mb, const uint64_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_8(mb, mb->endianness, array, size);
-}
-
-bool ucdr_serialize_array_int8_t(ucdrBuffer* mb, const int8_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_1(mb, (uint8_t*)array, size);
-}
-
-bool ucdr_serialize_array_int16_t(ucdrBuffer* mb, const int16_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_2(mb, mb->endianness, (uint16_t*)array, size);
-}
-
-bool ucdr_serialize_array_int32_t(ucdrBuffer* mb, const int32_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_4(mb, mb->endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_serialize_array_int64_t(ucdrBuffer* mb, const int64_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_8(mb, mb->endianness, (uint64_t*)array, size);
-}
-
-bool ucdr_serialize_array_float(ucdrBuffer* mb, const float* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_4(mb, mb->endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_serialize_array_double(ucdrBuffer* mb, const double* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_8(mb, mb->endianness, (uint64_t*)array, size);
-}
-
-bool ucdr_deserialize_array_char(ucdrBuffer* mb, char* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_1(mb, (uint8_t*)array, size);
-}
-
-bool ucdr_deserialize_array_bool(ucdrBuffer* mb, bool* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_1(mb, (uint8_t*)array, size);
-}
-
-bool ucdr_deserialize_array_uint8_t(ucdrBuffer* mb, uint8_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_1(mb, array, size);
-}
-
-bool ucdr_deserialize_array_uint16_t(ucdrBuffer* mb, uint16_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_2(mb, mb->endianness, array, size);
-}
-
-bool ucdr_deserialize_array_uint32_t(ucdrBuffer* mb, uint32_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_4(mb, mb->endianness, array, size);
-}
-
-bool ucdr_deserialize_array_uint64_t(ucdrBuffer* mb, uint64_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_8(mb, mb->endianness, array, size);
-}
-
-bool ucdr_deserialize_array_int8_t(ucdrBuffer* mb, int8_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_1(mb, (uint8_t*)array, size);
-}
-
-bool ucdr_deserialize_array_int16_t(ucdrBuffer* mb, int16_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_2(mb, mb->endianness, (uint16_t*)array, size);
-}
-
-bool ucdr_deserialize_array_int32_t(ucdrBuffer* mb, int32_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_4(mb, mb->endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_deserialize_array_int64_t(ucdrBuffer* mb, int64_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_8(mb, mb->endianness, (uint64_t*)array, size);
-}
-
-bool ucdr_deserialize_array_float(ucdrBuffer* mb, float* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_4(mb, mb->endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_deserialize_array_double(ucdrBuffer* mb, double* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_8(mb, mb->endianness, (uint64_t*)array, size);
-}
-
-bool ucdr_serialize_endian_array_uint16_t(ucdrBuffer* mb, const ucdrEndianness endianness, const uint16_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_2(mb, endianness, array, size);
-}
-
-bool ucdr_serialize_endian_array_uint32_t(ucdrBuffer* mb, const ucdrEndianness endianness, const uint32_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_4(mb, endianness, array, size);
-}
-
-bool ucdr_serialize_endian_array_uint64_t(ucdrBuffer* mb, const ucdrEndianness endianness, const uint64_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_8(mb, endianness, array, size);
-}
-
-bool ucdr_serialize_endian_array_int16_t(ucdrBuffer* mb, const ucdrEndianness endianness, const int16_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_2(mb, endianness, (uint16_t*)array, size);
-}
-
-bool ucdr_serialize_endian_array_int32_t(ucdrBuffer* mb, const ucdrEndianness endianness, const int32_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_4(mb, endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_serialize_endian_array_int64_t(ucdrBuffer* mb, const ucdrEndianness endianness, const int64_t* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_8(mb, endianness, (uint64_t*)array, size);
-}
-
-bool ucdr_serialize_endian_array_float(ucdrBuffer* mb, const ucdrEndianness endianness, const float* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_4(mb, endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_serialize_endian_array_double(ucdrBuffer* mb, const ucdrEndianness endianness, const double* array, const uint32_t size)
-{
-    return ucdr_serialize_array_byte_8(mb, endianness, (uint64_t*)array, size);
-}
-
-bool ucdr_deserialize_endian_array_uint16_t(ucdrBuffer* mb, const ucdrEndianness endianness, uint16_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_2(mb, endianness, array, size);
-}
-
-bool ucdr_deserialize_endian_array_uint32_t(ucdrBuffer* mb, const ucdrEndianness endianness, uint32_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_4(mb, endianness, array, size);
-}
-
-bool ucdr_deserialize_endian_array_uint64_t(ucdrBuffer* mb, const ucdrEndianness endianness, uint64_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_8(mb, endianness, array, size);
-}
-
-bool ucdr_deserialize_endian_array_int16_t(ucdrBuffer* mb, const ucdrEndianness endianness, int16_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_2(mb, endianness, (uint16_t*)array, size);
-}
-
-bool ucdr_deserialize_endian_array_int32_t(ucdrBuffer* mb, const ucdrEndianness endianness, int32_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_4(mb, endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_deserialize_endian_array_int64_t(ucdrBuffer* mb, const ucdrEndianness endianness, int64_t* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_8(mb, endianness, (uint64_t*)array, size);
-}
-
-bool ucdr_deserialize_endian_array_float(ucdrBuffer* mb, const ucdrEndianness endianness, float* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_4(mb, endianness, (uint32_t*)array, size);
-}
-
-bool ucdr_deserialize_endian_array_double(ucdrBuffer* mb, const ucdrEndianness endianness, double* array, const uint32_t size)
-{
-    return ucdr_deserialize_array_byte_8(mb, endianness, (uint64_t*)array, size);
-}
-
+UCDR_ARRAY_DEFINITIONS(_char, char, 1)
+UCDR_ARRAY_DEFINITIONS(_bool, bool, 1)
+UCDR_ARRAY_DEFINITIONS(_uint8_t, uint8_t, 1)
+UCDR_ARRAY_DEFINITIONS(_uint16_t, uint16_t, 2)
+UCDR_ARRAY_DEFINITIONS(_uint32_t, uint32_t, 4)
+UCDR_ARRAY_DEFINITIONS(_uint64_t, uint64_t, 8)
+UCDR_ARRAY_DEFINITIONS(_int8_t, int8_t, 1)
+UCDR_ARRAY_DEFINITIONS(_int16_t, int16_t, 2)
+UCDR_ARRAY_DEFINITIONS(_int32_t, int32_t, 4)
+UCDR_ARRAY_DEFINITIONS(_int64_t, int64_t, 8)
+UCDR_ARRAY_DEFINITIONS(_float, float, 4)
+UCDR_ARRAY_DEFINITIONS(_double, double, 8)

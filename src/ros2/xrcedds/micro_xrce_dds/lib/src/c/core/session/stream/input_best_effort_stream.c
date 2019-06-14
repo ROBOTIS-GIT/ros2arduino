@@ -6,12 +6,12 @@
 //==================================================================
 void uxr_init_input_best_effort_stream(uxrInputBestEffortStream* stream)
 {
-    stream->last_handled = UINT16_MAX;
+    stream->last_handled = SEQ_NUM_MAX;
 }
 
 void uxr_reset_input_best_effort_stream(uxrInputBestEffortStream* stream)
 {
-    stream->last_handled = UINT16_MAX;
+    stream->last_handled = SEQ_NUM_MAX;
 }
 
 bool uxr_receive_best_effort_message(uxrInputBestEffortStream* stream, uxrSeqNum seq_num)

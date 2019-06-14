@@ -1,4 +1,10 @@
-# eProsima microCDR
+# eProsima Micro CDR
+
+[![Releases](https://img.shields.io/github/release/eProsima/Micro-CDR.svg)](https://github.com/eProsima/Micro-CDR/releases)
+[![License](https://img.shields.io/github/license/eProsima/Micro-CDR.svg)](https://github.com/eProsima/Micro-CDR/blob/master/LICENSE)
+[![Issues](https://img.shields.io/github/issues/eProsima/Micro-CDR.svg)](https://github.com/eProsima/Micro-CDR/issues)
+[![Forks](https://img.shields.io/github/forks/eProsima/Micro-CDR.svg)](https://github.com/eProsima/Micro-CDR/network/members)
+[![Stars](https://img.shields.io/github/stars/eProsima/Micro-CDR.svg)](https://github.com/eProsima/Micro-CDR/stargazers)
 
 <a href="http://www.eprosima.com"><img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSd0PDlVz1U_7MgdTe0FRIWD0Jc9_YH-gGi0ZpLkr-qgCI6ZEoJZ5GBqQ" align="left" hspace="8" vspace="2" width="100" height="100" ></a>
 
@@ -48,11 +54,11 @@ As *MicroCDR* uses a static buffer, that means the user has to provide a defined
 ## API functions
 
 ```c
-void ucdr_init_buffer        (ucdrBuffer* mb, uint8_t* data, const uint32_t size);
-void ucdr_init_buffer_offset (ucdrBuffer* mb, uint8_t* data, const uint32_t size, uint32_t offset);
+void ucdr_init_buffer        (ucdrBuffer* ub, uint8_t* data, size_t size);
+void ucdr_init_buffer_offset (ucdrBuffer* ub, uint8_t* data, size_t size, size_t offset);
 ```
 Initialize a `ucdrBuffer` structure, the main struct of *MicroCDR*.
-- `mb`: the `ucdrBuffer` struct
+- `ub`: the `ucdrBuffer` struct
 - `data`: the buffer that the `ucdrBuffer` will use.
 - `size`: the size of the buffer that the `ucdrBuffer` will use.
 - `offset`: where the serialization/deserialization will start.
@@ -61,108 +67,108 @@ Initially, the serialization/deserialization starts at the beginning of the buff
 ---
 
 ```c
-void ucdr_copy_buffer (ucdrBuffer* mb_dest, const ucdrBuffer* mb_source);
+void ucdr_copy_buffer (ucdrBuffer* ub_dest, const ucdrBuffer* ub_source);
 ```
 Copy a `ucdrBuffer` structure data to another `ucdrBuffer` structure.
-- `mb_dest`: the destination `ucdrBuffer` struct.
-- `mb_source`: the origin initialized `ucdrBuffer` struct.
+- `ub_dest`: the destination `ucdrBuffer` struct.
+- `ub_source`: the origin initialized `ucdrBuffer` struct.
 
 ---
 
 ```c
-void ucdr_reset_buffer       (ucdrBuffer* mb);
-void ucdr_reset_buffer_offset(ucdrBuffer* mb, const uint32_t offset);
+void ucdr_reset_buffer       (ucdrBuffer* ub);
+void ucdr_reset_buffer_offset(ucdrBuffer* ub, size_t offset);
 ```
 Reset the `ucdrBuffer` as the same state that it was created.
-- `mb`: the `ucdrBuffer` struct.
+- `ub`: the `ucdrBuffer` struct.
 - `offset`: where the serialization/deserialization will start.
 Initially, the serialization/deserialization starts at the beginning of the buffer.
 
 ---
 
 ```c
-void ucdr_align_to (ucdrBuffer* mb, const uint32_t alignment);
+void ucdr_align_to (ucdrBuffer* ub, size_t size);
 ```
-Align the ucdrBuffer to an `alignment` position.
-After call this function, the serialization pointer will be moved only if the current `ucdrBuffer` was not aligment to the passed value.
+Align the ucdrBuffer to the size `size`.
+After call this function, the serialization pointer will be moved only if the current `ucdrBuffer` was not alignment to the passed value.
 
-- `mb`: the `ucdrBuffer` struct
-- `alignment`: the alignment value used.
+- `ub`: the `ucdrBuffer` struct
+- `size`: the target size alignment.
 
 ---
 
 ```c
-uint32_t ucdr_aligment(uint32_t buffer_position, const uint32_t data_size);
+size_t ucdr_alignment(size_t buffer_position, size_t data_size);
 ```
-Returns the aligment necessary to serialize/deserialize a type with `data_size` size.
+Returns the alignment necessary to serialize/deserialize a type with `data_size` size.
 
-- `buffer_position`: the current serialization/deserialization position of the `ucdrBuffer`. (Typically  `mb->iterator - mb->init`).
+- `buffer_position`: the current serialization/deserialization position of the `ucdrBuffer`. (Typically  `ub->iterator - ub->init`).
 - `data_size`: the bytes of the data that you are asking for.
 
 ---
 
 ```c
-uint32_t ucdr_buffer_alignment(const ucdrBuffer* mb, const uint32_t data_size);
+size_t ucdr_buffer_alignment(const ucdrBuffer* ub, size_t data_size);
 ```
-Returns the aligment necessary to serialize/deserialize a type with `data_size` size into the `ucdrBuffer` given.
+Returns the alignment necessary to serialize/deserialize a type with `data_size` size into the `ucdrBuffer` given.
 
-- `mb`: the `ucdrBuffer` struct to ask the alignment.
+- `ub`: the `ucdrBuffer` struct to ask the alignment.
 - `data_size`: the bytes of the data that you are asking for.
 ---
 
 ```c
-size_t ucdr_buffer_size(const ucdrBuffer* mb);
+size_t ucdr_buffer_size(const ucdrBuffer* ub);
 ```
 Returns the memory size of the buffer.
-- `mb`: the `ucdrBuffer` struct
+- `ub`: the `ucdrBuffer` struct
 
 ---
 
 ```c
-size_t ucdr_buffer_length(const ucdrBuffer* mb);
+size_t ucdr_buffer_length(const ucdrBuffer* ub);
 ```
 Returns the size of the serialized/deserialized data.
-- `mb`: the `ucdrBuffer` struct
+- `ub`: the `ucdrBuffer` struct
 
 ---
 
 ```c
-size_t ucdr_buffer_remaining(const ucdrBuffer* mb);
+size_t ucdr_buffer_remaining(const ucdrBuffer* ub);
 ```
 Returns the remaining size for the serializing/deserializing.
-- `mb`: the `ucdrBuffer` struct
+- `ub`: the `ucdrBuffer` struct
 
 ---
 
 ```c
-ucdrEndianness ucdr_buffer_endianness(const ucdrBuffer* mb);
+ucdrEndianness ucdr_buffer_endianness(const ucdrBuffer* ub);
 ```
 Returns the serialization/deserialization endianness.
-- `mb`: the `ucdrBuffer` struct
+- `ub`: the `ucdrBuffer` struct
 
 ---
 
 ```c
-bool ucdr_buffer_error(const ucdrBuffer* mb);
+bool ucdr_buffer_error(const ucdrBuffer* ub);
 ```
 Returns the status error of the `ucdrBuffer`.
-- `mb`: the `ucdrBuffer` struct
-
+- `ub`: the `ucdrBuffer` struct
 
 ### Serialization/deserialization functions
 Adding to this, there is a big set of functions for deserialize and deserialize different kind of types:
 - Basics: `bool`, `char`, `int8_t`, `uint8_t`,`int16_t`, `uint16_t`,`int32_t`, `uint32_t`,`int64_t`, `uint64_t`,`float`, `double`.
 - Arrays: Any fixed size of basics types.
 - Sequence: Similar to arrays, but the information about the size is serialized along with the data.
+- String: Wrapper of char sequence, but easily to use.
 
 ### Endianness
 *MicroCDR* supports little and big endianness.
-The configuration can be done by cmake with the cmake `__BIG_ENDIAN__` variable.
-A `0` value implies that the serialization will performed into a little endian machine, and `1` into a big endian machine.
+The **machine endianness** can be set by the cmake variable: `CONFIG_BIG_ENDIANNESS`.
+By default, if this varible is `OFF` which means that the machine endianness is little endianness.
 
-The default endianness serialization can be choosen by setting the `endianness` parameter of a `ucdrBuffer`  to `UCDR_BIG_ENDIANNESS` or `UCDR_LITTLE_ENDIANNESS`.
-Also, there are a functions that allow to force an endianness in their serialization/deserialization.
-These functions contains the name `endiannness` in their signature.
+The `ucdrBuffer` endianness can be set by the `endianness` parameter of the structure to `UCDR_BIG_ENDIANNESS` or `UCDR_LITTLE_ENDIANNESS`.
+Also, there are a functions that allow to force an endianness independiently of the `ucdrBuffer` endianness in their serialization/deserialization.
+These functions contains the name `endianness` in their signature.
 
 ### Error
 All serialization/deserialization functions return a boolean indicating the result of their operations.
@@ -177,7 +183,6 @@ After the application of the wrong serialization/deserialization, only the `ucdr
 
 ## Serialization/deserialization list
 The available modes of serialization/deserializations in *MicroCDR* are shown in the following table.
-
 
 | Type                 | Endianness |
 | -------------------- | ---------- |
@@ -247,4 +252,30 @@ The available modes of serialization/deserializations in *MicroCDR* are shown in
 | float sequence       | endianness |
 | double sequence      |            |
 | double sequence      | endianness |
+
+## Additional features
+### Endianness
+*MicroCDR* supports little and big endianness.
+The configuration can be done by cmake with the cmake `__BIG_ENDIAN__` variable.
+A `0` value implies that the serialization will performed into a little endian machine, and `1` into a big endian machine.
+
+The default endianness serialization can be choosen by setting the `endianness` parameter of a `ucdrBuffer`  to `UCDR_BIG_ENDIANNESS` or `UCDR_LITTLE_ENDIANNESS`.
+Also, there are a functions that allow to force an endianness in their serialization/deserialization.
+These functions contains the name `endiannness` in their signature.
+
+### Error
+All serialization/deserialization functions return a boolean indicating the result of their operations.
+When a serialization/deserialization could not be possible (the type can not be serialized, or the capacity of the destination buffer is not enough),
+an status error is setted into the `ucdrBuffer`.
+If a `ucdrBuffer` has an error state, the next serialization/deserialization operations will not works and will return `false` in their execution.
+A buffer marked with an error can be used, but any serialization/deserialization operation over it will not produce any effect.
+
+If is kwown that an operation can fails over a `ucdrBuffer`, and its necessary to continue with the serialization/deserialization if it happens,
+the `ucdrBuffer` state can be saved using the `ucdr_copy_buffer` function.
+After the application of the wrong serialization/deserialization, only the `ucdrBuffer` that performed the operation will have a dirty state.
+
+### Full buffer callback
+MicroCDR provides a callback that the user can set in order to control the behavior when the `ucdrBuffer` can not serialize/deserialize anymore because the buffer is full.
+This allows to create a better management error and/or modify the buffer location of the `ucdrBuffer`.
+The last possibility gives the user the capacity to use several small buffers for a big serialization (see the *fragmentation* example).
 

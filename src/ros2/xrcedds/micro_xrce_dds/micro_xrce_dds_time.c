@@ -8,14 +8,19 @@
 
 #include "../time.h"
 
+int64_t uxr_nanos(void)
+{
+  static uint32_t pre_usec = 0, now_usec;
+  static int64_t nsec = 0;
+
+  now_usec = dds_getMicroseconds();
+  nsec += (int64_t)(now_usec - pre_usec) * (int64_t)1000;
+  pre_usec = now_usec;
+
+  return nsec;
+}
+
 int64_t uxr_millis(void)
 {
-  static uint32_t pre_msec = 0, now_msec;
-  static uint64_t msec = 0;
-
-  now_msec = dds_getMilliseconds();
-  msec += (uint64_t) (now_msec - pre_msec);
-  pre_msec = now_msec;
-
-  return msec;
+  return uxr_nanos() / 1000000;
 }

@@ -337,7 +337,6 @@ bool uxr_serialize_CLIENT_Representation(ucdrBuffer* buffer, const CLIENT_Repres
     ret &= uxr_serialize_XrceCookie(buffer, &input->xrce_cookie);
     ret &= uxr_serialize_XrceVersion(buffer, &input->xrce_version);
     ret &= uxr_serialize_XrceVendorId(buffer, &input->xrce_vendor_id);
-    ret &= uxr_serialize_Time_t(buffer, &input->client_timestamp);
     ret &= uxr_serialize_ClientKey(buffer, &input->client_key);
     ret &= ucdr_serialize_uint8_t(buffer, input->session_id);
     ret &= ucdr_serialize_bool(buffer, input->optional_properties);
@@ -345,6 +344,7 @@ bool uxr_serialize_CLIENT_Representation(ucdrBuffer* buffer, const CLIENT_Repres
     {
         ret &= uxr_serialize_PropertySeq(buffer, &input->properties);
     }
+    ret &= ucdr_serialize_uint16_t(buffer, input->mtu);
 
     return ret;
 }
@@ -355,7 +355,6 @@ bool uxr_deserialize_CLIENT_Representation(ucdrBuffer* buffer, CLIENT_Representa
     ret &= uxr_deserialize_XrceCookie(buffer, &output->xrce_cookie);
     ret &= uxr_deserialize_XrceVersion(buffer, &output->xrce_version);
     ret &= uxr_deserialize_XrceVendorId(buffer, &output->xrce_vendor_id);
-    ret &= uxr_deserialize_Time_t(buffer, &output->client_timestamp);
     ret &= uxr_deserialize_ClientKey(buffer, &output->client_key);
     ret &= ucdr_deserialize_uint8_t(buffer, &output->session_id);
     ret &= ucdr_deserialize_bool(buffer, &output->optional_properties);
@@ -363,6 +362,7 @@ bool uxr_deserialize_CLIENT_Representation(ucdrBuffer* buffer, CLIENT_Representa
     {
             ret &= uxr_deserialize_PropertySeq(buffer, &output->properties);
     }
+    ret &= ucdr_deserialize_uint16_t(buffer, &output->mtu);
 
     return ret;
 }
@@ -373,7 +373,6 @@ bool uxr_serialize_AGENT_Representation(ucdrBuffer* buffer, const AGENT_Represen
     ret &= uxr_serialize_XrceCookie(buffer, &input->xrce_cookie);
     ret &= uxr_serialize_XrceVersion(buffer, &input->xrce_version);
     ret &= uxr_serialize_XrceVendorId(buffer, &input->xrce_vendor_id);
-    ret &= uxr_serialize_Time_t(buffer, &input->agent_timestamp);
     ret &= ucdr_serialize_bool(buffer, input->optional_properties);
     if(input->optional_properties == true)
     {
@@ -389,13 +388,12 @@ bool uxr_deserialize_AGENT_Representation(ucdrBuffer* buffer, AGENT_Representati
     ret &= uxr_deserialize_XrceCookie(buffer, &output->xrce_cookie);
     ret &= uxr_deserialize_XrceVersion(buffer, &output->xrce_version);
     ret &= uxr_deserialize_XrceVendorId(buffer, &output->xrce_vendor_id);
-    ret &= uxr_deserialize_Time_t(buffer, &output->agent_timestamp);
     ret &= ucdr_deserialize_bool(buffer, &output->optional_properties);
-    // TODO (julian): modified with the new Micro ROS API.
-//    if(output->optional_properties == true)
-//    {
-//            ret &= uxr_deserialize_PropertySeq(buffer, &output->properties);
-//    }
+    // TODO
+    //if(output->optional_properties == true)
+    //{
+    //        ret &= uxr_deserialize_PropertySeq(buffer, &output->properties);
+    //}
 
     return ret;
 }
@@ -1449,7 +1447,7 @@ bool uxr_deserialize_DataDeliveryControl(ucdrBuffer* buffer, DataDeliveryControl
 bool uxr_serialize_ReadSpecification(ucdrBuffer* buffer, const ReadSpecification* input)
 {
     bool ret = true;
-    ret &= ucdr_serialize_uint8_t(buffer, input->input_stream_id);
+    ret &= ucdr_serialize_uint8_t(buffer, input->preferred_stream_id);
     ret &= ucdr_serialize_uint8_t(buffer, input->data_format);
     ret &= ucdr_serialize_bool(buffer, input->optional_content_filter_expression);
     if(input->optional_content_filter_expression == true)
@@ -1469,7 +1467,7 @@ bool uxr_serialize_ReadSpecification(ucdrBuffer* buffer, const ReadSpecification
 bool uxr_deserialize_ReadSpecification(ucdrBuffer* buffer, ReadSpecification* output)
 {
     bool ret = true;
-    ret &= ucdr_deserialize_uint8_t(buffer, &output->input_stream_id);
+    ret &= ucdr_deserialize_uint8_t(buffer, &output->preferred_stream_id);
     ret &= ucdr_deserialize_uint8_t(buffer, &output->data_format);
     ret &= ucdr_deserialize_bool(buffer, &output->optional_content_filter_expression);
     if(output->optional_content_filter_expression == true)
@@ -1817,7 +1815,6 @@ bool uxr_deserialize_DataRepresentation(ucdrBuffer* buffer, DataRepresentation* 
 bool uxr_serialize_CREATE_CLIENT_Payload(ucdrBuffer* buffer, const CREATE_CLIENT_Payload* input)
 {
     bool ret = true;
-    ret &= uxr_serialize_BaseObjectRequest(buffer, &input->base);
     ret &= uxr_serialize_CLIENT_Representation(buffer, &input->client_representation);
     return ret;
 }
@@ -1825,7 +1822,6 @@ bool uxr_serialize_CREATE_CLIENT_Payload(ucdrBuffer* buffer, const CREATE_CLIENT
 bool uxr_deserialize_CREATE_CLIENT_Payload(ucdrBuffer* buffer, CREATE_CLIENT_Payload* output)
 {
     bool ret = true;
-    ret &= uxr_deserialize_BaseObjectRequest(buffer, &output->base);
     ret &= uxr_deserialize_CLIENT_Representation(buffer, &output->client_representation);
     return ret;
 }
@@ -1879,7 +1875,7 @@ bool uxr_deserialize_DELETE_Payload(ucdrBuffer* buffer, DELETE_Payload* output)
 bool uxr_serialize_STATUS_AGENT_Payload(ucdrBuffer* buffer, const STATUS_AGENT_Payload* input)
 {
     bool ret = true;
-    ret &= uxr_serialize_BaseObjectReply(buffer, &input->base);
+    ret &= uxr_serialize_ResultStatus(buffer, &input->result);
     ret &= uxr_serialize_AGENT_Representation(buffer, &input->agent_info);
     return ret;
 }
@@ -1887,7 +1883,7 @@ bool uxr_serialize_STATUS_AGENT_Payload(ucdrBuffer* buffer, const STATUS_AGENT_P
 bool uxr_deserialize_STATUS_AGENT_Payload(ucdrBuffer* buffer, STATUS_AGENT_Payload* output)
 {
     bool ret = true;
-    ret &= uxr_deserialize_BaseObjectReply(buffer, &output->base);
+    ret &= uxr_deserialize_ResultStatus(buffer, &output->result);
     ret &= uxr_deserialize_AGENT_Representation(buffer, &output->agent_info);
     return ret;
 }
@@ -2020,7 +2016,6 @@ bool uxr_serialize_DATA_Payload_Data(ucdrBuffer* buffer, const DATA_Payload_Data
 {
     bool ret = true;
     ret &= uxr_serialize_BaseObjectRequest(buffer, &input->base);
-    ret &= uxr_serialize_SampleData(buffer, &input->data);
     return ret;
 }
 
@@ -2028,7 +2023,6 @@ bool uxr_deserialize_DATA_Payload_Data(ucdrBuffer* buffer, DATA_Payload_Data* ou
 {
     bool ret = true;
     ret &= uxr_deserialize_BaseObjectRequest(buffer, &output->base);
-    ret &= uxr_deserialize_SampleData(buffer, &output->data);
     return ret;
 }
 
@@ -2101,6 +2095,7 @@ bool uxr_serialize_ACKNACK_Payload(ucdrBuffer* buffer, const ACKNACK_Payload* in
     bool ret = true;
     ret &= ucdr_serialize_uint16_t(buffer, input->first_unacked_seq_num);
     ret &= ucdr_serialize_array_uint8_t(buffer, input->nack_bitmap, 2);
+    ret &= ucdr_serialize_uint8_t(buffer, input->stream_id);
     return ret;
 }
 
@@ -2109,6 +2104,7 @@ bool uxr_deserialize_ACKNACK_Payload(ucdrBuffer* buffer, ACKNACK_Payload* output
     bool ret = true;
     ret &= ucdr_deserialize_uint16_t(buffer, &output->first_unacked_seq_num);
     ret &= ucdr_deserialize_array_uint8_t(buffer, output->nack_bitmap, 2);
+    ret &= ucdr_deserialize_uint8_t(buffer, &output->stream_id);
     return ret;
 }
 
@@ -2117,6 +2113,7 @@ bool uxr_serialize_HEARTBEAT_Payload(ucdrBuffer* buffer, const HEARTBEAT_Payload
     bool ret = true;
     ret &= ucdr_serialize_uint16_t(buffer, input->first_unacked_seq_nr);
     ret &= ucdr_serialize_uint16_t(buffer, input->last_unacked_seq_nr);
+    ret &= ucdr_serialize_uint8_t(buffer, input->stream_id);
     return ret;
 }
 
@@ -2125,6 +2122,58 @@ bool uxr_deserialize_HEARTBEAT_Payload(ucdrBuffer* buffer, HEARTBEAT_Payload* ou
     bool ret = true;
     ret &= ucdr_deserialize_uint16_t(buffer, &output->first_unacked_seq_nr);
     ret &= ucdr_deserialize_uint16_t(buffer, &output->last_unacked_seq_nr);
+    ret &= ucdr_deserialize_uint8_t(buffer, &output->stream_id);
     return ret;
 }
 
+bool uxr_serialize_TIMESTAMP_Payload(ucdrBuffer* buffer, const TIMESTAMP_Payload* input)
+{
+    bool ret = true;
+    ret &= uxr_serialize_Time_t(buffer, &input->transmit_timestamp);
+    return ret;
+}
+
+bool uxr_deserialize_TIMESTAMP_Payload(ucdrBuffer* buffer, TIMESTAMP_Payload* output)
+{
+    bool ret = true;
+    ret &= uxr_deserialize_Time_t(buffer, &output->transmit_timestamp);
+    return ret;
+}
+
+bool uxr_serialize_TIMESTAMP_REPLY_Payload(ucdrBuffer* buffer, const TIMESTAMP_REPLY_Payload* input)
+{
+    bool ret = true;
+    ret &= uxr_serialize_Time_t(buffer, &input->transmit_timestamp);
+    ret &= uxr_serialize_Time_t(buffer, &input->receive_timestamp);
+    ret &= uxr_serialize_Time_t(buffer, &input->originate_timestamp);
+    return ret;
+}
+
+bool uxr_deserialize_TIMESTAMP_REPLY_Payload(ucdrBuffer* buffer, TIMESTAMP_REPLY_Payload* output)
+{
+    bool ret = true;
+    ret &= uxr_deserialize_Time_t(buffer, &output->transmit_timestamp);
+    ret &= uxr_deserialize_Time_t(buffer, &output->receive_timestamp);
+    ret &= uxr_deserialize_Time_t(buffer, &output->originate_timestamp);
+    return ret;
+}
+
+#ifdef PERFORMANCE_TESTING
+bool uxr_serialize_PERFORMANCE_Payload(ucdrBuffer* buffer, const PERFORMANCE_Payload* input)
+{
+    bool ret = true;
+    ret &= ucdr_serialize_uint32_t(buffer, input->epoch_time_lsb);
+    ret &= ucdr_serialize_uint32_t(buffer, input->epoch_time_msb);
+    ret &= ucdr_serialize_array_uint8_t(buffer, input->buf, input->len);
+    return ret;
+}
+
+bool uxr_deserialize_PERFORMANCE_Payload(ucdrBuffer* buffer, PERFORMANCE_Payload* output)
+{
+    bool ret = true;
+    ret &= ucdr_deserialize_uint32_t(buffer, &output->epoch_time_lsb);
+    ret &= ucdr_deserialize_uint32_t(buffer, &output->epoch_time_msb);
+    ret &= ucdr_deserialize_array_uint8_t(buffer, output->buf, output->len);
+    return ret;
+}
+#endif

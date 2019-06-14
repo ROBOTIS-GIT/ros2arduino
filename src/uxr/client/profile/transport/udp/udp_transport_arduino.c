@@ -2,10 +2,6 @@
 #include <ros2/xrcedds/micro_xrce_dds/lib/src/c/profile/transport/udp/udp_transport_internal.h>
 
 #include "../transport_arduino_internal.h"
-//#include <unistd.h>
-//#include <sys/types.h>
-//#include <string.h>
-//#include <errno.h>
 
 bool uxr_init_udp_platform(uxrUDPPlatform* platform, const char* ip, uint16_t port)
 {

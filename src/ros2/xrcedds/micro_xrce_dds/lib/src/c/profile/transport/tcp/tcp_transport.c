@@ -1,6 +1,8 @@
 #include "tcp_transport_internal.h"
 #include <uxr/client/util/time.h>
 
+#define UXR_MAX_WRITE_TCP_ATTEMPS 16
+
 /*******************************************************************************
  * Static members.
  *******************************************************************************/
@@ -19,58 +21,76 @@ static size_t read_tcp_data(uxrTCPTransport* transport, int timeout);
  *******************************************************************************/
 bool send_tcp_msg(void* instance, const uint8_t* buf, size_t len)
 {
-    bool rv = true;
+    bool rv = false;
     uxrTCPTransport* transport = (uxrTCPTransport*)instance;
-    size_t bytes_sent = 0;
-    size_t send_rv = 0;
     uint8_t msg_size_buf[2];
 
-    /* Send message size. */
     msg_size_buf[0] = (uint8_t)(0x00FF & len);
     msg_size_buf[1] = (uint8_t)((0xFF00 & len) >> 8);
+    uint8_t n_attemps = 0;
+    size_t bytes_sent = 0;
+
+    /* Send message size. */
+    bool size_sent = false;
     do
     {
         uint8_t errcode;
-        send_rv = uxr_write_tcp_data_platform(transport->platform, msg_size_buf, 2, &errcode);
+        size_t send_rv = uxr_write_tcp_data_platform(transport->platform, msg_size_buf, 2, &errcode);
         if (0 < send_rv)
         {
             bytes_sent = (size_t)(bytes_sent + send_rv);
+            size_sent = (sizeof(msg_size_buf) == bytes_sent);
         }
         else
         {
             if (0 < errcode)
             {
-                uxr_disconnect_tcp_platform(transport->platform);
                 error_code = errcode;
-                rv = false;
+                break;
             }
         }
+        ++n_attemps;
     }
-    while (rv && bytes_sent != 2);
+    while (!size_sent && n_attemps < UXR_MAX_WRITE_TCP_ATTEMPS);
 
     /* Send message payload. */
-    if (rv)
+    bool payload_sent = false;
+    if (size_sent)
     {
+        n_attemps = 0;
         bytes_sent = 0;
         do
         {
             uint8_t errcode;
-            send_rv = uxr_write_tcp_data_platform(transport->platform, buf + bytes_sent, len - bytes_sent, &errcode);
+            size_t send_rv = uxr_write_tcp_data_platform(transport->platform, 
+                                                         buf + bytes_sent, 
+                                                         len - bytes_sent, 
+                                                         &errcode);
             if (0 < send_rv)
             {
                 bytes_sent = (size_t)(bytes_sent + send_rv);
+                payload_sent = (bytes_sent == len);
             }
             else
             {
                 if (0 < errcode)
                 {
-                    uxr_disconnect_tcp_platform(transport->platform);
                     error_code = errcode;
-                    rv = false;
+                    break;
                 }
             }
+            ++n_attemps;
         }
-        while (rv && (bytes_sent != len));
+        while (!payload_sent && n_attemps < UXR_MAX_WRITE_TCP_ATTEMPS);
+    }
+
+    if (payload_sent)
+    {
+        rv = true;
+    }
+    else
+    {
+        uxr_disconnect_tcp_platform(transport->platform);
     }
 
     return rv;

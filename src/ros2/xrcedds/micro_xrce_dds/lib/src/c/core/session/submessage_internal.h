@@ -20,7 +20,7 @@ extern "C"
 {
 #endif
 
-#include <uxr/client/dll.h>
+#include <uxr/client/visibility.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -31,25 +31,32 @@ struct ucdrBuffer;
 
 typedef enum SubmessageId
 {
-    SUBMESSAGE_ID_CREATE_CLIENT = 0,
-    SUBMESSAGE_ID_CREATE        = 1,
-    SUBMESSAGE_ID_GET_INFO      = 2,
-    SUBMESSAGE_ID_DELETE        = 3,
-    SUBMESSAGE_ID_STATUS_AGENT  = 4,
-    SUBMESSAGE_ID_STATUS        = 5,
-    SUBMESSAGE_ID_INFO          = 6,
-    SUBMESSAGE_ID_WRITE_DATA    = 7,
-    SUBMESSAGE_ID_READ_DATA     = 8,
-    SUBMESSAGE_ID_DATA          = 9,
-    SUBMESSAGE_ID_ACKNACK       = 10,
-    SUBMESSAGE_ID_HEARTBEAT     = 11,
-    SUBMESSAGE_ID_RESET         = 12,
-    SUBMESSAGE_ID_FRAGMENT      = 13
+    SUBMESSAGE_ID_CREATE_CLIENT     = 0,
+    SUBMESSAGE_ID_CREATE            = 1,
+    SUBMESSAGE_ID_GET_INFO          = 2,
+    SUBMESSAGE_ID_DELETE            = 3,
+    SUBMESSAGE_ID_STATUS_AGENT      = 4,
+    SUBMESSAGE_ID_STATUS            = 5,
+    SUBMESSAGE_ID_INFO              = 6,
+    SUBMESSAGE_ID_WRITE_DATA        = 7,
+    SUBMESSAGE_ID_READ_DATA         = 8,
+    SUBMESSAGE_ID_DATA              = 9,
+    SUBMESSAGE_ID_ACKNACK           = 10,
+    SUBMESSAGE_ID_HEARTBEAT         = 11,
+    SUBMESSAGE_ID_RESET             = 12,
+    SUBMESSAGE_ID_FRAGMENT          = 13,
+    SUBMESSAGE_ID_TIMESTAMP         = 14,
+    SUBMESSAGE_ID_TIMESTAMP_REPLY   = 15
+#ifdef PERFORMANCE_TESTING
+    ,
+    SUBMESSAGE_ID_PERFORMANCE   = 14
+#endif
 
 } SubmessageId;
 
 typedef enum SubmessageFlags
 {
+    FLAG_ENDIANNESS  =           0x01,
     FLAG_LAST_FRAGMENT =         0x01 << 1,
     FLAG_FORMAT_DATA =           0x00,
     FLAG_FORMAT_SAMPLE =         0x02,
@@ -59,8 +66,8 @@ typedef enum SubmessageFlags
 
 } SubmessageFlags;
 
-bool uxr_buffer_submessage_header(struct ucdrBuffer* mb, uint8_t submessage_id, uint16_t length, uint8_t flags);
-bool uxr_read_submessage_header(struct ucdrBuffer* mb, uint8_t* submessage_id, uint16_t* length, uint8_t* flags, uint8_t** payload_it);
+bool uxr_buffer_submessage_header(struct ucdrBuffer* ub, uint8_t submessage_id, uint16_t length, uint8_t flags);
+bool uxr_read_submessage_header(struct ucdrBuffer* ub, uint8_t* submessage_id, uint16_t* length, uint8_t* flags);
 size_t uxr_submessage_padding(size_t length);
 
 #ifdef __cplusplus

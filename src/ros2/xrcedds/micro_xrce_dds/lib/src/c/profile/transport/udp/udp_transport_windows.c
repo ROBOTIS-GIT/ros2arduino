@@ -38,12 +38,8 @@ bool uxr_init_udp_platform(uxrUDPPlatform* platform, const char* ip, uint16_t po
 
 bool uxr_close_udp_platform(uxrUDPPlatform* platform)
 {
-    bool rv = false;
-    if (0 == closesocket(platform->poll_fd.fd))
-    {
-        rv = (0 == WSACleanup());
-    }
-    return rv;
+    bool rv = (INVALID_SOCKET == platform->poll_fd.fd) ? true : (0 == closesocket(platform->poll_fd.fd));
+    return (0 == WSACleanup()) && rv;
 }
 
 size_t uxr_write_udp_data_platform(uxrUDPPlatform* platform, const uint8_t* buf, size_t len, uint8_t* errcode)
@@ -87,4 +83,4 @@ size_t uxr_read_udp_data_platform(uxrUDPPlatform* platform, uint8_t* buf, size_t
 }
 
 
-#endif
+#endif //PLATFORM_NAME_WINDOWS

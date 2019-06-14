@@ -19,8 +19,8 @@
 #define BUFFER_SIZE    4096
 static uint8_t output_best_effort_stream_buffer[BUFFER_SIZE * UXR_CONFIG_MAX_OUTPUT_BEST_EFFORT_STREAMS];
 #else
-#define STREAM_HISTORY 2
-#define BUFFER_SIZE    2048 * STREAM_HISTORY
+#define STREAM_HISTORY 1
+#define BUFFER_SIZE    4096 * STREAM_HISTORY
 static uint8_t output_reliable_stream_buffer[BUFFER_SIZE * UXR_CONFIG_MAX_OUTPUT_RELIABLE_STREAMS];
 static uint8_t input_reliable_stream_buffer[BUFFER_SIZE * UXR_CONFIG_MAX_INPUT_RELIABLE_STREAMS];
 #endif
