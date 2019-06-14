@@ -14,7 +14,7 @@
 #include "topic.hpp"
 #include "msg_list.hpp"
 
-#include <ros2_user_config.h>
+#include <user_config.h>
 
 #define ROS2_PUBLISHER_MAX  USER_ROS2_PUBLISHER_MAX
 #define ROS2_SUBSCRIBER_MAX USER_ROS2_SUBSCRIBER_MAX

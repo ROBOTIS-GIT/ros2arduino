@@ -15,16 +15,12 @@
 #ifndef _UXR_CLIENT_CONFIG_H_
 #define _UXR_CLIENT_CONFIG_H_
 
+#include <user_config.h>
+
 #define UXR_CLIENT_VERSION_MAJOR 1
 #define UXR_CLIENT_VERSION_MINOR 1
-#define UXR_CLIENT_VERSION_MICRO 0
-#define UXR_CLIENT_VERSION_STR "1.1.0"
-
-//external define (only ros2xrce)
-#define UXR_CREATE_ENTITIES_USING_XML
-//#define UXR_CREATE_BUFFER_BEST_EFFORT
-//#define UXR_USE_LOG
-
+#define UXR_CLIENT_VERSION_MICRO 1
+#define UXR_CLIENT_VERSION_STR "1.1.1"
 
 //#define PROFILE_DISCOVERY
 
