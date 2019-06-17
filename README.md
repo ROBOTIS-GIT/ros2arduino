@@ -14,7 +14,7 @@ Arduino library for communicating with ROS2(DDS)
 For the Micro-XRCE-DDS Agent, please install it using following commands.
 ```bash
 $ git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-$ cd Micro-XRCE-DDS-Agent && git checkout tag v1.1.0
+$ cd Micro-XRCE-DDS-Agent && git checkout v1.1.0
 $ mkdir build && cd build
 $ cmake ..
 $ make
