@@ -109,7 +109,7 @@ You must install ROS2 and XRCE-DDS Agent. (The version should be the same as the
 $ ros2 topic echo /arduino_chatter
 ```
 
-#### Appendix: How to configure entities from reference file. (available at 0.1.0 or above)
+#### Appendix: How to configure entities from reference file. (available at 0.1.1 or above)
 - Use the reference method supported by Client and Agent. Please refer to [eProsima manual](https://micro-xrce-dds.readthedocs.io/en/latest/agent.html#run-an-agent) for detailed usage.
 - For this feature, You need to change the settings(code) in ros2arduino library.
 - In the [user_config.h](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/src/user_config.h) file, you must set the value of UXR_CREATE_ENTITIES_USING_REF to 1 like below.
