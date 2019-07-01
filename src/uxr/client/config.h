@@ -61,4 +61,35 @@
 #define UXR_CONFIG_TCP_TRANSPORT_MTU 0
 #endif
 
+
+
+
+// related to user_config.h
+
+#ifdef USER_DISABLE_UDP_TRANSPORT
+#undef PROFILE_UDP_TRANSPORT
+#endif
+
+#ifdef USER_DISABLE_TCP_TRANSPORT
+#undef PROFILE_TCP_TRANSPORT
+#endif
+
+#ifdef USER_DISABLE_SERIAL_TRANSPORT
+#undef PROFILE_SERIAL_TRANSPORT
+#endif
+
+
+#if !defined(UXR_CREATE_ENTITIES_USING_REF)
+#define UXR_CREATE_ENTITIES_USING_REF 0
+#endif
+
+#if !defined(USER_ROS2_PUBLISHER_MAX)
+#define USER_ROS2_PUBLISHER_MAX  5
+#endif
+
+#if !defined(USER_ROS2_SUBSCRIBER_MAX)
+#define USER_ROS2_SUBSCRIBER_MAX  5
+#endif
+
+
 #endif // _UXR_CLIENT_CONFIG_H_

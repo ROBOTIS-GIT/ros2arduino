@@ -14,8 +14,6 @@
 #include "topic.hpp"
 #include "msg_list.hpp"
 
-#include <user_config.h>
-
 #define ROS2_PUBLISHER_MAX  USER_ROS2_PUBLISHER_MAX
 #define ROS2_SUBSCRIBER_MAX USER_ROS2_SUBSCRIBER_MAX
 
@@ -26,10 +24,10 @@ void runNodeSubUserCallback(uint16_t id, void* msgs, void* args);
 class Node
 {
   public:
-    Node();
+    Node(const char* node_name = "ros2_xrcedds_participant");
     virtual ~Node(){};
 
-    void recreate();
+    void recreate(const char* node_name = "ros2_xrcedds_participant");
     void createWallTimer(uint32_t msec, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
     void createWallFreq(uint32_t hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
     void runPubCallback();

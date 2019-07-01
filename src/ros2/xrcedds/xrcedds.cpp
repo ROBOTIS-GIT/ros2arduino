@@ -19,8 +19,8 @@
 #define BUFFER_SIZE    4096
 static uint8_t output_best_effort_stream_buffer[BUFFER_SIZE * UXR_CONFIG_MAX_OUTPUT_BEST_EFFORT_STREAMS];
 #else
-#define STREAM_HISTORY 1
-#define BUFFER_SIZE    4096 * STREAM_HISTORY
+#define STREAM_HISTORY 4
+#define BUFFER_SIZE    2048 * STREAM_HISTORY
 static uint8_t output_reliable_stream_buffer[BUFFER_SIZE * UXR_CONFIG_MAX_OUTPUT_RELIABLE_STREAMS];
 static uint8_t input_reliable_stream_buffer[BUFFER_SIZE * UXR_CONFIG_MAX_INPUT_RELIABLE_STREAMS];
 #endif
@@ -167,12 +167,12 @@ bool xrcedds::createParticipant(xrcedds::Participant_t* participant, const char*
   participant->id            = participant_id++;
   uxrObjectId part_object_id = uxr_object_id(participant->id, UXR_PARTICIPANT_ID);
 
-#ifdef UXR_CREATE_ENTITIES_USING_XML
+#if (UXR_CREATE_ENTITIES_USING_REF)
+  participant_req = uxr_buffer_create_participant_ref(&g_uxr_session.session, getOutputStreamInfo(), part_object_id, 0, participant_name, UXR_REPLACE);
+#else  
   char participant_profile[256];
   sprintf(participant_profile, UXR_PARTICIPANT_XML, participant_name);
   participant_req = uxr_buffer_create_participant_xml(&g_uxr_session.session, getOutputStreamInfo(), part_object_id, 0, participant_profile, UXR_REPLACE);
-#else  
-  participant_req = uxr_buffer_create_participant_ref(&g_uxr_session.session, getOutputStreamInfo(), part_object_id, 0, participant_name, UXR_REPLACE);
 #endif  
 
   participant->is_created = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &participant_req, &status, 1);
@@ -194,13 +194,14 @@ bool xrcedds::registerTopic(xrcedds::Participant_t* participant, const char* top
   uxrObjectId part_object_id = uxr_object_id(participant->id, UXR_PARTICIPANT_ID);
   uxrObjectId topic_object_id = uxr_object_id(topic_id, UXR_TOPIC_ID);
 
-#ifdef UXR_CREATE_ENTITIES_USING_XML
+#if (UXR_CREATE_ENTITIES_USING_REF)
+  topic_req = uxr_buffer_create_topic_ref(&g_uxr_session.session, getOutputStreamInfo(), topic_object_id, part_object_id, topic_name, UXR_REUSE);
+#else
   char topic_profile[256];
   sprintf(topic_profile, UXR_TOPIC_XML, topic_name, topic_type);
   topic_req = uxr_buffer_create_topic_xml(&g_uxr_session.session, getOutputStreamInfo(), topic_object_id, part_object_id, topic_profile, UXR_REUSE);
-#else
-  topic_req = uxr_buffer_create_topic_ref(&g_uxr_session.session, getOutputStreamInfo(), topic_object_id, part_object_id, topic_name, UXR_REUSE);
-#endif  
+#endif
+
   ret = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &topic_req, &status, 1);
   if(ret == false && status == UXR_STATUS_ERR_ALREADY_EXISTS)
   {
@@ -250,12 +251,12 @@ bool xrcedds::createDataWriter(xrcedds::Publisher_t* publisher, xrcedds::DataWri
   uxrObjectId pub_object_id  = uxr_object_id(publisher->id, UXR_PUBLISHER_ID);
   uxrObjectId writer_object_id = uxr_object_id(data_writer->id, UXR_DATAWRITER_ID);
 
-#ifdef UXR_CREATE_ENTITIES_USING_XML
+#if (UXR_CREATE_ENTITIES_USING_REF)
+  datawriter_req = uxr_buffer_create_datawriter_ref(&g_uxr_session.session, getOutputStreamInfo(), writer_object_id, pub_object_id, writer_name, UXR_REPLACE);
+#else
   char writer_profile[256];
   sprintf(writer_profile, UXR_WRITER_XML, writer_name, topic_type);
-  datawriter_req = uxr_buffer_create_datawriter_xml(&g_uxr_session.session, getOutputStreamInfo(), writer_object_id, pub_object_id, writer_profile, UXR_REPLACE);
-#else
-  datawriter_req = uxr_buffer_create_datawriter_ref(&g_uxr_session.session, getOutputStreamInfo(), writer_object_id, pub_object_id, writer_name, UXR_REPLACE);
+  datawriter_req = uxr_buffer_create_datawriter_xml(&g_uxr_session.session, getOutputStreamInfo(), writer_object_id, pub_object_id, writer_profile, UXR_REPLACE);  
 #endif
 
   data_writer->is_created = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &datawriter_req, &status, 1);
@@ -303,12 +304,12 @@ bool xrcedds::createDataReader(xrcedds::Subscriber_t* subscriber, xrcedds::DataR
   uxrObjectId sub_object_id  = uxr_object_id(subscriber->id, UXR_SUBSCRIBER_ID);
   uxrObjectId reader_object_id = uxr_object_id(data_reader->id, UXR_DATAREADER_ID);
 
-#ifdef UXR_CREATE_ENTITIES_USING_XML
+#if (UXR_CREATE_ENTITIES_USING_REF)
+  datareader_req = uxr_buffer_create_datareader_ref(&g_uxr_session.session, getOutputStreamInfo(), reader_object_id, sub_object_id, reader_name, UXR_REPLACE);
+#else
   char reader_profile[256];
   sprintf(reader_profile, UXR_READER_XML, reader_name, topic_type);
-  datareader_req = uxr_buffer_create_datareader_xml(&g_uxr_session.session, getOutputStreamInfo(), reader_object_id, sub_object_id, reader_profile, UXR_REPLACE);
-#else
-  datareader_req = uxr_buffer_create_datareader_ref(&g_uxr_session.session, getOutputStreamInfo(), reader_object_id, sub_object_id, reader_name, UXR_REPLACE);
+  datareader_req = uxr_buffer_create_datareader_xml(&g_uxr_session.session, getOutputStreamInfo(), reader_object_id, sub_object_id, reader_profile, UXR_REPLACE);  
 #endif  
 
   data_reader->is_created = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &datareader_req, &status, 1);
