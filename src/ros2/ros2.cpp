@@ -125,7 +125,7 @@ void ros2::runNodeSubUserCallback(uint16_t id, void* msgs, void* args)
 
 
 /* Node class */
-ros2::Node::Node()
+ros2::Node::Node(const char* node_name)
 {
   pub_cnt_ = 0, sub_cnt_ = 0, node_register_state_ = false;
   for(size_t i = 0; i < ROS2_PUBLISHER_MAX; i++)
@@ -136,10 +136,10 @@ ros2::Node::Node()
   {
     sub_list_[i] = nullptr;
   }
-  this->recreate();
+  this->recreate(node_name);
 }
 
-void ros2::Node::recreate()
+void ros2::Node::recreate(const char* node_name)
 {
   xrcedds_participant_.is_created = false;
   xrcedds_transport_.type = g_client_communication_method;
@@ -165,8 +165,7 @@ void ros2::Node::recreate()
   xrcedds::initTransportAndSession(&xrcedds_transport_,
       (void*) runNodeSubUserCallback, (void*) this);
 
-  node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_,
-      "ros2_xrcedds_participant");
+  node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_, node_name);
 
   xrcedds::createPublisher(&this->xrcedds_participant_,
       &this->xrcedds_publisher_);

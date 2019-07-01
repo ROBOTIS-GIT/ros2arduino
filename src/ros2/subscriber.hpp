@@ -57,12 +57,12 @@ class Subscriber:public SubscriberHandle
 
     void recreate()
     {
-#ifdef UXR_CREATE_ENTITIES_USING_XML
+#if (UXR_CREATE_ENTITIES_USING_REF)
+      is_registered_ = xrcedds::createDataReader(subscriber_, &data_reader_, (char*)name_, topic_.type_);
+#else
       char reader_name[64];
       sprintf(reader_name, "%s/%s", getPrefixString(TOPICS_SUBSCRIBE), name_);
-      is_registered_ = xrcedds::createDataReader(subscriber_, &data_reader_, reader_name, topic_.type_);
-#else
-      is_registered_ = xrcedds::createDataReader(subscriber_, &data_reader_, (char*)name_, topic_.type_);
+      is_registered_ = xrcedds::createDataReader(subscriber_, &data_reader_, reader_name, topic_.type_);      
 #endif      
       this->reader_id_ = data_reader_.id;
     };  

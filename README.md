@@ -111,8 +111,13 @@ $ ros2 topic echo /arduino_chatter
 
 #### Appendix: How to configure entities from reference file. (available at 0.1.0 or above)
 - Use the reference method supported by Client and Agent. Please refer to [eProsima manual](https://micro-xrce-dds.readthedocs.io/en/latest/agent.html#run-an-agent) for detailed usage.
-- In addition, you need to change the settings in ros2arduino.
-- In the [user_config.h](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/src/user_config.h) file, you must comment out `#define UXR_CREATE_ENTITIES_USING_XML` to use the reference method.
+- For this feature, You need to change the settings(code) in ros2arduino library.
+- In the [user_config.h](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/src/user_config.h) file, you must set the value of UXR_CREATE_ENTITIES_USING_REF to 1 like below.
+```cpp
+#define UXR_CREATE_ENTITIES_USING_REF 1
+#define USER_ROS2_PUBLISHER_MAX       10
+#define USER_ROS2_SUBSCRIBER_MAX      10
+```
 
 For example, create .refs file(in XML format) and run the Agent with the following options:
 ```bash
@@ -121,9 +126,9 @@ $ MicroXRCEAgent serial --dev /dev/ttyACM0 -b 115200 -r ros2arduino.refs
 - ros2arduino.refs
 ```xml
 <profiles>
-    <participant profile_name="ros2_xrcedds_participant">
+    <participant profile_name="ros2arduino_xml_node">
         <rtps>
-            <name>ros2_xrcedds_participant</name>
+            <name>ros2arduino_basic_node</name>
             <builtin>
                 <domainId>0</domainId>
             </builtin>

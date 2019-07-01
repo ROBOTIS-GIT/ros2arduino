@@ -16,7 +16,7 @@ class StringPub : public ros2::Node
 {
 public:
   StringPub()
-  : Node()
+  : Node("ros2arduino_pub_node")
   {
     ros2::Publisher<std_msgs::String>* publisher_ = this->createPublisher<std_msgs::String>("arduino_chatter");
     this->createWallFreq(PUBLISH_FREQUENCY, (ros2::CallbackFunc)publishString, nullptr, publisher_);

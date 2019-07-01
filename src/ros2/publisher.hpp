@@ -57,12 +57,12 @@ public:
 
   void recreate()
   {
-#ifdef UXR_CREATE_ENTITIES_USING_XML
+#if (UXR_CREATE_ENTITIES_USING_REF)
+    is_registered_ = xrcedds::createDataWriter(publisher_, &data_writer_, (char*)name_, topic_.type_);
+#else
     char writer_name[64];
     sprintf(writer_name, "%s/%s", getPrefixString(TOPICS_PUBLISH), name_);    
-    is_registered_ = xrcedds::createDataWriter(publisher_, &data_writer_, writer_name, topic_.type_);
-#else
-    is_registered_ = xrcedds::createDataWriter(publisher_, &data_writer_, (char*)name_, topic_.type_);
+    is_registered_ = xrcedds::createDataWriter(publisher_, &data_writer_, writer_name, topic_.type_);    
 #endif    
   }
 
