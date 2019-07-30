@@ -9,7 +9,7 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.1.1|[Dashing Diademata](https://github.com/ros2/ros2/releases/tag/release-dashing-20190531)|[1.1.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.1.0)|
+|0.1.2|[Dashing Diademata Patch1](https://github.com/ros2/ros2/releases/tag/release-dashing-20190614)|[1.1.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.1.0)|
 
 For the Micro-XRCE-DDS Agent, please install it using following commands.
 ```bash
@@ -26,6 +26,7 @@ $ sudo ldconfig /usr/local/lib/
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
+|0.1.2|[Dashing Diademata Patch1](https://github.com/ros2/ros2/releases/tag/release-dashing-20190614)|[1.1.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.1.0)|
 |0.1.1|[Dashing Diademata](https://github.com/ros2/ros2/releases/tag/release-dashing-20190531)|[1.1.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.1.0)|
 |0.0.9|[Crystal Clemmys](https://github.com/ros2/ros2/releases/tag/release-crystal-20181214)|[1.0.1](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.0.1)|
 
