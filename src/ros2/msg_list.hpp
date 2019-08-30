@@ -33,6 +33,7 @@
 #include "sensor_msgs/MagneticField.hpp"
 #include "sensor_msgs/JointState.hpp"
 #include "sensor_msgs/Joy.hpp"
+#include "sensor_msgs/Image.hpp"
 
 #include "nav_msgs/Odometry.hpp"
 
