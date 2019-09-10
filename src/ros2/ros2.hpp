@@ -24,10 +24,10 @@ void runNodeSubUserCallback(uint16_t id, void* msgs, void* args);
 class Node
 {
   public:
-    Node(const char* node_name = "ros2_xrcedds_participant",unsigned int client_key);
+    Node(const char* node_name = "ros2_xrcedds_participant",unsigned int client_key=0xAABBCCDD);
     virtual ~Node(){};
 
-    void recreate(const char* node_name = "ros2_xrcedds_participant",unsigned int client_key);
+    void recreate(const char* node_name = "ros2_xrcedds_participant",unsigned int client_key=0xAABBCCDD);
     void createWallTimer(uint32_t msec, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
     void createWallFreq(uint32_t hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
     void runPubCallback();
