@@ -99,7 +99,7 @@ typedef struct DataWriter{
 // };
 
 
-void init(uint8_t rtps_product);
+void init(uint8_t rtps_product,unsigned int client_key=0xAABBCCDD);
 
 bool initTransportAndSession(Transport_t* transport_info, void* callback_func, void* args);
 void deleteTransportAndSession(Transport_t* transport_info);

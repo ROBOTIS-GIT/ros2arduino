@@ -32,11 +32,11 @@ static uxrStreamId getInputStreamInfo();
 
 //-- External Functions
 //
-void xrcedds::init(uint8_t xrcedds_product)
+void xrcedds::init(uint8_t xrcedds_product,unsigned int client_key)
 {
   (void)(xrcedds_product);
   g_uxr_session.is_init = false;
-  g_uxr_session.session_key = 0xAABBCCDD;
+  g_uxr_session.session_key = client_key;//0xAABBCCDD;
 }
 
 bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callback_func, void* args)
