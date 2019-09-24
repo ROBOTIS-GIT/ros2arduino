@@ -171,8 +171,15 @@ $ MicroXRCEAgent serial --dev /dev/ttyACM0 -b 115200 -r ros2arduino.refs
         <dataType>std_msgs::msg::dds_::String_</dataType>
     </topic>
 </profiles>
-
 ```
+
+#### Appendix: How to use the Security feature. (available at 0.1.1 or above)
+
+This method should be preceded by the function described in ["Appendix: How to configure entities from reference file."](https://github.com/ROBOTIS-GIT/ros2arduino#appendix-how-to-configure-entities-from-reference-file-available-at-011-or-above)
+
+And please check eProsima's manual for how to use it.
+- [Fast RTPS security documentation](https://fast-rtps.docs.eprosima.com/en/latest/security.html#example-configuring-the-participant)
+
 
  <br>
  
