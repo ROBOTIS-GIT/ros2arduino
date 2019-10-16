@@ -202,7 +202,7 @@ void ros2::Node::createWallTimer(uint32_t msec, CallbackFunc callback, void* cal
   pub->callback_arg = callback_arg;
 }
 
-void ros2::Node::createWallFreq(uint32_t hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub)
+void ros2::Node::createWallFreq(float hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub)
 {
   uint32_t msec;
   if(hz > 1000)
