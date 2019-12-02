@@ -155,7 +155,6 @@ inline void read_format_data(
 {
     (void) length;
     ub->last_data_size = 8; //reset alignment (as if we were created a new ucdrBuffer)
-    ub->init = ub->iterator;
 
     session->on_topic(session, object_id, request_id, stream_id, ub, session->on_topic_args);
 }

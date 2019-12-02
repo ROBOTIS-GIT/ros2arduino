@@ -481,7 +481,7 @@ void print_delete_submessage(const char* pre, const DELETE_Payload* payload)
 
 void print_status_agent_submessage(const char* pre, const STATUS_AGENT_Payload* payload)
 {
-    (void)payload;
+    (void) payload;
     printf("%s[STATUS AGENT]%s",
             pre,
             RESTORE_COLOR);

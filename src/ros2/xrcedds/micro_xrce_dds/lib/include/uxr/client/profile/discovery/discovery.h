@@ -29,7 +29,7 @@ extern "C"
 
 typedef struct uxrAgentAddress
 {
-    const char* ip;
+    char ip[16];
     uint16_t port;
 
 } uxrAgentAddress;

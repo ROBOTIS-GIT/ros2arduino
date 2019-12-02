@@ -22,7 +22,6 @@ bool uxr_prepare_output_stream(uxrSession* session, uxrStreamId stream_id, uxrOb
         (void) uxr_serialize_WRITE_DATA_Payload_Data(ub, &payload);
 
         ub->last_data_size = 8; //reset alignment (as if we were created a new ucdrBuffer)
-        ub->init = ub->iterator;
     }
 
     return !ub->error;
