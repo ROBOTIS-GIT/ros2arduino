@@ -139,6 +139,11 @@ ros2::Node::Node(const char* node_name,unsigned int client_key)
   this->recreate(node_name,client_key);
 }
 
+bool ros2::Node::getNodeRegisteredState()
+{
+  return node_register_state_;
+}
+
 void ros2::Node::recreate(const char* node_name, unsigned int client_key)
 {
   xrcedds_participant_.is_created = false;
@@ -167,25 +172,27 @@ void ros2::Node::recreate(const char* node_name, unsigned int client_key)
 
   node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_, node_name);
 
-  xrcedds::createPublisher(&this->xrcedds_participant_,
-      &this->xrcedds_publisher_);
-  xrcedds::createSubscriber(&this->xrcedds_participant_,
-      &this->xrcedds_subscriber_);
+  if(node_register_state_ == true){
+    xrcedds::createPublisher(&this->xrcedds_participant_,
+        &this->xrcedds_publisher_);
+    xrcedds::createSubscriber(&this->xrcedds_participant_,
+        &this->xrcedds_subscriber_);
 
-  uint8_t i;
-  for (i = 0; i < ROS2_PUBLISHER_MAX; i++)
-  {
-    if (pub_list_[i] != nullptr)
+    uint8_t i;
+    for (i = 0; i < ROS2_PUBLISHER_MAX; i++)
     {
-      pub_list_[i]->recreate();
+      if (pub_list_[i] != nullptr)
+      {
+        pub_list_[i]->recreate();
+      }
     }
-  }
 
-  for (i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
-  {
-    if (sub_list_[i] != nullptr)
+    for (i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
     {
-      sub_list_[i]->recreate();
+      if (sub_list_[i] != nullptr)
+      {
+        sub_list_[i]->recreate();
+      }
     }
   }
 }
