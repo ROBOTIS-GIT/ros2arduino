@@ -7,7 +7,8 @@
 #include <errno.h>
 #include <string.h>
 
-bool uxr_init_udp_transport_datagram(uxrUDPTransportDatagram* transport)
+bool uxr_init_udp_transport_datagram(
+        uxrUDPTransportDatagram* transport)
 {
     int fd = socket(PF_INET, SOCK_DGRAM, 0);
     transport->poll_fd.fd = fd;
@@ -16,7 +17,8 @@ bool uxr_init_udp_transport_datagram(uxrUDPTransportDatagram* transport)
     return fd != -1;
 }
 
-bool uxr_close_udp_transport_datagram(uxrUDPTransportDatagram* transport)
+bool uxr_close_udp_transport_datagram(
+        uxrUDPTransportDatagram* transport)
 {
     return (0 == close(transport->poll_fd.fd));
 }

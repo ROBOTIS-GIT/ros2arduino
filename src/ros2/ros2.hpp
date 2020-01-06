@@ -27,6 +27,8 @@ class Node
     Node(const char* node_name = "ros2_xrcedds_participant",unsigned int client_key=0xAABBCCDD);
     virtual ~Node(){};
 
+    bool getNodeRegisteredState();
+
     void recreate(const char* node_name = "ros2_xrcedds_participant",unsigned int client_key=0xAABBCCDD);
     void createWallTimer(uint32_t msec, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
     void createWallFreq(uint32_t hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _SRC_C_CLIENT_UDP_TRANSPORT_DATAGRAM_INTERNAL_H_
-#define _SRC_C_CLIENT_UDP_TRANSPORT_DATAGRAM_INTERNAL_H_
+#ifndef SRC_C_CLIENT_UDP_TRANSPORT_DATAGRAM_INTERNAL_H_
+#define SRC_C_CLIENT_UDP_TRANSPORT_DATAGRAM_INTERNAL_H_
 
 #ifdef __cplusplus
 extern "C"
@@ -28,6 +28,12 @@ extern "C"
 #include <stdbool.h>
 
 #if defined(PLATFORM_NAME_LINUX)
+#define PLATFORM_TYPE_POSIX
+#elif defined(PLATFORM_NAME_NUTTX)
+#define PLATFORM_TYPE_POSIX
+#endif
+
+#if defined(PLATFORM_TYPE_POSIX)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <poll.h>
@@ -40,17 +46,17 @@ extern "C"
 
 typedef struct uxrUDPTransportDatagram
 {
-#if defined(PLATFORM_NAME_LINUX)
     uint8_t buffer[UXR_UDP_TRANSPORT_MTU_DATAGRAM];
+#if defined(PLATFORM_TYPE_POSIX)
     struct pollfd poll_fd;
 #elif defined(PLATFORM_NAME_WINDOWS)
-    uint8_t buffer[UXR_UDP_TRANSPORT_MTU_DATAGRAM];
     WSAPOLLFD poll_fd;
 #endif
 
 } uxrUDPTransportDatagram;
 
-bool uxr_init_udp_transport_datagram(struct uxrUDPTransportDatagram* transport);
+bool uxr_init_udp_transport_datagram(
+        struct uxrUDPTransportDatagram* transport);
 
 bool uxr_udp_send_datagram_to(
         struct uxrUDPTransportDatagram* transport,
@@ -73,4 +79,4 @@ void uxr_bytes_to_ip(
 }
 #endif
 
-#endif //_SRC_C_CLIENT_UDP_TRANSPORT_DATAGRAM_INTERNAL_H_
+#endif // SRC_C_CLIENT_UDP_TRANSPORT_DATAGRAM_INTERNAL_H_

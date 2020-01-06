@@ -162,10 +162,9 @@ bool process_info(
 
     if(locator->format == ADDRESS_FORMAT_MEDIUM)
     {
-        char ip[16];
-        uxr_bytes_to_ip(locator->_.medium_locator.address, ip);
-
-        uxrAgentAddress address = {ip, locator->_.medium_locator.locator_port};
+        uxrAgentAddress address;
+        uxr_bytes_to_ip(locator->_.medium_locator.address, address.ip);
+        address.port = locator->_.medium_locator.locator_port;
 
         callback->on_agent(&address, callback->args);
 
