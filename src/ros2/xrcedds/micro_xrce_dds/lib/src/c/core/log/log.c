@@ -13,11 +13,11 @@
 // limitations under the License.
 
 #include <uxr/client/core/session/session_info.h>
+#include <uxr/client/core/type/xrce_types.h>
 #include <uxr/client/util/time.h>
 #include <uxr/client/config.h>
 
 #include "../serialization/xrce_header_internal.h"
-#include "../serialization/xrce_protocol_internal.h"
 #include "../session/submessage_internal.h"
 #include "log_internal.h"
 
@@ -388,15 +388,15 @@ void print_create_submessage(const char* pre, const CREATE_Payload* payload, uin
     char type[4];
     switch(payload->object_representation._.participant.base.representation.format)
     {
-        case REPRESENTATION_AS_XML_STRING:
+        case DDS_XRCE_REPRESENTATION_AS_XML_STRING:
             strcpy(type, "xml");
             break;
 
-        case REPRESENTATION_BY_REFERENCE:
+        case DDS_XRCE_REPRESENTATION_BY_REFERENCE:
             strcpy(type, "ref");
             break;
 
-        case REPRESENTATION_IN_BINARY:
+        case DDS_XRCE_REPRESENTATION_IN_BINARY:
             strcpy(type, "bin");
             break;
 
@@ -405,36 +405,36 @@ void print_create_submessage(const char* pre, const CREATE_Payload* payload, uin
     char content[DATA_TO_STRING_BUFFER];
     switch(payload->object_representation.kind)
     {
-        case OBJK_PARTICIPANT:
+        case DDS_XRCE_OBJK_PARTICIPANT:
             sprintf(content, "PARTICIPANT | %s: %zu",
                     type,
                     strlen(payload->object_representation._.participant.base.representation._.xml_string_represenatation) + 1);
             break;
-        case OBJK_TOPIC:
+        case DDS_XRCE_OBJK_TOPIC:
             sprintf(content, "TOPIC | obj: 0x%s | %s: %zu",
                     print_array_2(payload->object_representation._.data_reader.subscriber_id.data),
                     type,
                     strlen(payload->object_representation._.topic.base.representation._.xml_string_represenatation) + 1);
             break;
-        case OBJK_PUBLISHER:
+        case DDS_XRCE_OBJK_PUBLISHER:
             sprintf(content, "PUBLISHER | obj: 0x%s | %s: %zu",
                     print_array_2(payload->object_representation._.publisher.participant_id.data),
                     type,
                     strlen(payload->object_representation._.publisher.base.representation._.string_represenatation) + 1);
             break;
-        case OBJK_SUBSCRIBER:
+        case DDS_XRCE_OBJK_SUBSCRIBER:
             sprintf(content, "SUBSCRIBER | obj: 0x%s | %s: %zu",
                     print_array_2(payload->object_representation._.subscriber.participant_id.data),
                     type,
                     strlen(payload->object_representation._.subscriber.base.representation._.string_represenatation) + 1);
             break;
-        case OBJK_DATAWRITER:
+        case DDS_XRCE_OBJK_DATAWRITER:
             sprintf(content, "DATAWRITER | obj: 0x%s | %s: %zu",
                     print_array_2(payload->object_representation._.data_writer.publisher_id.data),
                     type,
                     strlen(payload->object_representation._.data_writer.base.representation._.xml_string_represenatation) + 1);
              break;
-        case OBJK_DATAREADER:
+        case DDS_XRCE_OBJK_DATAREADER:
             sprintf(content, "DATAREADER | obj: 0x%s | %s: %zu",
                     print_array_2(payload->object_representation._.data_reader.subscriber_id.data),
                     type,

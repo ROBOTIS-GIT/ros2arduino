@@ -10,13 +10,15 @@
 
 static uxr_onTopicUserCallback userCallback;
 
-void uxr_onTopicCallback(uxrSession* session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, ucdrBuffer* mb, void* args)
+void uxr_onTopicCallback(struct uxrSession* session, uxrObjectId object_id, 
+  uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer* ub, 
+  uint16_t length, void* args)
 {
-  (void)(session); (void)(request_id); (void)(stream_id);
+  (void)(session); (void)(request_id); (void)(stream_id); (void)(length);
 
   if(userCallback != NULL)
   {
-    userCallback(object_id.id, (void*)mb, args);
+    userCallback(object_id.id, (void*)ub, args);
   }
 }
 

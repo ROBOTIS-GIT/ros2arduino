@@ -54,14 +54,18 @@ As *MicroCDR* uses a static buffer, that means the user has to provide a defined
 ## API functions
 
 ```c
-void ucdr_init_buffer        (ucdrBuffer* ub, uint8_t* data, size_t size);
-void ucdr_init_buffer_offset (ucdrBuffer* ub, uint8_t* data, size_t size, size_t offset);
+void ucdr_init_buffer                       (ucdrBuffer* ub, uint8_t* data, size_t size);
+void ucdr_init_buffer_origin                (ucdrBuffer* ub, uint8_t* data, size_t size, size_t origin);
+void ucdr_init_buffer_origin_offset         (ucdrBuffer* ub, uint8_t* data, size_t size, size_t origin, size_t offset);
+void ucdr_init_buffer_origin_offset_endian  (ucdrBuffer* ub, uint8_t* data, size_t size, size_t origin, size_t offset, ucdrEndianness endianness);
 ```
 Initialize a `ucdrBuffer` structure, the main struct of *MicroCDR*.
-- `ub`: the `ucdrBuffer` struct
+- `ub`: the `ucdrBuffer` struct.
 - `data`: the buffer that the `ucdrBuffer` will use.
 - `size`: the size of the buffer that the `ucdrBuffer` will use.
+- `origin`: the origin of the XCDR stream.
 - `offset`: where the serialization/deserialization will start.
+- `endianness`: the endianness of the XCDR stream.
 Initially, the serialization/deserialization starts at the beginning of the buffer.
 
 ---
@@ -72,6 +76,16 @@ void ucdr_copy_buffer (ucdrBuffer* ub_dest, const ucdrBuffer* ub_source);
 Copy a `ucdrBuffer` structure data to another `ucdrBuffer` structure.
 - `ub_dest`: the destination `ucdrBuffer` struct.
 - `ub_source`: the origin initialized `ucdrBuffer` struct.
+
+---
+
+```c
+void ucdr_set_on_full_buffer_callback (ucdrBuffer* ub, OnFullBuffer on_full_buffer, void* args);
+```
+Sets the `on_full_buffer` callback which will be called each time the buffer arises its end.
+- `ub`: the `ucdrBuffer` struct.
+- `on_full_buffer`: the callcack.
+- `args`: the argument passes to the callback.
 
 ---
 
@@ -114,6 +128,15 @@ Returns the alignment necessary to serialize/deserialize a type with `data_size`
 
 - `ub`: the `ucdrBuffer` struct to ask the alignment.
 - `data_size`: the bytes of the data that you are asking for.
+---
+
+```c
+void ucdr_advance_buffer(const ucdrBuffer* ub, size_t size);
+```
+Advances the XCDR stream `size` bytes without de/serialization involved.
+
+- `ub`: the `ucdrBuffer` struct to ask the alignment.
+- `size`: the bytes to advance.
 ---
 
 ```c

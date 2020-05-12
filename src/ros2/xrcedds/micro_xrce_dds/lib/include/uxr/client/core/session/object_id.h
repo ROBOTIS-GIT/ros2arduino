@@ -30,6 +30,8 @@ extern "C"
 #define UXR_SUBSCRIBER_ID  0x04
 #define UXR_DATAWRITER_ID  0x05
 #define UXR_DATAREADER_ID  0x06
+#define UXR_REQUESTER_ID   0x07
+#define UXR_REPLIER_ID     0x08
 #define UXR_OTHER_ID       0x0F
 
 typedef struct uxrObjectId

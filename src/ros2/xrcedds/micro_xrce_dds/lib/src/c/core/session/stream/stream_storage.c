@@ -47,12 +47,12 @@ uxrStreamId uxr_add_output_best_effort_buffer(uxrStreamStorage* storage, uint8_t
     return uxr_stream_id(index, UXR_BEST_EFFORT_STREAM, UXR_OUTPUT_STREAM);
 }
 
-uxrStreamId uxr_add_output_reliable_buffer(uxrStreamStorage* storage, uint8_t* buffer, size_t size, uint16_t history, uint8_t header_offset, OnNewFragment on_new_fragment)
+uxrStreamId uxr_add_output_reliable_buffer(uxrStreamStorage* storage, uint8_t* buffer, size_t size, uint16_t history, uint8_t header_offset)
 {
     uint8_t index = storage->output_reliable_size++;
     //TODO: assert for index
     uxrOutputReliableStream* stream = &storage->output_reliable[index];
-    uxr_init_output_reliable_stream(stream, buffer, size, history, header_offset, on_new_fragment);
+    uxr_init_output_reliable_stream(stream, buffer, size, history, header_offset);
     return uxr_stream_id(index, UXR_RELIABLE_STREAM, UXR_OUTPUT_STREAM);
 }
 

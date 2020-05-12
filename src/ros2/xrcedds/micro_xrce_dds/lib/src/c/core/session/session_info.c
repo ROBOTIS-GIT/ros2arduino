@@ -1,9 +1,9 @@
 #include <uxr/client/defines.h>
 #include <uxr/client/core/session/object_id.h>
+#include <uxr/client/core/type/xrce_types.h>
 
 #include "session_info_internal.h"
 #include "submessage_internal.h"
-#include "../serialization/xrce_protocol_internal.h"
 #include "../serialization/xrce_header_internal.h"
 
 #include <string.h>
@@ -34,8 +34,8 @@ void uxr_init_session_info(uxrSessionInfo* info, uint8_t id, uint32_t key)
 void uxr_buffer_create_session(uxrSessionInfo* info, ucdrBuffer* ub, uint16_t mtu)
 {
     CREATE_CLIENT_Payload payload;
-    payload.client_representation.xrce_cookie = XRCE_COOKIE;
-    payload.client_representation.xrce_version = XRCE_VERSION;
+    payload.client_representation.xrce_cookie = DDS_XRCE_XRCE_COOKIE;
+    payload.client_representation.xrce_version = DDS_XRCE_XRCE_VERSION;
     payload.client_representation.xrce_vendor_id = VENDOR_ID_EPROSIMA;
     payload.client_representation.client_key.data[0] = info->key[0];
     payload.client_representation.client_key.data[1] = info->key[1];
@@ -55,7 +55,7 @@ void uxr_buffer_delete_session(uxrSessionInfo* info, ucdrBuffer* ub)
 {
     DELETE_Payload payload;
     payload.base.request_id = COMPOUND_LITERAL(RequestId){{0x00, UXR_REQUEST_LOGOUT}};
-    payload.base.object_id = OBJECTID_CLIENT;
+    payload.base.object_id = DDS_XRCE_OBJECTID_CLIENT;
 
     info->last_request_id = UXR_REQUEST_LOGOUT;
 

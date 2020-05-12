@@ -31,7 +31,7 @@ bool uxr_prepare_best_effort_buffer_to_write(uxrOutputBestEffortStream* stream, 
     bool available_to_write = future_length <= stream->size;
     if(available_to_write)
     {
-        ucdr_init_buffer_offset(ub, stream->buffer, (uint32_t)future_length, (uint32_t)(stream->writer + current_padding));
+        ucdr_init_buffer_origin_offset(ub, stream->buffer, (uint32_t)future_length, 0u, (uint32_t)(stream->writer + current_padding));
         stream->writer += size;
     }
 

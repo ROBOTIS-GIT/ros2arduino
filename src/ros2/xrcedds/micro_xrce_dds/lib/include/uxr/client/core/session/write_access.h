@@ -24,10 +24,51 @@ extern "C"
 
 /**
  * @brief Buffers into the stream identified by `stream_id` an XRCE WRITE_DATA submessage.
+ *        As a consequence, an XRCE request is generated associated to the WRITE_DATA submessage.
+ * 
+ * @param session       A uxrSession structure previously initialized.
+ * @param stream_id     The output stream identifier where the WRITE_DATA submessage will be buffered.
+ * @param requester_id  The identifier of the XRCE Requester that will write the request into the DDS GDS.
+ * @param buffer        The pointer to the request data.
+ * @param len           The length of the request data.
+ * @return A `request_id` that identifies the XRCE request made by the Client.
+ *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
+ */
+uint16_t uxr_buffer_request(
+        uxrSession* session,
+        uxrStreamId stream_id,
+        uxrObjectId requester_id,
+        uint8_t* buffer,
+        size_t len);
+
+/**
+ * @brief Buffers into the stream identified by `stream_id` an XRCE WRITE_DATA submessage.
+ *        As a consequence, an XRCE request is generated associated to the WRITE_DATA submessage.
+ * 
+ * @param session       A uxrSession structure previously initialized.
+ * @param stream_id     The output stream identifier where the WRITE_DATA submessage will be buffered.
+ * @param replier_id    The identifier of the XRCE Replier that will write the reply into the DDS GDS. 
+ * @param sample_id     The `SampleIdentity` that identifies the request.
+ *                      It will be read by the Requester to filter and identify the reply.
+ * @param buffer        The pointer to the reply data. 
+ * @param len           The length of the reply data.
+ * @return A `request_id` that identifies the XRCE request made by the Client.
+ *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
+ */
+uint16_t uxr_buffer_reply(
+        uxrSession* session,
+        uxrStreamId stream_id,
+        uxrObjectId replier_id,
+        SampleIdentity* sample_id,
+        uint8_t* buffer,
+        size_t len);
+
+/**
+ * @brief Buffers into the stream identified by `stream_id` an XRCE WRITE_DATA submessage.
  *        The submessage will be sent when `uxr_flash_output_stream` or `uxr_run_session` function are called.
  *        As a result of the reception of this submessage, the Agent will write a topic into the DDS Global-Data-Space.
  * @param session           A uxrSession structure previously initialized.
- * @param stream_id         The output stream identifier where the READ_DATA submessage will be buffered.
+ * @param stream_id         The output stream identifier where the WRITE_DATA submessage will be buffered.
  * @param datawriter_id     The identifier of the XRCE DataWriter that will write the topic into the DDS GDS.
  * @param ub_topic          The ucdrBuffer structure used for serializing the topic.
  * @param topic_size        The size of the topic in bytes.
