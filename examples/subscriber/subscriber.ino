@@ -1,4 +1,9 @@
+#include "user_config.h" // It must be located above ros2arduino.h.
 #include <ros2arduino.h>
+
+#ifndef LED_BUILTIN // To support some boards (eg. some esp32 boards)
+#define LED_BUILTIN 13
+#endif 
 
 #define XRCEDDS_PORT  Serial 
 

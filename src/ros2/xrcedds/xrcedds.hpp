@@ -27,7 +27,7 @@ typedef enum XrceDdsCommportType{
 typedef struct Transport{
   XrceDdsCommportType_t type;
   const char* server_ip;
-  uint16_t server_port;
+  const char* server_port;
   void *comm_instance;
 } Transport_t;
 

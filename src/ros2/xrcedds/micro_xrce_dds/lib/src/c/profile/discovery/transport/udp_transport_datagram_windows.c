@@ -1,11 +1,12 @@
 #include "udp_transport_datagram_internal.h"
 
-#if defined(PLATFORM_NAME_WINDOWS)
+#if defined(UCLIENT_PLATFORM_WINDOWS)
 
 #include <WS2tcpip.h>
 #include <string.h>
 
-bool uxr_init_udp_transport_datagram(uxrUDPTransportDatagram* transport)
+bool uxr_init_udp_transport_datagram(
+        uxrUDPTransportDatagram* transport)
 {
     bool rv = false;
 
@@ -26,7 +27,8 @@ bool uxr_init_udp_transport_datagram(uxrUDPTransportDatagram* transport)
     return rv;
 }
 
-bool uxr_close_udp_transport_datagram(uxrUDPTransportDatagram* transport)
+bool uxr_close_udp_transport_datagram(
+        uxrUDPTransportDatagram* transport)
 {
     bool rv = (INVALID_SOCKET == transport->poll_fd.fd) ? true : (0 == closesocket(transport->poll_fd.fd));
     return (0 == WSACleanup()) && rv;
@@ -36,22 +38,26 @@ bool uxr_udp_send_datagram_to(
         uxrUDPTransportDatagram* transport,
         const uint8_t* buf,
         size_t len,
-        const char* ip,
-        uint16_t port)
+        const TransportLocator* locator)
 {
     bool rv = false;
-
-    struct sockaddr_in remote_addr;
-    if(0 != inet_pton(AF_INET, ip, &remote_addr.sin_addr))
+    switch (locator->format)
     {
-        remote_addr.sin_family = AF_INET;
-        remote_addr.sin_port = htons(port);
+        case ADDRESS_FORMAT_MEDIUM:
+        {
+            struct sockaddr_in remote_addr;
+            memcpy(&remote_addr.sin_addr, locator->_.medium_locator.address, sizeof(remote_addr.sin_addr));
+            remote_addr.sin_family = AF_INET;
+            remote_addr.sin_port = htons(locator->_.medium_locator.locator_port);
 
-        int bytes_sent = sendto(transport->poll_fd.fd, (const char*)buf, (int)len, 0,
-                                    (struct sockaddr*)&remote_addr, sizeof(remote_addr));
-        rv = (SOCKET_ERROR != bytes_sent);
+            int bytes_sent = sendto(transport->poll_fd.fd, (const char*)buf, (int)len, 0,
+                                        (struct sockaddr*)&remote_addr, sizeof(remote_addr));
+            rv = (SOCKET_ERROR != bytes_sent);
+            break;
+        }
+        default:
+            break;
     }
-
     return rv;
 }
 
@@ -92,4 +98,4 @@ void uxr_bytes_to_ip(
 }
 
 
-#endif //PLATFORM_NAME_WINDOWS
+#endif //UCLIENT_PLATFORM_WINDOWS

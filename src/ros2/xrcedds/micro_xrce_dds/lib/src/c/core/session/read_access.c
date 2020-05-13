@@ -1,9 +1,9 @@
 #include <uxr/client/core/session/read_access.h>
+#include <uxr/client/core/type/xrce_types.h>
 
 #include "session_internal.h"
 #include "session_info_internal.h"
 #include "submessage_internal.h"
-#include "../serialization/xrce_protocol_internal.h"
 
 extern void read_submessage_format(
         uxrSession* session,
@@ -154,9 +154,87 @@ inline void read_format_data(
         uint16_t request_id)
 {
     (void) length;
-    ub->last_data_size = 8; //reset alignment (as if we were created a new ucdrBuffer)
 
-    session->on_topic(session, object_id, request_id, stream_id, ub, session->on_topic_args);
+    ucdrBuffer temp_buffer;
+    ucdr_init_buffer(&temp_buffer, ub->iterator, (size_t)(ub->final - ub->iterator));
+    ucdr_set_on_full_buffer_callback(&temp_buffer, ub->on_full_buffer, ub->args);
+    if (ub->args)
+    {
+        uxrInputReliableStream * stream = (uxrInputReliableStream*) ub->args;
+        stream->cleanup_flag = false;
+    }
+
+    switch (object_id.type)
+    {
+        case UXR_DATAREADER_ID:
+        {
+            if (NULL != session->on_topic)
+            {
+                session->on_topic(session, object_id, request_id, stream_id, &temp_buffer, length, session->on_topic_args);
+            }
+            break;
+        }
+        case UXR_REPLIER_ID:
+        {
+            if (NULL != session->on_request)
+            {
+                SampleIdentity sample_id;
+                size_t offset = temp_buffer.offset;
+
+                if (uxr_deserialize_SampleIdentity(&temp_buffer, &sample_id))
+                {
+                    length = (uint16_t)(length - (temp_buffer.offset - offset));
+                    ucdr_init_buffer(&temp_buffer, temp_buffer.iterator, (size_t)(temp_buffer.final - temp_buffer.iterator));
+                    ucdr_set_on_full_buffer_callback(&temp_buffer, ub->on_full_buffer, ub->args);
+
+                    session->on_request(
+                        session,
+                        object_id,
+                        request_id,
+                        &sample_id,
+                        &temp_buffer,
+                        (size_t)length,
+                        session->on_request_args);
+                }
+            }
+            break;
+        }
+        case UXR_REQUESTER_ID:
+        {
+            if (NULL != session->on_reply)
+            {
+                BaseObjectRequest request;
+                size_t offset = temp_buffer.offset;
+
+                if (uxr_deserialize_BaseObjectRequest(&temp_buffer, &request))
+                {
+                    length = (uint16_t)(length - (temp_buffer.offset - offset));
+                    ucdr_init_buffer(&temp_buffer, temp_buffer.iterator, (size_t)(temp_buffer.final - temp_buffer.iterator));
+                    ucdr_set_on_full_buffer_callback(&temp_buffer, ub->on_full_buffer, ub->args);
+
+                    session->on_reply(
+                        session,
+                        object_id,
+                        request_id,
+                        (uint16_t)((request.request_id.data[0] << 8) + request.request_id.data[1]),
+                        &temp_buffer,
+                        (size_t)length,
+                        session->on_reply_args);
+                }
+            }
+            ub->iterator += length;
+            break;
+        }
+        default:
+            break;
+    }
+
+    if (ub->args)
+    {
+        uxrInputReliableStream * stream = (uxrInputReliableStream*) ub->args;
+        stream->cleanup_flag = true;
+    }
+    ucdr_advance_buffer(ub, length);
 }
 
 void read_format_sample(

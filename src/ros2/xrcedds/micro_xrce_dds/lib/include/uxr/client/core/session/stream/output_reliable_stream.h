@@ -1,4 +1,4 @@
-// Copyright 2017 Proyectos y Sistemas de Mantenimiento SL (eProsima).
+// Copyright 2017-present Proyectos y Sistemas de Mantenimiento SL (eProsima).
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _UXR_CLIENT_CORE_SESSION_STREAM_OUTPUT_RELIABLE_STREAM_H_
-#define _UXR_CLIENT_CORE_SESSION_STREAM_OUTPUT_RELIABLE_STREAM_H_
+#ifndef UXR__CLIENT__CORE__SESSION__STREAM__OUTPUT_RELIABLE_STREAM_H_
+#define UXR__CLIENT__CORE__SESSION__STREAM__OUTPUT_RELIABLE_STREAM_H_
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
+#include <uxr/client/core/session/stream/reliable_stream.h>
 #include <uxr/client/core/session/stream/seq_num.h>
 
-#include <stddef.h>
 #include <stdbool.h>
 
 struct ucdrBuffer;
@@ -32,9 +32,7 @@ typedef void (*OnNewFragment)(struct ucdrBuffer* ub, struct uxrOutputReliableStr
 
 typedef struct uxrOutputReliableStream
 {
-    uint8_t* buffer;
-    size_t size;
-    uint16_t history;
+    uxrReliableStream base;
     uint8_t offset;
 
     uxrSeqNum last_written;
@@ -45,12 +43,10 @@ typedef struct uxrOutputReliableStream
     uint8_t next_heartbeat_tries;
     bool send_lost;
 
-    OnNewFragment on_new_fragment;
-
 } uxrOutputReliableStream;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _UXR_CLIENT_CORE_SESSION_STREAM_OUTPUT_RELIABLE_STREAM_H_
+#endif // UXR__CLIENT__CORE__SESSION__STREAM__OUTPUT_RELIABLE_STREAM_H_

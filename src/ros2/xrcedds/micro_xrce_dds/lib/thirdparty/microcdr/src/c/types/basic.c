@@ -25,6 +25,7 @@
     { \
         *ub->iterator = (uint8_t)value; \
         ub->iterator += 1; \
+        ub->offset += 1; \
         ub->last_data_size = 1; \
     } \
     return !ub->error;
@@ -53,7 +54,9 @@
     *(ub->iterator + 7) = *bytes_pointer;
 
 #define UCDR_SERIALIZE_BYTE_N(TYPE, SIZE, ENDIAN) \
-    ub->iterator += ucdr_buffer_alignment(ub, SIZE); \
+    size_t alignment = ucdr_buffer_alignment(ub, SIZE); \
+    ub->iterator += alignment; \
+    ub->offset += alignment; \
     if(ucdr_check_final_buffer_behavior(ub, SIZE)) \
     { \
         if(UCDR_MACHINE_ENDIANNESS == ENDIAN) \
@@ -65,6 +68,7 @@
             UCDR_SERIALIZE_BYTE_ ## SIZE ## _CORE() \
         } \
         ub->iterator += SIZE; \
+        ub->offset += SIZE; \
         ub->last_data_size = SIZE; \
     } \
     return !ub->error;
@@ -92,6 +96,7 @@
     { \
         *value = (TYPE)*ub->iterator; \
         ub->iterator += 1; \
+        ub->offset += 1; \
         ub->last_data_size = 1; \
     } \
     return !ub->error;
@@ -120,7 +125,9 @@
     *(bytes_pointer + 7) = *ub->iterator;
 
 #define UCDR_DESERIALIZE_BYTE_N(TYPE, SIZE, ENDIAN) \
-    ub->iterator += ucdr_buffer_alignment(ub, SIZE); \
+    size_t alignment = ucdr_buffer_alignment(ub, SIZE); \
+    ub->iterator += alignment; \
+    ub->offset += alignment; \
     if(ucdr_check_final_buffer_behavior(ub, SIZE)) \
     { \
         if(UCDR_MACHINE_ENDIANNESS == ENDIAN) \
@@ -132,6 +139,7 @@
             UCDR_DESERIALIZE_BYTE_ ## SIZE ## _CORE() \
         } \
         ub->iterator += SIZE; \
+        ub->offset += SIZE; \
         ub->last_data_size = SIZE; \
     } \
     return !ub->error;

@@ -1,7 +1,7 @@
 #include <uxr/client/util/time.h>
 #include <uxr/client/config.h>
 
-#if defined(PLATFORM_NAME_LINUX) || defined(PLATFORM_NAME_WINDOWS) || defined(PLATFORM_NAME_NUTTX)
+#if defined(UCLIENT_PLATFORM_POSIX) || defined(UCLIENT_PLATFORM_POSIX_NOPOLL) || defined(UCLIENT_PLATFORM_WINDOWS)
 
 #include <time.h>
 

@@ -7,6 +7,7 @@ script:
   - build_platform opencr
   - build_platform due
   - build_platform mkr1000
+  - build_platform esp32
 
 notifications:
   email:
@@ -20,3 +21,4 @@ notifications:
 branches:
   only:
     - master
+    - develop

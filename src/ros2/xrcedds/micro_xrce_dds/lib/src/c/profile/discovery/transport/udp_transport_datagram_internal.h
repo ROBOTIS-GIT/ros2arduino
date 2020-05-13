@@ -22,34 +22,30 @@ extern "C"
 
 #include <uxr/client/visibility.h>
 #include <uxr/client/config.h>
+#include <uxr/client/core/type/xrce_types.h>
 
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 
-#if defined(PLATFORM_NAME_LINUX)
-#define PLATFORM_TYPE_POSIX
-#elif defined(PLATFORM_NAME_NUTTX)
-#define PLATFORM_TYPE_POSIX
-#endif
-
-#if defined(PLATFORM_TYPE_POSIX)
+#if defined(UCLIENT_PLATFORM_POSIX)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <poll.h>
-#elif defined(PLATFORM_NAME_WINDOWS)
+#elif defined(UCLIENT_PLATFORM_WINDOWS)
 #include <winsock2.h>
 #endif
 
 
-#define UXR_UDP_TRANSPORT_MTU_DATAGRAM 52 //Adjusted to the minimun necessary buffer for discovery messages.
+// TODO (julibert): move this to CMake flag.
+#define UXR_UDP_TRANSPORT_MTU_DATAGRAM 200 //Adjusted to the minimun necessary buffer for discovery messages.
 
 typedef struct uxrUDPTransportDatagram
 {
     uint8_t buffer[UXR_UDP_TRANSPORT_MTU_DATAGRAM];
-#if defined(PLATFORM_TYPE_POSIX)
+#if defined(UCLIENT_PLATFORM_POSIX)
     struct pollfd poll_fd;
-#elif defined(PLATFORM_NAME_WINDOWS)
+#elif defined(UCLIENT_PLATFORM_WINDOWS)
     WSAPOLLFD poll_fd;
 #endif
 
@@ -61,9 +57,8 @@ bool uxr_init_udp_transport_datagram(
 bool uxr_udp_send_datagram_to(
         struct uxrUDPTransportDatagram* transport,
         const uint8_t* buf,
-        size_t len,
-        const char* ip,
-        uint16_t port);
+        size_t length,
+        const TransportLocator* locator);
 
 bool uxr_udp_recv_datagram(
         struct uxrUDPTransportDatagram* transport,
