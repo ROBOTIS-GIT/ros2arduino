@@ -16,6 +16,7 @@ For the Micro-XRCE-DDS Agent, please install it using following commands.
 $ git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
 $ cd Micro-XRCE-DDS-Agent && git checkout v1.3.0
 $ mkdir build && cd build
+$ source /opt/ros/dashing/setup.bash # to share libraries with ros2
 $ cmake ..
 $ make
 $ sudo make install
