@@ -130,68 +130,66 @@ $ ros2 topic echo /arduino_chatter
 #### Appendix: How to configure entities from reference file. (available at 0.1.1 or above)
 - Use the reference method supported by Client and Agent. Please refer to [eProsima manual](https://micro-xrce-dds.readthedocs.io/en/latest/agent.html#run-an-agent) for detailed usage.
 - For this feature, you need to set `UXR_CREATE_ENTITIES_USING_REF` definition to `1`.
-  ```cpp
-  #define UXR_CREATE_ENTITIES_USING_REF 1
-  ``` 
+	```cpp
+	#define UXR_CREATE_ENTITIES_USING_REF 1
+	``` 
   - ros2arduino 0.2.0 or above.
     - Set `UXR_CREATE_ENTITIES_USING_REF` to `1` in your sketch. (eg. [basic examples](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/examples/publisher/user_config.h))
   - ros2arduino 0.1.1 ~ 0.1.4
     - You need to change the settings(library code) in ros2arduino library. (In the [user_config.h](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/src/user_config.h))
 
-
-An example reference file is as follows.
-
-Create .refs file(in XML format) and run the Agent with the following options:
-```bash
-$ MicroXRCEAgent serial --dev /dev/ttyACM0 -b 115200 -r ros2arduino.refs
-```
-- ros2arduino.refs
-```xml
-<profiles>
-    <participant profile_name="ros2arduino_xml_node">
-        <rtps>
-            <name>ros2arduino_basic_node</name>
-            <builtin>
-                <domainId>0</domainId>
-            </builtin>
-        </rtps>
-    </participant>
+- Create .refs file(in XML format) and run the Agent with the following options:
+	```bash
+	$ MicroXRCEAgent serial --dev /dev/ttyACM0 -b 115200 -r ros2arduino.refs
+	```
+  - An example reference file is as follows.
+    - ros2arduino.refs
+		```xml
+		<profiles>
+			<participant profile_name="ros2arduino_xml_node">
+				<rtps>
+					<name>ros2arduino_basic_node</name>
+					<builtin>
+						<domainId>0</domainId>
+					</builtin>
+				</rtps>
+			</participant>
 
 
-    <data_writer profile_name="arduino_chatter">
-        <topic>
-            <kind>NO_KEY</kind>
-            <name>rt/arduino_chatter</name>
-            <dataType>std_msgs::msg::dds_::String_</dataType>
-            <historyQos>
-                <kind>KEEP_LAST</kind>
-                <depth>10</depth>
-            </historyQos>
-        </topic>
-    </data_writer>
+			<data_writer profile_name="arduino_chatter">
+				<topic>
+					<kind>NO_KEY</kind>
+					<name>rt/arduino_chatter</name>
+					<dataType>std_msgs::msg::dds_::String_</dataType>
+					<historyQos>
+						<kind>KEEP_LAST</kind>
+						<depth>10</depth>
+					</historyQos>
+				</topic>
+			</data_writer>
 
 
-    <data_reader profile_name="arduino_led">
-        <topic>
-            <name>rt/arduino_led</name>
-            <dataType>std_msgs::msg::dds_::Bool_</dataType>
-        </topic>
-    </data_reader>
+			<data_reader profile_name="arduino_led">
+				<topic>
+					<name>rt/arduino_led</name>
+					<dataType>std_msgs::msg::dds_::Bool_</dataType>
+				</topic>
+			</data_reader>
 
 
-    <topic profile_name="Bool">
-        <kind>NO_KEY</kind>
-        <name>Bool</name>
-        <dataType>std_msgs::msg::dds_::Bool_</dataType>
-    </topic>
+			<topic profile_name="Bool">
+				<kind>NO_KEY</kind>
+				<name>Bool</name>
+				<dataType>std_msgs::msg::dds_::Bool_</dataType>
+			</topic>
 
-    <topic profile_name="String">
-        <kind>NO_KEY</kind>
-        <name>String</name>
-        <dataType>std_msgs::msg::dds_::String_</dataType>
-    </topic>
-</profiles>
-```
+			<topic profile_name="String">
+				<kind>NO_KEY</kind>
+				<name>String</name>
+				<dataType>std_msgs::msg::dds_::String_</dataType>
+			</topic>
+		</profiles>
+		```
 
 #### Appendix: How to use the Security feature. (available at 0.1.1 or above)
 
