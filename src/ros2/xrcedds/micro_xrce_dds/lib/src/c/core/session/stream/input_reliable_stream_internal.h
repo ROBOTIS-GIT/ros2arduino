@@ -40,9 +40,6 @@ void uxr_process_heartbeat(uxrInputReliableStream* stream, uxrSeqNum first_seq_n
 
 bool uxr_is_input_up_to_date(const uxrInputReliableStream* stream);
 
-uint8_t* uxr_get_input_buffer(const uxrInputReliableStream* stream, size_t history_pos);
-size_t uxr_get_input_buffer_size(const uxrInputReliableStream* stream);
-
 #ifdef __cplusplus
 }
 #endif

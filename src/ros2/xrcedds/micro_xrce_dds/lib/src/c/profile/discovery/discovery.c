@@ -1,9 +1,10 @@
 #include <uxr/client/profile/discovery/discovery.h>
+#include <uxr/client/profile/transport/ip/ip.h>
 #include <uxr/client/core/session/object_id.h>
 #include <uxr/client/core/session/stream/seq_num.h>
+#include <uxr/client/core/type/xrce_types.h>
 #include <uxr/client/util/time.h>
 
-#include "../../core/serialization/xrce_protocol_internal.h"
 #include "../../core/serialization/xrce_header_internal.h"
 #include "../../core/session/submessage_internal.h"
 #include "../../core/log/log_internal.h"
@@ -28,7 +29,6 @@ static void write_get_info_message(ucdrBuffer* ub);
 static bool listen_info_message(uxrUDPTransportDatagram* transport, int period, CallbackData* callback);
 static bool read_info_headers(ucdrBuffer* ub);
 static bool read_info_message(ucdrBuffer* ub, CallbackData* callback);
-static bool process_info(CallbackData* callback, TransportLocator* transport);
 
 //==================================================================
 //                             PUBLIC
@@ -40,7 +40,8 @@ void uxr_discovery_agents_default(
         uxrOnAgentFound on_agent_func,
         void* args)
 {
-    uxrAgentAddress multicast = {MULTICAST_DEFAULT_IP, MULTICAST_DEFAULT_PORT};
+    TransportLocator multicast;
+    uxr_ip_to_locator(MULTICAST_DEFAULT_IP, (uint16_t)MULTICAST_DEFAULT_PORT, UXR_IPv4, &multicast);
     uxr_discovery_agents(attempts, period, on_agent_func, args, &multicast, 1);
 }
 
@@ -49,7 +50,7 @@ void uxr_discovery_agents(
         int period,
         uxrOnAgentFound on_agent_func,
         void* args,
-        const uxrAgentAddress* agent_list,
+        const TransportLocator* agent_list,
         size_t agent_list_size)
 {
     CallbackData callback;
@@ -65,19 +66,20 @@ void uxr_discovery_agents(
     uxrUDPTransportDatagram transport;
     if(uxr_init_udp_transport_datagram(&transport))
     {
-        for(uint32_t a = 0; a < attempts; ++a)
+        bool is_agent_found = false;
+        for(uint32_t a = 0; a < attempts && !is_agent_found; ++a)
         {
             for(size_t i = 0; i < agent_list_size; ++i)
             {
-                (void) uxr_udp_send_datagram_to(&transport, output_buffer, message_length, agent_list[i].ip, agent_list[i].port);
+                (void) uxr_udp_send_datagram_to(&transport, output_buffer, message_length, &agent_list[i]);
                 UXR_DEBUG_PRINT_MESSAGE(UXR_SEND, output_buffer, message_length, 0);
             }
 
             int64_t timestamp = uxr_millis();
             int poll = period;
-            while(0 < poll)
+            while(0 < poll && !is_agent_found)
             {
-                (void) listen_info_message(&transport, poll, &callback);
+                is_agent_found = listen_info_message(&transport, poll, &callback);
                 poll -= (int)(uxr_millis() - timestamp);
             }
         }
@@ -92,7 +94,7 @@ void write_get_info_message(ucdrBuffer* ub)
 {
     GET_INFO_Payload payload;
     payload.base.request_id = (RequestId){{0x00, GET_INFO_REQUEST_ID}};
-    payload.base.object_id = OBJECTID_AGENT;
+    payload.base.object_id = DDS_XRCE_OBJECTID_AGENT;
     payload.info_mask = INFO_CONFIGURATION | INFO_ACTIVITY;
 
     uxr_serialize_message_header(ub, SESSION_ID_WITHOUT_CLIENT_KEY, 0, 0, 0);
@@ -107,6 +109,7 @@ bool listen_info_message(
 {
     uint8_t* input_buffer; size_t length;
 
+    bool is_succeed = false;
     bool received = uxr_udp_recv_datagram(transport, &input_buffer, &length, poll);
     if(received)
     {
@@ -116,11 +119,11 @@ bool listen_info_message(
         ucdr_init_buffer(&ub, input_buffer, (uint32_t)length);
         if(read_info_headers(&ub))
         {
-            (void) read_info_message(&ub, callback);
+            is_succeed = read_info_message(&ub, callback);
         }
     }
 
-    return received;
+    return is_succeed;
 }
 
 bool read_info_headers(ucdrBuffer* ub)
@@ -136,41 +139,22 @@ bool read_info_message(
         ucdrBuffer* ub,
         CallbackData* callback)
 {
-    bool well_read = false;
+    bool is_succeed = false;
     INFO_Payload payload;
 
     if(uxr_deserialize_INFO_Payload(ub, &payload))
     {
         XrceVersion* version = &payload.object_info.config._.agent.xrce_version;
-        TransportLocator* transport = &payload.object_info.activity._.agent.address_seq.data[0];
-
-        if(0 == memcmp(version->data, XRCE_VERSION.data, sizeof(XRCE_VERSION.data)))
+        TransportLocatorSeq * locators = &payload.object_info.activity._.agent.address_seq;
+        for (size_t i = 0; i < (size_t)locators->size; ++i)
         {
-            (void) process_info(callback, transport);
-            well_read = true;
+            TransportLocator* transport = &locators->data[i];
+            if(0 == memcmp(version->data, DDS_XRCE_XRCE_VERSION.data, sizeof(DDS_XRCE_XRCE_VERSION.data)))
+            {
+                is_succeed = callback->on_agent(transport, callback->args);
+            }
         }
     }
 
-    return well_read;
+    return is_succeed;
 }
-
-bool process_info(
-        CallbackData* callback,
-        TransportLocator* locator)
-{
-    bool processed = false;
-
-    if(locator->format == ADDRESS_FORMAT_MEDIUM)
-    {
-        uxrAgentAddress address;
-        uxr_bytes_to_ip(locator->_.medium_locator.address, address.ip);
-        address.port = locator->_.medium_locator.locator_port;
-
-        callback->on_agent(&address, callback->args);
-
-        processed = true;
-    }
-
-    return processed;
-}
-

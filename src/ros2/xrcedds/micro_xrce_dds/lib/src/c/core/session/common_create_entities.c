@@ -1,8 +1,9 @@
+#include <uxr/client/core/type/xrce_types.h>
+
 #include "common_create_entities_internal.h"
 #include "session_internal.h"
 #include "session_info_internal.h"
 #include "submessage_internal.h"
-#include "../serialization/xrce_protocol_internal.h"
 
 //==================================================================
 //                              PUBLIC
@@ -41,7 +42,7 @@ uint16_t uxr_common_create_entity(uxrSession* session, uxrStreamId stream_id,
     payload_length = (uint16_t)(payload_length + 2); // padding
     payload_length = (uint16_t)(payload_length + 4); // xml length
     payload_length = (uint16_t)(payload_length + xml_ref_size); // xml data (note: compiler executes strlen one time this function)
-    payload_length = (uint16_t)(payload_length + ((object_id.type == OBJK_PARTICIPANT && payload_length % 2 != 0) ? 1 : 0)); // necessary padding
+    payload_length = (uint16_t)(payload_length + ((object_id.type == DDS_XRCE_OBJK_PARTICIPANT && payload_length % 2 != 0) ? 1 : 0)); // necessary padding
     payload_length = (uint16_t)(payload_length + 2); //object id ref
 
     ucdrBuffer ub;

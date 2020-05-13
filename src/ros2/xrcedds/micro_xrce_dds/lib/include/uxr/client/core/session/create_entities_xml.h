@@ -166,6 +166,56 @@ UXRDLLAPI uint16_t uxr_buffer_create_datareader_xml(
         const char* xml,
         uint8_t mode);
 
+/**
+ * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE Requester payload.
+ *        The submessage will be sent when `uxr_flag_output_streams` or `uxr_run_session` functions are called.
+ *        As a result of the reception of this submessage, the Agent will create an XRCE Requester according to
+ *        the reference provided in the CREATE submessage.
+ * 
+ * @param session               A uxrSession structure previously initialized.
+ * @param stream_id             The output stream identifier where the CREATE submessage will be buffered.
+ * @param object_id             The identifier of the XRCE Requester.
+ * @param participant_id        The identifier of the associated XRCE Participant.
+ * @param xml                   The XML that describes XRCE Requester.
+ * @param mode                  The set of flags that determines the entitiy creation mode.
+ *                              the Creation Mode Table describes the entities creation behaviour according to the
+ *                              `UXR_REUSE` and `UXR_REPLACE` flags.
+ * @return A `request_id` that identifies the request made by the Client.
+ *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
+ */
+UXRDLLAPI uint16_t uxr_buffer_create_requester_xml(
+        uxrSession* session,
+        uxrStreamId stream_id,
+        uxrObjectId object_id,
+        uxrObjectId participant_id,
+        const char* xml,
+        uint8_t mode);
+
+/**
+ * @brief Buffers into the stream identified by `stream_id` an XRCE CREATE submessage with an XRCE Replier payload.
+ *        The submessage will be sent when `uxr_flag_output_streams` or `uxr_run_session` functions are called.
+ *        As a result of the reception of this submessage, the Agent will create an XRCE Replier according to
+ *        the reference provided in the CREATE submessage.
+ * 
+ * @param session               A uxrSession structure previously initialized.
+ * @param stream_id             The output stream identifier where the CREATE submessage will be buffered.
+ * @param object_id             The identifier of the XRCE Requester.
+ * @param participant_id        The identifier of the associated XRCE Participant.
+ * @param xml                   The XML that describes the XRCE Replier.
+ * @param mode                  The set of flags that determines the entitiy creation mode.
+ *                              the Creation Mode Table describes the entities creation behaviour according to the
+ *                              `UXR_REUSE` and `UXR_REPLACE` flags.
+ * @return A `request_id` that identifies the request made by the Client.
+ *         This could be used in the `uxr_run_session_until_one_status` or `uxr_run_session_until_all_status` functions.
+ */
+UXRDLLAPI uint16_t uxr_buffer_create_replier_xml(
+        uxrSession* session,
+        uxrStreamId stream_id,
+        uxrObjectId object_id,
+        uxrObjectId participant_id,
+        const char* xml,
+        uint8_t mode);
+
 #ifdef __cplusplus
 }
 #endif

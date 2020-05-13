@@ -8,7 +8,7 @@ fi
 
 # associative array for the platforms that will be verified in build_main_platforms()
 # this will be eval'd in the functions below because arrays can't be exported
-export MAIN_PLATFORMS='declare -A main_platforms=([due]="arduino:sam:arduino_due_x" [mkr1000]="arduino:samd:mkr1000" [opencr]="OpenCR:OpenCR:OpenCR")'
+export MAIN_PLATFORMS='declare -A main_platforms=([due]="arduino:sam:arduino_due_x" [mkr1000]="arduino:samd:mkr1000" [opencr]="OpenCR:OpenCR:OpenCR" [esp32]="esp32:esp32:esp32")'
 
 # make display available for arduino CLI
 /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16
@@ -16,9 +16,10 @@ sleep 3
 export DISPLAY=:1.0
 
 # download and install arduino IDE
-wget https://downloads.arduino.cc/arduino-1.8.8-linux64.tar.xz -O arduino_ide.tar.xz
+export ARDUINO_VERSION=1.8.12
+wget https://downloads.arduino.cc/arduino-${ARDUINO_VERSION}-linux64.tar.xz -O arduino_ide.tar.xz
 tar xf arduino_ide.tar.xz
-mv arduino-1.8.8 $HOME/arduino_ide
+mv arduino-${ARDUINO_VERSION} $HOME/arduino_ide
 
 # move this library to the arduino libraries folder
 ln -s $PWD $HOME/arduino_ide/libraries/ros2arduino
@@ -36,7 +37,7 @@ sudo apt-get update
 sudo apt-get install libc6:i386
 
 echo -n "ADD PACKAGE INDEX: "
-DEPENDENCY_OUTPUT=$(arduino --pref "boardsmanager.additional.urls=https://raw.githubusercontent.com/ROBOTIS-GIT/OpenCR/master/arduino/opencr_release/package_opencr_index.json,https://raw.githubusercontent.com/ROBOTIS-GIT/OpenCM9.04/master/arduino/opencm_release/package_opencm9.04_index.json,https://github.com/espressif/arduino-esp32/releases/download/1.0.1/package_esp32_index.json" --save-prefs 2>&1)
+DEPENDENCY_OUTPUT=$(arduino --pref "boardsmanager.additional.urls=https://raw.githubusercontent.com/ROBOTIS-GIT/OpenCR/master/arduino/opencr_release/package_opencr_index.json,https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json" --save-prefs 2>&1)
 if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
 # install other board packages
@@ -52,13 +53,9 @@ echo -n "INSTALL OpenCR: "
 DEPENDENCY_OUTPUT=$(arduino --install-boards OpenCR:OpenCR 2>&1)
 if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
-#echo -n "INSTALL OpenCM9.04: "
-#DEPENDENCY_OUTPUT=$(arduino --install-boards OpenCM904:OpenCM904 2>&1)
-#if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
-
-#echo -n "INSTALL ESP32: "
-#DEPENDENCY_OUTPUT=$(arduino --install-boards esp32:esp32 2>&1)
-#if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
+echo -n "INSTALL ESP32: "
+DEPENDENCY_OUTPUT=$(arduino --install-boards esp32:esp32 2>&1)
+if [ $? -ne 0 ]; then echo -e "\xe2\x9c\x96"; else echo -e "\xe2\x9c\x93"; fi
 
 # install random lib so the arduino IDE grabs a new library index
 # see: https://github.com/arduino/Arduino/issues/3535

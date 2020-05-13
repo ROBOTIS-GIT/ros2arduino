@@ -12,41 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _UXR_CLIENT_TRANSPORT_H_
-#define _UXR_CLIENT_TRANSPORT_H_
+#ifndef UXR_CLIENT_TRANSPORT_H_
+#define UXR_CLIENT_TRANSPORT_H_
 
 #include <uxr/client/config.h>
 
 #ifdef PROFILE_UDP_TRANSPORT
-#include <uxr/client/profile/transport/udp/udp_transport.h>
-#if defined(PLATFORM_NAME_LINUX)
-#include <uxr/client/profile/transport/udp/udp_transport_linux.h>
-#elif defined(PLATFORM_NAME_WINDOWS)
-#include <uxr/client/profile/transport/udp/udp_transport_windows.h>
-#elif defined(PLATFORM_NAME_NUTTX)
-#include <uxr/client/profile/transport/udp/udp_transport_linux.h>
+#include <uxr/client/profile/transport/ip/udp/udp_transport.h>
+#if defined(UCLIENT_EXTERNAL_UDP)
+#include <uxr/client/profile/transport/ip/udp/udp_transport_external.h>
+#elif defined(UCLIENT_PLATFORM_POSIX_NOPOLL)
+#include <uxr/client/profile/transport/ip/udp/udp_transport_posix_nopoll.h>
+#elif defined(UCLIENT_PLATFORM_POSIX)
+#include <uxr/client/profile/transport/ip/udp/udp_transport_posix.h>
+#elif defined(UCLIENT_PLATFORM_WINDOWS)
+#include <uxr/client/profile/transport/ip/udp/udp_transport_windows.h>
 #endif
 #endif //PROFILE_UDP_TRANSPORT
 
 #ifdef PROFILE_TCP_TRANSPORT
-#include <uxr/client/profile/transport/tcp/tcp_transport.h>
-#if defined(PLATFORM_NAME_LINUX)
-#include <uxr/client/profile/transport/tcp/tcp_transport_linux.h>
-#elif defined(PLATFORM_NAME_WINDOWS)
-#include <uxr/client/profile/transport/tcp/tcp_transport_windows.h>
-#elif defined(PLATFORM_NAME_NUTTX)
-#include <uxr/client/profile/transport/tcp/tcp_transport_linux.h>
+#include <uxr/client/profile/transport/ip/tcp/tcp_transport.h>
+#if defined(UCLIENT_EXTERNAL_TCP)
+#include <uxr/client/profile/transport/ip/tcp/tcp_transport_external.h>
+#elif defined(UCLIENT_PLATFORM_POSIX)
+#include <uxr/client/profile/transport/ip/tcp/tcp_transport_posix.h>
+#elif defined(UCLIENT_PLATFORM_WINDOWS)
+#include <uxr/client/profile/transport/ip/tcp/tcp_transport_windows.h>
 #endif
 #endif //PROFILE_TCP_TRANSPORT
 
 #ifdef PROFILE_SERIAL_TRANSPORT
 #include <uxr/client/profile/transport/serial/serial_transport.h>
-#if defined(PLATFORM_NAME_LINUX)
-#include <uxr/client/profile/transport/serial/serial_transport_linux.h>
-#elif defined(PLATFORM_NAME_WINDOWS)
-#elif defined(PLATFORM_NAME_NUTTX)
-#include <uxr/client/profile/transport/serial/serial_transport_linux.h>
+#if defined(UCLIENT_EXTERNAL_SERIAL)
+#include <uxr/client/profile/transport/serial/serial_transport_external.h>
+#elif defined(UCLIENT_PLATFORM_POSIX)
+#include <uxr/client/profile/transport/serial/serial_transport_posix.h>
+#elif defined(UCLIENT_PLATFORM_WINDOWS)
 #endif
 #endif //PROFILE_SERIAL_TRANSPORT
 
-#endif // _UXR_CLIENT_TRANSPORT_H_
+#endif // UXR_CLIENT_TRANSPORT_H_

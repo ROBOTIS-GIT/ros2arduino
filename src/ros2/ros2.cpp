@@ -10,7 +10,7 @@
 
 static xrcedds::XrceDdsCommportType g_client_communication_method;
 static const char* g_server_ip;
-static uint16_t g_server_port;
+static char g_server_port[6]; // Size to 16-bit number
 static void* g_comm_instance;
 
 static builtin_interfaces::Time synced_time_from_remote;
@@ -37,7 +37,7 @@ bool ros2::init(void* comm_instance, const char* p_server_ip, uint16_t server_po
   }
 
   g_server_ip = p_server_ip;
-  g_server_port = server_port;
+  sprintf(g_server_port, "%d", server_port);
   g_comm_instance = (void*)comm_instance;
 
   return true;
@@ -157,7 +157,7 @@ void ros2::Node::recreate(const char* node_name, unsigned int client_key)
     case xrcedds::XRCE_DDS_COMM_UDP:
     case xrcedds::XRCE_DDS_COMM_TCP:
       xrcedds_transport_.server_ip = g_server_ip;
-      xrcedds_transport_.server_port = g_server_port;
+      xrcedds_transport_.server_port = (const char*)g_server_port;
       break;
 
     default:

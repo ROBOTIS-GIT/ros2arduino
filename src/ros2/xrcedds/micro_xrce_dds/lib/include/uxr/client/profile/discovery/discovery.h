@@ -22,19 +22,13 @@ extern "C"
 
 #include <uxr/client/config.h>
 #include <uxr/client/visibility.h>
+#include <uxr/client/core/type/xrce_types.h>
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef struct uxrAgentAddress
-{
-    char ip[16];
-    uint16_t port;
-
-} uxrAgentAddress;
-
-typedef void (*uxrOnAgentFound) (const uxrAgentAddress* address, void* args);
+typedef bool (*uxrOnAgentFound) (const TransportLocator* locator, void* args);
 
 /**
  * @brief Discovers Agents within the network using UDP/IP multicast with address "239.255.0.2" and port 7400.
@@ -63,7 +57,7 @@ UXRDLLAPI void uxr_discovery_agents(
         int period,
         uxrOnAgentFound on_agent_func,
         void* args,
-        const uxrAgentAddress* agent_list,
+        const TransportLocator* agent_list,
         size_t agent_list_size);
 
 #ifdef __cplusplus

@@ -1,5 +1,5 @@
-#include "serial_transport_baremetal.h"
-#include <ros2/xrcedds/micro_xrce_dds/lib/src/c/profile/transport/serial/serial_transport_internal.h>
+#include "serial_transport_external.h"
+#include <ros2/xrcedds/micro_xrce_dds/lib/src/c/profile/transport/serial/serial_protocol_internal.h>
 
 #include "../transport_arduino_internal.h"
 

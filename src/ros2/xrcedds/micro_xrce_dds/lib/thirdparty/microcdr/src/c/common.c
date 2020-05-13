@@ -64,23 +64,48 @@ void ucdr_set_on_full_buffer_callback(ucdrBuffer* ub, OnFullBuffer on_full_buffe
 // -------------------------------------------------------------------
 //                       PUBLIC IMPLEMENTATION
 // -------------------------------------------------------------------
-void ucdr_init_buffer(ucdrBuffer* ub, uint8_t* data, size_t size)
+void ucdr_init_buffer(
+        ucdrBuffer* ub,
+        uint8_t* data,
+        size_t size)
 {
-    ucdr_init_buffer_offset(ub, data, size, 0u);
+    ucdr_init_buffer_origin(ub, data, size, 0u);
 }
 
-void ucdr_init_buffer_offset(ucdrBuffer* ub, uint8_t* data, size_t size, size_t offset)
+void ucdr_init_buffer_origin(
+        ucdrBuffer* ub,
+        uint8_t* data,
+        size_t size,
+        size_t origin)
 {
-    ucdr_init_buffer_offset_endian(ub, data, size, offset, UCDR_MACHINE_ENDIANNESS);
+    ucdr_init_buffer_origin_offset(ub, data, size, origin, 0u);
 }
 
-void ucdr_init_buffer_offset_endian(ucdrBuffer* ub, uint8_t* data, size_t size, size_t offset, ucdrEndianness endianness)
+void ucdr_init_buffer_origin_offset(
+        ucdrBuffer* ub,
+        uint8_t* data,
+        size_t size,
+        size_t origin,
+        size_t offset)
+{
+    ucdr_init_buffer_origin_offset_endian(ub, data, size, origin, offset, UCDR_MACHINE_ENDIANNESS);
+}
+
+void ucdr_init_buffer_origin_offset_endian(
+        ucdrBuffer* ub,
+        uint8_t* data,
+        size_t size,
+        size_t origin,
+        size_t offset,
+        ucdrEndianness endianness)
 {
     ub->init = data;
     ub->final = ub->init + size;
     ub->iterator = ub->init + offset;
-    ub->last_data_size = 0u;
+    ub->origin = origin;
+    ub->offset = origin + offset;
     ub->endianness = endianness;
+    ub->last_data_size = 0u;
     ub->error = false;
     ub->on_full_buffer = NULL;
     ub->args = NULL;
@@ -100,18 +125,22 @@ void ucdr_reset_buffer(ucdrBuffer* ub)
 void ucdr_reset_buffer_offset(ucdrBuffer* ub, size_t offset)
 {
     ub->iterator = ub->init + offset;
+    ub->offset = ub->origin + offset;
     ub->last_data_size = 0u;
     ub->error = false;
 }
 
 void ucdr_align_to(ucdrBuffer* ub, size_t size)
 {
-    ub->iterator += ucdr_buffer_alignment(ub, size);
+    size_t alignment = ucdr_buffer_alignment(ub, size);
+    ub->offset += alignment;
+
+    // TODO (julibert): rethink.
+    ub->iterator += alignment;
     if(ub->iterator > ub->final)
     {
         ub->iterator = ub->final;
     }
-
     ub->last_data_size = (uint8_t)size;
 }
 
@@ -122,12 +151,30 @@ size_t ucdr_alignment(size_t current_alignment, size_t data_size)
 
 size_t ucdr_buffer_alignment(const ucdrBuffer* ub, size_t data_size)
 {
-    if(data_size > ub->last_data_size)
-    {
-        return (data_size - ((uint32_t)(ub->iterator - ub->init) % data_size)) & (data_size - 1);
-    }
+    return (data_size > ub->last_data_size)
+        ? (data_size - ((uint32_t)(ub->offset - ub->origin) % data_size)) & (data_size - 1)
+        : 0;
+}
 
-    return 0;
+void ucdr_advance_buffer(ucdrBuffer* ub, size_t size)
+{
+    if (ucdr_check_buffer_available_for(ub, size))
+    {
+        ub->iterator += size;
+        ub->offset += size;
+    }
+    else
+    {
+        size_t remaining_size = size;
+        size_t serialization_size;
+        while(0 < (serialization_size = ucdr_check_final_buffer_behavior_array(ub, remaining_size, 1)))
+        {
+            remaining_size -= serialization_size;
+            ub->iterator += serialization_size;
+            ub->offset += serialization_size;
+        }
+    }
+    ub->last_data_size = 1;
 }
 
 size_t ucdr_buffer_size(const ucdrBuffer* ub)
