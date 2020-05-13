@@ -5,7 +5,7 @@
  * Select to enable eProsima's Micro-XRCE-DDS reference function.
  * Please refer to https://github.com/ROBOTIS-GIT/ros2arduino#appendix-how-to-configure-entities-from-reference-file-available-at-011-or-above
  **/
-#define UXR_CREATE_ENTITIES_USING_REF  1 
+#define UXR_CREATE_ENTITIES_USING_REF  0 
 
 
 /* The options below are needed to reduce the usage of static memory */
