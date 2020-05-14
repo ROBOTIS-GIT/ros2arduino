@@ -50,7 +50,7 @@ Based on the normal behavior of publisher and subscriber.
  ||Implemented|Note|
  |:-:|:-:|:-:|
  |Serial|YES||
- |UDP|YES|ESP32, ESP8266, Ethernet|
+ |UDP|YES|ESP32, Ethernet|
  |TCP|NO|Debugging...|
 
 <br>
