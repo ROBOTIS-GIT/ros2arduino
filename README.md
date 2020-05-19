@@ -4,6 +4,7 @@ Arduino library for communicating with ROS2(DDS)
 <br>
 
 ## Version-specific dependencies
+We plan to support only LTS version for ROS2.
 
 - Recommend version (present)
 
@@ -38,13 +39,13 @@ $ sudo ldconfig /usr/local/lib/
 
 ## Restrictions
 
-#### Available boards (What we've tested on our own, RAM size >= 32Kb)
-Based on the normal behavior of publisher and subscriber.
-
- - [OpenCR](http://emanual.robotis.com/docs/en/parts/controller/opencr10/)
- - Arduino MKR ZERO
- - Arduino DUE
- - ESP32 (not support TCP yet)
+#### Memory (What we've tested on our own, )
+- RAM : >= 32Kb
+- Boards tested : Based on the normal behavior of publisher and subscriber.
+  - [OpenCR](http://emanual.robotis.com/docs/en/parts/controller/opencr10/)
+  - Arduino MKR ZERO
+  - Arduino DUE
+  - ESP32 (not support TCP yet)
 
 #### Communication
  ||Implemented|Note|
