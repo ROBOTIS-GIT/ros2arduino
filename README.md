@@ -39,7 +39,7 @@ $ sudo ldconfig /usr/local/lib/
 
 ## Restrictions
 
-#### Memory (What we've tested on our own, )
+#### Memory
 - RAM : >= 32Kb
 - Boards tested : Based on the normal behavior of publisher and subscriber.
   - [OpenCR](http://emanual.robotis.com/docs/en/parts/controller/opencr10/)
