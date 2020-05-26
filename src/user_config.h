@@ -1,5 +1,5 @@
-#ifndef SKETCH_USER_CONFIG_H_
-#define SKETCH_USER_CONFIG_H_
+#ifndef ROS2ARDUINO_USER_CONFIG_H_
+#define ROS2ARDUINO_USER_CONFIG_H_
 
 /** 
  * Select to enable eProsima's Micro-XRCE-DDS reference function.
@@ -11,15 +11,17 @@
 /* The options below are needed to reduce the usage of static memory */
 
 // Select only one communication method you wish to use.
-// options: USER_TRANSPORT_TYPE_UDP, USER_TRANSPORT_TYPE_TCP, USER_TRANSPORT_TYPE_SERIAL
-#define USER_TRANSPORT_TYPE   USER_TRANSPORT_TYPE_TCP
+// options: UDP:    0
+//          TCP:    1
+//          SERIAL: 2
+// #define USER_TRANSPORT_TYPE   0
 
 // Set the MTU of the transport.
 #define USER_TRANSPORT_MTU    2048
 
 // Set the maximum number of Pub/Subs to be created on the node.
-#define USER_ROS2_PUBLISHER_MAX  5 
-#define USER_ROS2_SUBSCRIBER_MAX 5
+#define USER_ROS2_PUBLISHER_MAX  10 
+#define USER_ROS2_SUBSCRIBER_MAX 10
 
 
-#endif /* SKETCH_USER_CONFIG_H_ */
+#endif /* ROS2ARDUINO_USER_CONFIG_H_ */

@@ -12,9 +12,6 @@
 
 //-- Internal Variables for UXR
 //
-#include "micro_xrce_dds/micro_xrce_dds.h"
-
-
 #ifdef UXR_CREATE_BUFFER_BEST_EFFORT
 #define BUFFER_SIZE    4096
 static uint8_t output_best_effort_stream_buffer[BUFFER_SIZE * UXR_CONFIG_MAX_OUTPUT_BEST_EFFORT_STREAMS];

@@ -9,6 +9,7 @@
 #define XRCEDDS_HPP_
 
 #include <stdint.h>
+#include "micro_xrce_dds/micro_xrce_dds.h"
 
 namespace xrcedds {
 

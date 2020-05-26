@@ -11,7 +11,7 @@ bool uxr_init_udp_platform(struct uxrUDPPlatform* platform, uxrIpProtocol ip_pro
   if(ip_protocol != UXR_IPv4){
     return false;
   }
-  return uxr_initUdpArduino(platform->udp_instance, ip, (uint16_t)strtol(port, str_ptr, 10));
+  return uxr_initUdpArduino(platform->udp_instance, ip, (uint16_t)strtol(port, &str_ptr, 10));
 }
 
 bool uxr_close_udp_platform(uxrUDPPlatform* platform)

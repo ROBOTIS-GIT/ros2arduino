@@ -3,8 +3,6 @@
 
 #include <uxr/client/config.h>
 
-#if defined(UCLIENT_EXTERNAL_TCP)
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -19,7 +17,5 @@ typedef struct uxrTCPPlatform
 #ifdef __cplusplus
 }
 #endif
-
-#endif //UCLIENT_EXTERNAL_TCP
 
 #endif // UXR_CLIENT_PROFILE_TRANSPORT_IP_TCP_EXTERNAL_H_
