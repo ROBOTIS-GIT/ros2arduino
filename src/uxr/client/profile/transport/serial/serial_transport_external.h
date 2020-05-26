@@ -2,7 +2,6 @@
 #define UXR_CLIENT_PROFILE_TRANSPORT_SERIAL_EXTERNAL_H_
 
 #include <uxr/client/config.h>
-#if defined(UCLIENT_EXTERNAL_SERIAL)
 
 #ifdef __cplusplus
 extern "C"
@@ -20,7 +19,5 @@ typedef struct uxrSerialPlatform
 #ifdef __cplusplus
 }
 #endif
-
-#endif //UCLIENT_EXTERNAL_SERIAL
 
 #endif // UXR_CLIENT_PROFILE_TRANSPORT_SERIAL_EXTERNAL_H_

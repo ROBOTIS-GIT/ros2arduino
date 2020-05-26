@@ -3,8 +3,6 @@
 
 #include <uxr/client/config.h>
 
-#if defined(UCLIENT_EXTERNAL_UDP)
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -20,7 +18,5 @@ typedef struct uxrUDPPlatform
 #ifdef __cplusplus
 }
 #endif
-
-#endif //UCLIENT_EXTERNAL_UDP
 
 #endif // UXR_CLIENT_PROFILE_TRANSPORT_IP_UDP_EXTERNAL_H_

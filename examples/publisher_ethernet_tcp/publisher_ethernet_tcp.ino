@@ -1,4 +1,3 @@
-#include "user_config.h" // It must be located above ros2arduino.h.
 #include <ros2arduino.h>
 
 #include <Ethernet.h>

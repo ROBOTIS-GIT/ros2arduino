@@ -10,7 +10,6 @@
 
 #include <stdlib.h>
 #include "xrcedds/xrcedds.hpp"
-#include "xrcedds/micro_xrce_dds/micro_xrce_dds.h"
 #include "topic_id_number.h"
 
 namespace ros2 {
