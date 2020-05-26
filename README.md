@@ -9,7 +9,7 @@ Arduino library for communicating with ROS2(DDS)
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.2.0|[Dashing Diademata Patch6](https://github.com/ros2/ros2/releases/tag/release-dashing-20200319)|[1.3.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.3.0)|
+|0.2.1|[Dashing Diademata Patch6](https://github.com/ros2/ros2/releases/tag/release-dashing-20200319)|[1.3.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.3.0)|
 
 For the Micro-XRCE-DDS Agent, please install it using following commands.
 ```bash
@@ -27,7 +27,7 @@ $ sudo ldconfig /usr/local/lib/
 
 |ros2arduino|ROS2|Micro-XRCE-DDS Agent|
 |:-:|:-:|:-:|
-|0.2.0|[Dashing Diademata Patch6](https://github.com/ros2/ros2/releases/tag/release-dashing-20200319)|[1.3.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.3.0)|
+|0.2.1|[Dashing Diademata Patch6](https://github.com/ros2/ros2/releases/tag/release-dashing-20200319)|[1.3.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.3.0)|
 |0.1.4|[Dashing Diademata Patch3](https://github.com/ros2/ros2/releases/tag/release-dashing-20190910)|[1.1.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.1.0)|
 |0.1.3|[Dashing Diademata Patch3](https://github.com/ros2/ros2/releases/tag/release-dashing-20190910)|[1.1.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.1.0)|
 |0.1.2|[Dashing Diademata Patch1](https://github.com/ros2/ros2/releases/tag/release-dashing-20190614)|[1.1.0](https://github.com/eProsima/Micro-XRCE-DDS-Agent/releases/tag/v1.1.0)|
@@ -80,7 +80,7 @@ You must install ROS2 and XRCE-DDS Agent. (The version should be the same as the
 
 - Please refer to [eProsima manual](https://micro-xrce-dds.readthedocs.io/en/latest/agent.html) for Micro-XRCE-DDS-Agent usage.
 
-- 0.2.0 or above (Micro-XRCE-DDS-Agent 1.3.0)
+- 0.2.1 or above (Micro-XRCE-DDS-Agent 1.3.0)
   - Serial
     ```bash
     $ MicroXRCEAgent serial --dev /dev/ttyACM0 -b 115200
@@ -133,8 +133,6 @@ $ ros2 topic echo /arduino_chatter
 	```cpp
 	#define UXR_CREATE_ENTITIES_USING_REF 1
 	``` 
-  - ros2arduino 0.2.0 or above.
-    - Set `UXR_CREATE_ENTITIES_USING_REF` to `1` in your sketch. (eg. [basic examples](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/examples/publisher/user_config.h))
   - ros2arduino 0.1.1 ~ 0.1.4
     - You need to change the settings(library code) in ros2arduino library. (In the [user_config.h](https://github.com/ROBOTIS-GIT/ros2arduino/blob/master/src/user_config.h))
 
