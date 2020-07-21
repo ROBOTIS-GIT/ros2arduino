@@ -44,7 +44,6 @@ $ sudo ldconfig /usr/local/lib/
 - Boards tested : Based on the normal behavior of publisher and subscriber.
   - [OpenCR](http://emanual.robotis.com/docs/en/parts/controller/opencr10/)
   - Arduino MKR ZERO
-  - Arduino DUE
   - ESP32 (not support TCP yet)
 
 #### Communication
