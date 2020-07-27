@@ -4,7 +4,6 @@ Arduino library for communicating with ROS2(DDS)
 <br>
 
 ## Version-specific dependencies
-We plan to support only LTS version for ROS2.
 
 - Recommend version (present)
 
@@ -209,15 +208,4 @@ And please check eProsima's manual for how to use it.
  - **Communication**
     - Serial
     - UDP
-
-#### Plan
- - **Feature**
-    - ROS2 service
- - **Communication**
-    - TCP
- - **Enhancements**
-    - Memory allocation / Management
-    - Reduce memory usages
-    - Reusable API interfaces
-    - Reasonable SW structure
     
