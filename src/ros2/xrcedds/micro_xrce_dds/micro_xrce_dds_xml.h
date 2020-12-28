@@ -16,6 +16,7 @@
 #define UXR_WRITER_XML "<dds><data_writer><topic><kind>NO_KEY</kind><name>%s</name><dataType>%s</dataType></topic></data_writer></dds>"
 #define UXR_READER_XML "<dds><data_reader><topic><kind>NO_KEY</kind><name>%s</name><dataType>%s</dataType></topic></data_reader></dds>"
 #define UXR_TOPIC_XML "<dds><topic><name>%s</name><dataType>%s</dataType></topic></dds>"
+#define UXR_REPLIER_XML "<dds><replier profile_name=\"%s\" service_name=\"%s\" request_type=\"%s\" reply_type=\"%s\"><request_topic_name>%s</request_topic_name><reply_topic_name>%s</reply_topic_name></replier></dds>"
 #endif
 
 

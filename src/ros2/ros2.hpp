@@ -11,14 +11,17 @@
 #include <string.h>
 #include "publisher.hpp"
 #include "subscriber.hpp"
+#include "replier.hpp"
 #include "topic.hpp"
 #include "msg_list.hpp"
 
 #define ROS2_PUBLISHER_MAX  USER_ROS2_PUBLISHER_MAX
 #define ROS2_SUBSCRIBER_MAX USER_ROS2_SUBSCRIBER_MAX
+#define ROS2_REPLIER_MAX    USER_ROS2_REPLIER_MAX
 
 namespace ros2 {
 
+void runNodeReplyUserCallback(uint16_t id, void* msgs, void* args, void*);
 void runNodeSubUserCallback(uint16_t id, void* msgs, void* args);
 
 class Node
@@ -34,6 +37,7 @@ class Node
     void createWallFreq(uint32_t hz, CallbackFunc callback, void* callback_arg, PublisherHandle* pub);
     void runPubCallback();
     void runSubCallback(uint16_t reader_id, void* serialized_msg);
+    void runReplCallback(uint16_t replier_id, void* serialized_msg, void* sample_id);
 
     void deletePublisher(const char* name);
     void deletePublisher(uint16_t writer_id);
@@ -133,9 +137,52 @@ class Node
       return p_sub;
     }
 
+
+    template <
+        typename MsgST, typename MsgPT>
+    Replier<MsgST, MsgPT>* createReplier(const char* name, CallbackReplFunc callback, void* callback_arg)
+    {
+      bool ret = false;
+      ros2::Replier<MsgST, MsgPT>* p_repl = nullptr;
+
+      if (this->node_register_state_ == false) {
+        return nullptr;
+      }
+
+      if (repl_cnt_ >= ROS2_REPLIER_MAX) {
+        return nullptr;
+      }
+
+      // Register Topic
+      ret = this->registerTopic<MsgST>() && this->registerTopic<MsgPT>();
+
+      if (ret == false) {
+        return nullptr;
+      }
+
+      p_repl = new ros2::Replier<MsgST, MsgPT>(&this->xrcedds_participant_, name, callback, callback_arg);
+
+      if (p_repl->is_registered_ == false) {
+        delete (p_repl);
+        return nullptr;
+      }
+
+      for (uint8_t i = 0; i < ROS2_REPLIER_MAX; i++) {
+        if (repl_list_[i] == nullptr) {
+          repl_list_[i] = p_repl;
+          repl_cnt_++;
+          p_repl->subscribe();
+          break;
+        }
+      }
+
+      return p_repl;
+    }
+
   private:
     PublisherHandle*  pub_list_[ROS2_PUBLISHER_MAX];
     SubscriberHandle* sub_list_[ROS2_SUBSCRIBER_MAX];
+    ReplierHandle*    repl_list_[ROS2_REPLIER_MAX];
 
     bool node_register_state_;
     xrcedds::Transport_t xrcedds_transport_;
@@ -144,6 +191,7 @@ class Node
     xrcedds::Subscriber_t xrcedds_subscriber_;
     uint8_t pub_cnt_;
     uint8_t sub_cnt_;
+    uint8_t repl_cnt_;
 
     template <
       typename MsgT>

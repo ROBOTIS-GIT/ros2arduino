@@ -56,4 +56,6 @@
 
 
 
+#include "example_interfaces_srv/AddTwoInts.hpp"
+
 #endif /* ROS2_MSG_LIST_HPP_ */

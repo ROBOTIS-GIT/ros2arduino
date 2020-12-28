@@ -112,6 +112,14 @@ const char* ros2::getPrefixString(MessagePrefix prefix)
   return "";
 }
 
+void ros2::runNodeReplyUserCallback(uint16_t id, void* msgs, void* sample_id, void* args)
+{
+  ros2::Node* p_node = (ros2::Node*)args;
+
+  if (p_node != nullptr) {
+    p_node->runReplCallback(id, msgs, sample_id);
+  }
+}
 
 void ros2::runNodeSubUserCallback(uint16_t id, void* msgs, void* args)
 {
@@ -127,7 +135,7 @@ void ros2::runNodeSubUserCallback(uint16_t id, void* msgs, void* args)
 /* Node class */
 ros2::Node::Node(const char* node_name,unsigned int client_key)
 {
-  pub_cnt_ = 0, sub_cnt_ = 0, node_register_state_ = false;
+  pub_cnt_ = 0, sub_cnt_ = 0, repl_cnt_ = 0, node_register_state_ = false;
   for(size_t i = 0; i < ROS2_PUBLISHER_MAX; i++)
   {
     pub_list_[i] = nullptr;
@@ -135,6 +143,9 @@ ros2::Node::Node(const char* node_name,unsigned int client_key)
   for(size_t i = 0; i < ROS2_SUBSCRIBER_MAX; i++)
   {
     sub_list_[i] = nullptr;
+  }
+  for (size_t i = 0; i < ROS2_REPLIER_MAX; i++) {
+    repl_list_[i] = nullptr;
   }
   this->recreate(node_name,client_key);
 }
@@ -167,7 +178,7 @@ void ros2::Node::recreate(const char* node_name, unsigned int client_key)
   xrcedds_transport_.comm_instance = g_comm_instance;
 
   xrcedds::init(0, client_key);
-  xrcedds::initTransportAndSession(&xrcedds_transport_,
+  xrcedds::initTransportAndSession(&xrcedds_transport_, (void*) runNodeReplyUserCallback,
       (void*) runNodeSubUserCallback, (void*) this);
 
   node_register_state_ = xrcedds::createParticipant(&this->xrcedds_participant_, node_name);
@@ -192,6 +203,12 @@ void ros2::Node::recreate(const char* node_name, unsigned int client_key)
       if (sub_list_[i] != nullptr)
       {
         sub_list_[i]->recreate();
+      }
+    }
+
+    for (i = 0; i < ROS2_REPLIER_MAX; i++) {
+      if (repl_list_[i] != nullptr) {
+        repl_list_[i]->recreate();
       }
     }
   }
@@ -245,6 +262,18 @@ void ros2::Node::runSubCallback(uint16_t reader_id, void* serialized_msg)
     if(p_sub != nullptr && p_sub->is_registered_ && p_sub->reader_id_ == reader_id)
     {
       p_sub->runCallback(serialized_msg);
+    }
+  }
+}
+
+void ros2::Node::runReplCallback(uint16_t replier_id, void* serialized_msg, void* sample_id)
+{
+  uint8_t i;
+  ros2::ReplierHandle* p_repl;
+  for (i = 0; i < ROS2_REPLIER_MAX; i++) {
+    p_repl = repl_list_[i];
+    if (p_repl != nullptr && p_repl->is_registered_ && p_repl->replier_id_ == replier_id) {
+      p_repl->runCallback(serialized_msg, sample_id);
     }
   }
 }

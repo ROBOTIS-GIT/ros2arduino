@@ -16,6 +16,7 @@
 namespace ros2 {
 
 typedef void(*CallbackFunc)(void* msg, void* arg);
+typedef void(*CallbackReplFunc)(void* msg_request, void* msg_response, void* arg);
 
 enum MessagePrefix{
   TOPICS_PUBLISH = 0,
@@ -101,6 +102,36 @@ public:
   uint32_t sub_msg_cnt_;
   uint16_t request_id_;
   uint16_t reader_id_;
+  const char* name_;
+};
+
+
+class ReplierHandle {
+
+  public:
+  ReplierHandle()
+      : is_registered_(false)
+      , request_id_(0)
+      , replier_id_(0)
+  {
+    callback = nullptr;
+    callback_arg = nullptr;
+    sub_msg_cnt_ = 0;
+  }
+  virtual ~ReplierHandle() {};
+
+  CallbackReplFunc callback;
+  void* callback_arg;
+  virtual void recreate(void) = 0;
+  virtual void subscribe(void) = 0;
+  virtual void destroy(void) = 0;
+
+  virtual void runCallback(void* serialized_msg, void* sample_id) = 0;
+
+  bool is_registered_;
+  uint32_t sub_msg_cnt_;
+  uint16_t request_id_;
+  uint16_t replier_id_;
   const char* name_;
 };
 

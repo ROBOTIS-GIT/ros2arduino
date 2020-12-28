@@ -36,7 +36,7 @@ void xrcedds::init(uint8_t xrcedds_product,unsigned int client_key)
   g_uxr_session.session_key = client_key;//0xAABBCCDD;
 }
 
-bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callback_func, void* args)
+bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callback_repl_func, void* callback_func, void* args)
 {
   if(transport_info == nullptr)
   {
@@ -83,7 +83,9 @@ bool xrcedds::initTransportAndSession(Transport_t* transport_info, void* callbac
   if(g_uxr_session.comm_port != nullptr)
   {
     uxr_init_session(&g_uxr_session.session, g_uxr_session.comm_port, g_uxr_session.session_key);
+    uxr_set_request_callback(&g_uxr_session.session, uxr_onReplyCallback, args);
     uxr_set_topic_callback(&g_uxr_session.session, uxr_onTopicCallback, args);
+    uxr_setOnReplyUserCallback((uxr_onReplyUserCallback)callback_repl_func);
     uxr_setOnTopicUserCallback((uxr_onTopicUserCallback)callback_func);
 
     g_uxr_session.is_init = uxr_create_session(&g_uxr_session.session);
@@ -284,6 +286,37 @@ bool xrcedds::createSubscriber(xrcedds::Participant_t* participant, xrcedds::Sub
   return subscriber->is_created;
 }
 
+bool xrcedds::createReplier(xrcedds::Participant_t* participant, xrcedds::Replier_t* replier, char* profile_name, char* service_name,
+    char* reader_name, char* writer_name, const char* request_topic_type, const char* response_topic_type)
+{
+  if (participant == nullptr || replier == nullptr || service_name == nullptr || service_name == nullptr || reader_name == nullptr ||
+      writer_name == nullptr || reader_name == nullptr || request_topic_type == nullptr || response_topic_type == nullptr || participant->is_created == false) {
+    return false;
+  }
+
+  uint8_t status;
+  uint16_t replier_req;
+  static uint8_t repl_id = 0x01;
+  replier->is_created = false;
+  replier->participant = participant;
+  replier->id = repl_id++;
+
+  uxrObjectId part_object_id = uxr_object_id(participant->id, UXR_PARTICIPANT_ID);
+  uxrObjectId replier_object_id = uxr_object_id(replier->id, UXR_REPLIER_ID);
+
+#if (UXR_CREATE_ENTITIES_USING_REF)
+  datareader_req = uxr_buffer_create_replier_ref(&g_uxr_session.session, getOutputStreamInfo(), replier_object_id, part_object_id, service_name, UXR_REPLACE);
+#else
+  char replier_profile[512];
+  sprintf(replier_profile, UXR_REPLIER_XML, profile_name, service_name, request_topic_type, response_topic_type, reader_name, writer_name);
+  replier_req = uxr_buffer_create_replier_xml(&g_uxr_session.session, getOutputStreamInfo(), replier_object_id, part_object_id, replier_profile, UXR_REPLACE);
+#endif
+
+  replier->is_created = uxr_run_session_until_all_status(&g_uxr_session.session, 1000, &replier_req, &status, 1);
+
+  return replier->is_created;
+}
+
 bool xrcedds::createDataReader(xrcedds::Subscriber_t* subscriber, xrcedds::DataReader_t* data_reader, char* reader_name, const char* topic_type)
 {
   if(subscriber == nullptr || data_reader == nullptr || reader_name == nullptr || topic_type == nullptr)
@@ -334,6 +367,38 @@ bool xrcedds::readData(xrcedds::DataReader_t* data_reader)
   return true;
 }
 
+bool xrcedds::readReplierData(xrcedds::Replier_t* replier)
+{
+  if (replier == nullptr || replier->is_created == false) {
+    return false;
+  }
+
+  uxrDeliveryControl delivery_control;
+
+  delivery_control.max_bytes_per_second = UXR_MAX_BYTES_PER_SECOND_UNLIMITED;
+  delivery_control.max_elapsed_time = UXR_MAX_ELAPSED_TIME_UNLIMITED;
+  delivery_control.max_samples = UXR_MAX_SAMPLES_UNLIMITED;
+  delivery_control.min_pace_period = 0;
+
+  uxrObjectId replier_id = uxr_object_id(replier->id, UXR_REPLIER_ID);
+  replier->request_id = uxr_buffer_request_data(&g_uxr_session.session, getOutputStreamInfo(), replier_id, getInputStreamInfo(), &delivery_control);
+
+  return true;
+}
+
+bool xrcedds::replyData(xrcedds::Replier_t* replier, void* sample_id, uint8_t* buffer, uint32_t topic_size)
+{
+  if (replier == nullptr || replier->is_created == false) {
+    return false;
+  }
+
+  SampleIdentity* si = (SampleIdentity*)sample_id;
+  uxrObjectId repl_object_id = uxr_object_id(replier->id, UXR_REPLIER_ID);
+  uxr_buffer_reply(&g_uxr_session.session, getOutputStreamInfo(), repl_object_id, si, buffer, topic_size);
+
+  return true;
+}
+
 bool xrcedds::writeData(xrcedds::DataWriter_t* data_writer, void* buffer, uint32_t topic_size)
 {
   if(data_writer == nullptr || buffer == nullptr || data_writer->is_created == false)
@@ -380,8 +445,14 @@ void xrcedds::deleteEntity(DataWriter_t* data_writer)
   uxr_buffer_delete_entity(&g_uxr_session.session, getOutputStreamInfo(), obj_id);
 }
 
+void xrcedds::deleteEntity(Replier_t* replier)
+{
+  if (replier == nullptr)
+    return;
 
-
+  uxrObjectId obj_id = { replier->id, UXR_REPLIER_ID };
+  uxr_buffer_delete_entity(&g_uxr_session.session, getOutputStreamInfo(), obj_id);
+}
 
 uxrStreamId getOutputStreamInfo()
 {
