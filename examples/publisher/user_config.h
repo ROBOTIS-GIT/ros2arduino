@@ -20,6 +20,7 @@
 // Set the maximum number of Pub/Subs to be created on the node.
 #define USER_ROS2_PUBLISHER_MAX  5 
 #define USER_ROS2_SUBSCRIBER_MAX 5
+#define USER_ROS2_REPLIER_MAX    5
 
 
 #endif /* SKETCH_USER_CONFIG_H_ */

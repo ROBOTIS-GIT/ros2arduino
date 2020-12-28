@@ -49,6 +49,13 @@ typedef struct Publisher{
   Participant_t *participant;
 } Publisher_t;
 
+typedef struct Replier {
+  bool is_created;
+  uint16_t id;
+  Participant_t* participant;
+  uint16_t request_id;
+} Replier_t;
+
 typedef struct DataReader{
   bool is_created;
   uint16_t id;
@@ -102,7 +109,7 @@ typedef struct DataWriter{
 
 void init(uint8_t rtps_product,unsigned int client_key=0xAABBCCDD);
 
-bool initTransportAndSession(Transport_t* transport_info, void* callback_func, void* args);
+bool initTransportAndSession(Transport_t* transport_info, void* callback_repl_func, void* callback_func, void* args);
 void deleteTransportAndSession(Transport_t* transport_info);
 
 bool createParticipant(Participant_t* participant, const char* participant_name);
@@ -111,15 +118,20 @@ bool registerTopic(Participant_t* participant, const char* topic_name, const cha
 
 bool createPublisher(Participant_t* participant, Publisher_t* publisher);
 bool createSubscriber(Participant_t* participant, Subscriber_t* subscriber);
+bool createReplier(Participant_t* participant, Replier_t* replier, char* profile_name, char* service_name,
+    char* reader_name, char* writer_name, const char* request_topic_type, const char* response_topic_type);
 
 bool createDataWriter(Publisher_t* publisher, DataWriter_t* data_writer, char* writer_name, const char* topic_type);
 bool createDataReader(Subscriber_t* subscriber, DataReader_t* data_reader, char* reader_name, const char* topic_type);
 
 bool readData(DataReader_t* data_reader);
+bool readReplierData(Replier_t* replier);
+bool replyData(Replier_t* replier, void* sample_id, uint8_t* buffer, uint32_t topic_size);
 bool writeData(DataWriter_t* data_writer, void* buffer, uint32_t topic_size);
 
 void deleteEntity(DataReader_t* data_reader);
 void deleteEntity(DataWriter_t* data_writer);
+void deleteEntity(Replier_t* replier);
 
 bool runCommunication(uint32_t timeout_ms);
 

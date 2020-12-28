@@ -8,7 +8,6 @@
 #ifndef SRC_LIB_ROS2XRCEDDS_TOPIC_ID_NUMBER_H_
 #define SRC_LIB_ROS2XRCEDDS_TOPIC_ID_NUMBER_H_
 
-
 enum TopicIdNumbering
 {
   /* builtin_interfaces */
