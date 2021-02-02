@@ -58,7 +58,7 @@ class Node
       }
 
       // Register Topic
-      ret = this->registerTopic<MsgT>();
+      ret = this->registerTopic<MsgT>(name);
 
       if (ret == false)
       {
@@ -104,7 +104,7 @@ class Node
       }
 
       // Register Topic
-      ret = this->registerTopic<MsgT>();
+      ret = this->registerTopic<MsgT>(name);
 
       if (ret == false)
       {
@@ -147,7 +147,7 @@ class Node
 
     template <
       typename MsgT>
-    bool registerTopic()
+    bool registerTopic(const char* name)
     {
       bool ret;
       MsgT topic;
@@ -157,7 +157,9 @@ class Node
         return false;
       }
 
-      ret = xrcedds::registerTopic(&this->xrcedds_participant_, topic.name_, topic.type_, topic.id_);
+      char topic_name[64];
+      sprintf(topic_name, "%s/%s", getPrefixString(TOPICS_PUBLISH), name);
+      ret = xrcedds::registerTopic(&this->xrcedds_participant_, topic_name, topic.type_, topic.id_);
 
       return ret;
     }
